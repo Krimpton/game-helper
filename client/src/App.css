@@ -1,0 +1,271 @@
+/* APP WRAPPER */
+.app {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ================= HEADER ================= */
+
+.header {
+  position: sticky;
+  z-index: 1000;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+
+  background: rgba(20, 20, 30, 0.8);
+  backdrop-filter: blur(10px);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.logo {
+  font-family: "Bitcount Grid Single", system-ui;
+  font-weight: 600;
+  font-style: normal;
+
+  font-variation-settings:
+    "slnt" 0,
+    "CRSV" 0.5,
+    "ELSH" 0,
+    "ELXP" 0;
+
+  font-size: 2.5rem;
+  color: #66c0f4;
+  letter-spacing: 2px;
+  margin: 0;
+
+  
+}
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+}
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo-link:hover {
+  color: inherit;
+}
+
+/* NAV */
+.nav {
+  display: flex;
+  gap: 60px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  color: #66c0f4;
+  transition: 0.2s;
+}
+
+.dropdown button:hover {
+  color: #c084fc;
+}
+
+/* dropdown menu */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+
+  background: #1a1a24;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-width: 160px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.dropdown-content a {
+  padding: 10px;
+  display: block;
+  text-decoration: none;
+  color: #e5e7eb;
+  transition: 0.2s;
+}
+
+.dropdown-content a:hover {
+  background: #2a2a3a;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* SEARCH */
+.search {
+  display: flex;
+  gap: 10px;
+}
+
+.search input {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #1a1a24;
+  color: white;
+}
+
+.search button {
+  padding: 8px 12px;
+  background: #66c0f4;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #0f0f14;
+  font-weight: bold;
+}
+
+/* ================= HERO ================= */
+
+.hero {
+  width: 100%;
+  height: 330px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hintergrund (voll sichtbar, aber blurred) */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("/images/Hero.png") center/contain no-repeat;
+  filter: blur(20px);
+  transform: scale(1.2);
+  opacity: 0.6;
+}
+
+/* Vorderes Bild */
+.hero-image {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* sieht am besten aus */
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1024px) {
+  .header {
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .search {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .search {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .search input {
+    width: 100%;
+    max-width: 250px;
+  }
+}
+
+
+.carousel-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.carousel {
+  width: 90%;
+  max-width: 1400px;
+  height: 450px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.carousel img {
+  width: 100%;
+  height: 450px;
+  object-fit: cover;
+  display: block;
+}
+/* Overlay */
+.carousel-overlay {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: white;
+}
+
+/* Pfeile */
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  font-size: 28px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.arrow.left {
+  left: 10px;
+}
+
+.arrow.right {
+  right: 10px;
+}
+
+.arrow:hover {
+  background: rgba(0,0,0,0.8);
+}
