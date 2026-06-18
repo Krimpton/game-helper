@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { getGamesUpToPage } from "../services/gameService";
 import "./CategoryPage.css";
 
-function PlatformPage() {
-  const { platform } = useParams();
+function BestGamesPage() {
   const [games, setGames] = useState<any[]>([]);
 
   useEffect(() => {
@@ -13,29 +11,11 @@ function PlatformPage() {
       .catch(console.error);
   }, []);
 
-  const filteredGames = games.filter((game) => {
-    if (platform === "playstation") {
-      return game.platforms?.some((p: string) =>
-        p.includes("PlayStation")
-      );
-    }
-
-    if (platform === "xbox") {
-      return game.platforms?.some((p: string) =>
-        p.includes("Xbox")
-      );
-    }
-
-    if (platform === "pc") {
-      return game.platforms?.includes("PC");
-    }
-
-    return false;
-  });
+  const filteredGames = games.filter((game) => game.rating >= 4);
 
   return (
     <div className="category-page">
-      <h1>{platform?.toUpperCase()}</h1>
+      <h1>BEST RANKING (4+ ⭐)</h1>
 
       <div className="game-grid">
         {filteredGames.map((game) => (
@@ -66,4 +46,4 @@ function PlatformPage() {
   );
 }
 
-export default PlatformPage;
+export default BestGamesPage;
