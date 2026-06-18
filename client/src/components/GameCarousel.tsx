@@ -38,7 +38,13 @@ const GameCarousel = () => {
 
         <div className="carousel-overlay">
           <h2>{game.name}</h2>
-          <p>{game.genre}</p>
+          <br />
+          <p>Genre: {game.genre}</p>
+          <br />
+          <p>Description: {game.description}</p>
+          <br />
+          <p>Platforms: {game.platforms}</p>
+          <br />
           <span>⭐ {game.rating}</span>
         </div>
       </div>

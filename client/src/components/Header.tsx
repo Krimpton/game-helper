@@ -1,11 +1,17 @@
+
+import { Link } from "react-router-dom";
+
 function Header() {
   return (
     <header className="header">
-      <h1 className="logo">GameHelper</h1>
+      <Link to="/" className="logo-link">
+        <h1 className="logo">GameHelper</h1>
+      </Link>
 
       <nav className="nav">
         <div className="dropdown">
           <button>Games ▼</button>
+
           <div className="dropdown-content">
             <a href="#">New Releases</a>
             <a href="#">Popular</a>
@@ -15,21 +21,23 @@ function Header() {
 
         <div className="dropdown">
           <button>Categories ▼</button>
+
           <div className="dropdown-content">
-            <a href="#">Action</a>
-            <a href="#">RPG</a>
-            <a href="#">Strategy</a>
-            <a href="#">Adventure</a>
-            <a href="#">Horror</a>
+            <Link to="/categories/action">Action</Link>
+            <Link to="/categories/rpg">RPG</Link>
+            <Link to="/categories/strategy">Strategy</Link>
+            <Link to="/categories/adventure">Adventure</Link>
+            <Link to="/categories/horror">Horror</Link>
           </div>
         </div>
 
         <div className="dropdown">
           <button>Platforms ▼</button>
+
           <div className="dropdown-content">
-            <a href="#">PC</a>
-            <a href="#">PlayStation</a>
-            <a href="#">Xbox</a>
+            <Link to="/platforms/pc">PC</Link>
+            <Link to="/platforms/playstation">PlayStation</Link>
+            <Link to="/platforms/xbox">Xbox</Link>
           </div>
         </div>
       </nav>
