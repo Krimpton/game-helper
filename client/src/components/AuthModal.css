@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
 
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.9);
 
   display: flex;
   justify-content: center;
@@ -16,64 +16,38 @@
 
   background: linear-gradient(
     180deg,
-    #1b2838 0%,
-    #171a21 100%
+    #1b2838,
+    #171a21
   );
 
   border: 1px solid #2a475e;
 
   padding: 40px;
 
-  box-shadow:
-    0 0 30px rgba(102, 192, 244, 0.15),
-    0 20px 50px rgba(0, 0, 0, 0.6);
+  text-align: center;
 
-  color: white;
+  box-shadow:
+    0 0 40px rgba(102, 192, 244, 0.15),
+    0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+.auth-avatar {
+  font-size: 4rem;
+  margin-bottom: 15px;
 }
 
 .auth-modal h1 {
-  text-align: center;
-
-  margin-bottom: 30px;
-
+  margin: 0;
   color: #66c0f4;
-
   font-size: 2.5rem;
-
-  letter-spacing: 4px;
-
   font-family: "Bitcount Grid Single", system-ui;
 }
 
-.auth-tabs {
-  display: flex;
-  margin-bottom: 25px;
-}
+.auth-subtitle {
+  color: #8f98a0;
 
-.auth-tabs button {
-  flex: 1;
-
-  padding: 12px;
-
-  border: none;
-
-  background: #0d1117;
-
-  color: white;
-
-  cursor: pointer;
-
-  transition: 0.25s;
-}
-
-.auth-tabs button:hover {
-  background: #1f2f42;
-}
-
-.auth-tabs button.active {
-  background: #66c0f4;
-  color: black;
-  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 30px;
 }
 
 .auth-modal input {
@@ -89,25 +63,15 @@
 
   color: white;
 
-  outline: none;
-
   box-sizing: border-box;
 }
 
 .auth-modal input:focus {
+  outline: none;
+
   border-color: #66c0f4;
 
-  box-shadow: 0 0 10px rgba(102, 192, 244, 0.3);
-}
-
-.auth-error {
-  color: #ff6b6b;
-
-  text-align: center;
-
-  margin-bottom: 15px;
-
-  font-weight: bold;
+  box-shadow: 0 0 10px rgba(102,192,244,0.3);
 }
 
 .auth-submit {
@@ -125,19 +89,41 @@
 
   cursor: pointer;
 
-  transition: 0.25s;
+  transition: 0.2s;
 }
 
 .auth-submit:hover {
-  background: #8fd3ff;
-
   transform: translateY(-2px);
+
+  background: #89d3ff;
 }
 
 .auth-error {
   color: #ff6b6b;
-  text-align: center;
+
   margin-bottom: 15px;
+
   font-size: 14px;
+}
+
+.auth-switch {
+  margin-top: 25px;
+
+  color: #8f98a0;
+
+  font-size: 14px;
+}
+
+.auth-switch span {
+  margin-left: 6px;
+
+  color: #66c0f4;
+
+  cursor: pointer;
+
   font-weight: bold;
+}
+
+.auth-switch span:hover {
+  text-decoration: underline;
 }

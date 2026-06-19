@@ -74,29 +74,15 @@ function AuthModal({ onLogin }: any) {
     <div className="auth-overlay">
       <div className="auth-modal">
 
+        <div className="auth-avatar">
+          🎮
+        </div>
+
         <h1>GameHelper</h1>
 
-        <div className="auth-tabs">
-          <button
-            className={isLogin ? "active" : ""}
-            onClick={() => {
-              setIsLogin(true);
-              setError("");
-            }}
-          >
-            Login
-          </button>
-
-          <button
-            className={!isLogin ? "active" : ""}
-            onClick={() => {
-              setIsLogin(false);
-              setError("");
-            }}
-          >
-            Register
-          </button>
-        </div>
+        <p className="auth-subtitle">
+          Your personal gaming library
+        </p>
 
         <input
           type="text"
@@ -132,6 +118,34 @@ function AuthModal({ onLogin }: any) {
         >
           {isLogin ? "Login" : "Create Account"}
         </button>
+
+        <div className="auth-switch">
+          {isLogin ? (
+            <>
+              Don't have an account?
+              <span
+                onClick={() => {
+                  setIsLogin(false);
+                  setError("");
+                }}
+              >
+                Register
+              </span>
+            </>
+          ) : (
+            <>
+              Already have an account?
+              <span
+                onClick={() => {
+                  setIsLogin(true);
+                  setError("");
+                }}
+              >
+                Login
+              </span>
+            </>
+          )}
+        </div>
 
       </div>
     </div>

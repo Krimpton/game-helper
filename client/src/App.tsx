@@ -6,11 +6,14 @@ import Hero from "./components/Hero";
 import GameCarousel from "./components/GameCarousel";
 import GameModal from "./components/GameModal";
 import AuthModal from "./components/AuthModal";
+import Footer from "./components/Footer";
 
 import CategoryPage from "./pages/CategoryPage";
 import PlatformPage from "./pages/PlatformPage";
 import AllGamesPage from "./pages/AllGamesPage";
 import BestGamesPage from "./pages/BestGamesPage";
+import ProfilePage from "./pages/ProfilePage";
+
 
 import "./App.css";
 
@@ -56,6 +59,7 @@ function App() {
           <Route path="/platforms/:platform" element={<PlatformPage />} />
           <Route path="/games" element={<AllGamesPage />} />
           <Route path="/games/best" element={<BestGamesPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
 
         {searchResults.length > 0 && (
@@ -98,6 +102,7 @@ function App() {
           />
         )}
 
+        <Footer />
       </div>
     </BrowserRouter>
   );
