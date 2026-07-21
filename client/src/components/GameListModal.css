@@ -1,0 +1,246 @@
+/* =========================
+   GAME LIST MODAL
+========================= */
+
+
+.game-list-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0,0,0,.75);
+
+  backdrop-filter: blur(5px);
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  z-index:1000;
+
+}
+
+
+
+/* MODAL */
+
+
+.game-list-modal {
+
+  width:650px;
+
+  max-width:90%;
+
+  max-height:80vh;
+
+  background:#171a21;
+
+  border-radius:14px;
+
+  border:1px solid rgba(102,192,244,.2);
+
+  overflow:hidden;
+
+  color:white;
+
+}
+
+
+
+/* HEADER */
+
+
+.game-list-header {
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+
+  padding:20px;
+
+  border-bottom:1px solid rgba(255,255,255,.08);
+
+}
+
+
+.game-list-header h2 {
+
+  margin:0;
+
+  color:#66c0f4;
+
+}
+
+
+
+.game-list-header button {
+
+  background:none;
+
+  border:none;
+
+  color:white;
+
+  font-size:1.3rem;
+
+  cursor:pointer;
+
+}
+
+
+
+/* CONTENT */
+
+
+.game-list-content {
+
+  padding:20px;
+
+  overflow-y:auto;
+
+  max-height:60vh;
+
+}
+
+
+
+
+
+.game-list-item {
+
+  display:flex;
+
+  align-items:center;
+
+  gap:18px;
+
+  background:#1b2838;
+
+  padding:12px;
+
+  border-radius:10px;
+
+  margin-bottom:12px;
+
+}
+
+
+
+
+
+.game-list-item img {
+
+  width:90px;
+
+  height:60px;
+
+  object-fit:cover;
+
+  border-radius:8px;
+
+}
+
+
+
+
+.game-list-info {
+
+  flex:1;
+
+}
+
+
+
+.game-list-info h3 {
+
+  margin:0 0 5px;
+
+}
+
+
+
+.game-list-info p {
+
+  margin:0;
+
+  color:#66c0f4;
+
+}
+
+
+
+.game-list-info span {
+
+  color:#aeb7c2;
+
+  font-size:.85rem;
+
+}
+
+
+
+
+/* REMOVE BUTTON */
+
+
+.remove-game-btn {
+
+  background:#d9534f;
+
+  border:none;
+
+  color:white;
+
+  padding:8px 14px;
+
+  border-radius:8px;
+
+  cursor:pointer;
+
+  transition:.2s;
+
+}
+
+
+
+.remove-game-btn:hover {
+
+  background:#ff6b6b;
+
+}
+
+
+
+/* EMPTY */
+
+
+.empty-list {
+
+  text-align:center;
+
+  color:#8d99a7;
+
+}
+
+
+
+
+
+@media(max-width:700px){
+
+
+.game-list-item{
+
+  flex-direction:column;
+
+  text-align:center;
+
+}
+
+
+}

@@ -13,7 +13,11 @@ import PlatformPage from "./pages/PlatformPage";
 import AllGamesPage from "./pages/AllGamesPage";
 import BestGamesPage from "./pages/BestGamesPage";
 import ProfilePage from "./pages/ProfilePage";
-
+import ImprintPage from "./pages/ImprintPage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
 
 import "./App.css";
 
@@ -30,6 +34,11 @@ function App() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [selectedGame, setSelectedGame] = useState<any>(null);
 
+  const handleGameClick = (game:any) => {
+  setSelectedGame(game);
+};
+
+
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
 
@@ -43,6 +52,91 @@ function App() {
     setUser(null);
   };
 
+  const handleAddFavorite = (game: any) => {
+
+  const currentUser = JSON.parse(
+    localStorage.getItem("user") || "{}"
+  );
+
+
+  const favorites = currentUser.favorites || [];
+
+
+  const alreadyExists = favorites.some(
+    (g: any) => g.id === game.id
+  );
+
+
+  if (alreadyExists) {
+    return;
+  }
+
+
+  const updatedUser = {
+
+    ...currentUser,
+
+    favorites: [
+      ...favorites,
+      game
+    ]
+
+  };
+
+
+  localStorage.setItem(
+    "user",
+    JSON.stringify(updatedUser)
+  );
+
+
+  setUser(updatedUser);
+
+};
+
+
+const handleAddWishlist = (game: any) => {
+
+  const currentUser = JSON.parse(
+    localStorage.getItem("user") || "{}"
+  );
+
+
+  const wishlist = currentUser.wishlist || [];
+
+
+  const alreadyExists = wishlist.some(
+    (g: any) => g.id === game.id
+  );
+
+
+  if (alreadyExists) {
+    return;
+  }
+
+
+  const updatedUser = {
+
+    ...currentUser,
+
+    wishlist: [
+      ...wishlist,
+      game
+    ]
+
+  };
+
+
+  localStorage.setItem(
+    "user",
+    JSON.stringify(updatedUser)
+  );
+
+
+  setUser(updatedUser);
+
+};
+
   return (
     <BrowserRouter>
       <div className="app">
@@ -55,11 +149,17 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/categories/:category" element={<CategoryPage />} />
-          <Route path="/platforms/:platform" element={<PlatformPage />} />
-          <Route path="/games" element={<AllGamesPage />} />
-          <Route path="/games/best" element={<BestGamesPage />} />
+          <Route path="/categories/:category" element={<CategoryPage onGameClick={handleGameClick} />} />
+          <Route path="/platforms/:platform" element={<PlatformPage onGameClick={handleGameClick} />} />
+          <Route path="/games" element={<AllGamesPage onGameClick={handleGameClick} />} />
+          <Route path="/games/best" element={<BestGamesPage onGameClick={handleGameClick}/>} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/imprint" element={<ImprintPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/imprint" element={<ImprintPage />} />
         </Routes>
 
         {searchResults.length > 0 && (
@@ -94,6 +194,8 @@ function App() {
         <GameModal
           game={selectedGame}
           onClose={() => setSelectedGame(null)}
+          onAddFavorite={handleAddFavorite}
+          onAddWishlist={handleAddWishlist}
         />
 
         {!user && (

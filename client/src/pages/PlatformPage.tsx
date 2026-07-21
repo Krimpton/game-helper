@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { getGamesUpToPage } from "../services/gameService";
 import "./CategoryPage.css";
 
-function PlatformPage() {
+function PlatformPage({ onGameClick }:any) {
   const { platform } = useParams();
   const [games, setGames] = useState<any[]>([]);
 
@@ -39,7 +39,7 @@ function PlatformPage() {
 
       <div className="game-grid">
         {filteredGames.map((game) => (
-          <div className="game-card" key={game.id}>
+          <div className="game-card" key={game.id} onClick={() => onGameClick(game)}>
             <img src={game.image} alt={game.title} />
 
             <div className="game-info">

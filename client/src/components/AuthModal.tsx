@@ -1,6 +1,13 @@
 import { useState } from "react";
 import "./AuthModal.css";
 
+const defaultProfilePictures = [
+  "/images/dummy-profile-red.png",
+  "/images/dummy-profile-blue.png",
+  "/images/dummy-profile-green.png",
+  "/images/dummy-profile-orange.png",
+];
+
 function AuthModal({ onLogin }: any) {
   const [isLogin, setIsLogin] = useState(true);
 
@@ -50,9 +57,34 @@ function AuthModal({ onLogin }: any) {
       return;
     }
 
+    
+    const randomProfilePicture =
+      defaultProfilePictures[
+        Math.floor(
+          Math.random() * defaultProfilePictures.length
+        )
+      ];
+
     const newUser = {
       username,
       password,
+
+      profileImage: randomProfilePicture,
+
+      favoriteGenre: "",
+      favoritePlatform: "",
+      favoriteGame: "",
+      aboutMe: "",
+      banner: "",
+      steam: "",
+      discord: "",
+      github: "",
+      website: "",
+
+      gamesViewed: 0,
+      favoriteGames: 0,
+      wishlist: 0,
+      friends: [],
     };
 
     users.push(newUser);
@@ -88,18 +120,14 @@ function AuthModal({ onLogin }: any) {
           type="text"
           placeholder="Username"
           value={username}
-          onChange={(e) =>
-            setUsername(e.target.value)
-          }
+          onChange={(e) => setUsername(e.target.value)}
         />
 
         <input
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
+          onChange={(e) => setPassword(e.target.value)}
         />
 
         {error && (
@@ -110,11 +138,7 @@ function AuthModal({ onLogin }: any) {
 
         <button
           className="auth-submit"
-          onClick={
-            isLogin
-              ? handleLogin
-              : handleRegister
-          }
+          onClick={isLogin ? handleLogin : handleRegister}
         >
           {isLogin ? "Login" : "Create Account"}
         </button>

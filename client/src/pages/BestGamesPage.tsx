@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getGamesUpToPage } from "../services/gameService";
 import "./CategoryPage.css";
 
-function BestGamesPage() {
+function BestGamesPage({ onGameClick }:any) {
   const [games, setGames] = useState<any[]>([]);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ function BestGamesPage() {
 
       <div className="game-grid">
         {filteredGames.map((game) => (
-          <div className="game-card" key={game.id}>
+          <div className="game-card" key={game.id} onClick={() => onGameClick(game)}>
             <img src={game.image} alt={game.title} />
 
             <div className="game-info">
