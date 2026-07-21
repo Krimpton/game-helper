@@ -317,70 +317,189 @@
 /* ================= FOOTER ================= */
 
 .footer {
-  margin-top: 40px;
-  background: #171a21;
-  border-top: 1px solid rgba(102, 192, 244, 0.15);
-  padding: 20px 0 10px;
+  margin-top: 55px;
+
+  background: linear-gradient(
+    180deg,
+    #171c24 0%,
+    #11161d 100%
+  );
+
+  border-top: 1px solid rgba(102, 192, 244, 0.12);
+
+  padding: 28px 0 14px;
 }
 
 .footer-content {
   width: 90%;
-  max-width: 1200px;
+  max-width: 1180px;
+
   margin: 0 auto;
 
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 2fr 0.9fr 0.9fr;
+  gap: 55px;
 }
 
-.footer-logo h2 {
+/* LEFT */
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-column h2 {
   font-family: "Bitcount Grid Single", system-ui;
-  font-size: 1.4rem;
   color: #66c0f4;
+  font-size: 1.45rem;
+  margin-bottom: 10px;
+}
+
+.footer-column p {
+  color: #8d99a7;
+  line-height: 1.5;
+  font-size: 0.84rem;
+  max-width: 310px;
   margin: 0;
 }
 
-.footer-logo p {
-  margin-top: 4px;
-  color: #7f8c9d;
-  font-size: 0.8rem;
+/* HEADINGS */
+
+.footer-column h3 {
+  color: #ffffff;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+  font-weight: 600;
 }
 
-.footer-links {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
+/* LINKS */
 
-.footer-links a {
+.footer-column a {
+  width: fit-content;
+
   color: #b8c6d1;
   text-decoration: none;
-  font-size: 0.85rem;
-  transition: color 0.2s ease;
+
+  margin-bottom: 8px;
+
+  font-size: 0.86rem;
+
+  position: relative;
+
+  transition: color .2s ease;
 }
 
-.footer-links a:hover {
+.footer-column a:hover {
   color: #66c0f4;
 }
 
-.footer-bottom {
-  margin-top: 15px;
-  text-align: center;
-  color: #6d7987;
-  font-size: 0.75rem;
+.footer-column a::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: -3px;
+
+  width: 0;
+  height: 2px;
+
+  background: #66c0f4;
+
+  transition: width .25s ease;
 }
 
-/* ================= MOBILE FOOTER ================= */
+.footer-column a:hover::after {
+  width: 100%;
+}
 
-@media (max-width: 768px) {
-  .footer-content {
-    flex-direction: column;
-    gap: 15px;
-    text-align: center;
+/* BOTTOM */
+
+.footer-bottom {
+  width: 90%;
+  max-width: 1180px;
+
+  margin: 20px auto 0;
+
+  padding-top: 12px;
+
+  border-top: 1px solid rgba(255,255,255,.05);
+
+  text-align: center;
+
+  color: #6f7d8d;
+
+  font-size: .74rem;
+}
+
+/* MOBILE */
+
+@media (max-width:900px){
+
+  .footer{
+    padding:28px 0 12px;
   }
 
-  .footer-links {
-    align-items: center;
+  .footer-content{
+
+    grid-template-columns:1fr;
+
+    gap:28px;
+
+    text-align:center;
   }
+
+  .footer-column{
+
+    align-items:center;
+  }
+
+  .footer-column p{
+
+    max-width:100%;
+  }
+
+}
+
+.footer-column a {
+  width: fit-content;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: #aeb7c2;
+
+  text-decoration: none;
+
+  margin-bottom: 12px;
+
+  position: relative;
+
+  transition: color .25s ease;
+}
+
+
+.footer-column a svg {
+
+  font-size: 18px;
+
+  color: #66c0f4;
+
+  transition: .25s ease;
+
+}
+
+
+.footer-column a:hover {
+
+  color: #66c0f4;
+
+}
+
+
+.footer-column a:hover svg {
+
+  transform: translateX(3px);
+
 }

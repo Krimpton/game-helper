@@ -79,10 +79,11 @@ function Header({
         <Link to="/profile" className="user-link">
           <img
             src={
-              localStorage.getItem("profileImage") ||
+              user.profileImage ||
               "https://cdn-icons-png.flaticon.com/512/149/149071.png"
             }
             className="header-avatar"
+            alt="Profile"
           />
           <span>{user.username}</span>
         </Link>
