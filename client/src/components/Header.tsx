@@ -1,52 +1,96 @@
-
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { searchGames } from "../services/gameService";
 
-function Header() {
+function Header({
+  onSearchResults,
+  user,
+  onLogout,
+}: any) {
+  const [query, setQuery] = useState("");
+
+  const handleSearch = async () => {
+    if (!query) return;
+
+    const results = await searchGames(query);
+
+    onSearchResults(results);
+  };
+
   return (
     <header className="header">
-      <Link to="/" className="logo-link">
-        <h1 className="logo">GameHelper</h1>
-      </Link>
 
-      <nav className="nav">
-        <div className="dropdown">
-          <button>Games ▼</button>
+  {/* LEFT: LOGO */}
+  <Link to="/" className="logo-link">
+    <h1 className="logo">GameHelper</h1>
+  </Link>
 
-          <div className="dropdown-content">
-            <a href="#">New Releases</a>
-            <a href="#">Popular</a>
-            <a href="#">Discounts</a>
-          </div>
+  {/* RIGHT GROUP */}
+  <div className="header-right">
+
+    <nav className="nav">
+      {/* GAMES */}
+      <div className="dropdown">
+        <button>Games ▼</button>
+        <div className="dropdown-content">
+          <Link to="/games">All Games</Link>
+          <Link to="/games/best">Best Ranking</Link>
         </div>
-
-        <div className="dropdown">
-          <button>Categories ▼</button>
-
-          <div className="dropdown-content">
-            <Link to="/categories/action">Action</Link>
-            <Link to="/categories/rpg">RPG</Link>
-            <Link to="/categories/strategy">Strategy</Link>
-            <Link to="/categories/adventure">Adventure</Link>
-            <Link to="/categories/horror">Horror</Link>
-          </div>
-        </div>
-
-        <div className="dropdown">
-          <button>Platforms ▼</button>
-
-          <div className="dropdown-content">
-            <Link to="/platforms/pc">PC</Link>
-            <Link to="/platforms/playstation">PlayStation</Link>
-            <Link to="/platforms/xbox">Xbox</Link>
-          </div>
-        </div>
-      </nav>
-
-      <div className="search">
-        <input type="text" placeholder="Search games..." />
-        <button>Search</button>
       </div>
-    </header>
+
+      {/* CATEGORIES */}
+      <div className="dropdown">
+        <button>Categories ▼</button>
+        <div className="dropdown-content">
+          <Link to="/categories/action">Action</Link>
+          <Link to="/categories/rpg">RPG</Link>
+          <Link to="/categories/puzzle">Puzzle</Link>
+          <Link to="/categories/shooter">Shooter</Link>
+          <Link to="/categories/simulation">Simulator</Link>
+          <Link to="/categories/racing">Racing</Link>
+          <Link to="/categories/arcade">Arcade</Link>
+          <Link to="/categories/multiplayer">Multiplayer</Link>
+        </div>
+      </div>
+
+      {/* PLATFORMS */}
+      <div className="dropdown">
+        <button>Platforms ▼</button>
+        <div className="dropdown-content">
+          <Link to="/platforms/pc">PC</Link>
+          <Link to="/platforms/playstation">PlayStation</Link>
+          <Link to="/platforms/xbox">Xbox</Link>
+        </div>
+      </div>
+    </nav>
+
+    <div className="search">
+      <input
+        type="text"
+        placeholder="Search games..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      <button onClick={handleSearch}>Search</button>
+    </div>
+
+    {user && (
+      <div className="user-section">
+        <Link to="/profile" className="user-link">
+          <img
+            src={
+              localStorage.getItem("profileImage") ||
+              "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            }
+            className="header-avatar"
+          />
+          <span>{user.username}</span>
+        </Link>
+      </div>
+    )}
+
+  </div>
+</header>
   );
 }
 
