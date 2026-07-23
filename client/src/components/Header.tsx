@@ -75,20 +75,25 @@ function Header({
     </div>
 
     {user && (
-      <div className="user-section">
-        <Link to="/profile" className="user-link">
-          <img
-            src={
-              user.profileImage ||
-              "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-            }
-            className="header-avatar"
-            alt="Profile"
-          />
-          <span>{user.username}</span>
-        </Link>
-      </div>
-    )}
+  <div className="user-section">
+
+    <Link to="/profile" className="user-link">
+
+      <img
+        src={
+          user.profileImage ||
+          "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+        }
+        className="header-avatar"
+        alt="Profile"
+      />
+
+      <span>{user.username}</span>
+
+    </Link>
+
+  </div>
+)}
 
   </div>
 </header>

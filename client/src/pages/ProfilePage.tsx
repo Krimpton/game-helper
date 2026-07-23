@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./ProfilePage.css";
 import GameListModal from "../components/GameListModal";
 
-function ProfilePage() {
+function ProfilePage({onLogout,}: any) {
 
   const storedUser = JSON.parse(
     localStorage.getItem("user") || "{}"
@@ -17,7 +17,7 @@ function ProfilePage() {
   const [savedMessage, setSavedMessage] = useState(false);
 
 
-  const [openList, setOpenList] = useState("");
+  const [openList, setOpenList] = useState<"wishlist" | "want_to_play" | "playing" | "completed" | "dropped" | "" >("");
   
   // PROFILE IMAGE
 
@@ -92,16 +92,16 @@ function ProfilePage() {
     "Emma"
   ];
 
+  // GAME LIBRARY STATUS
 
-  const favorites =
-    user.favorites || [];
-
-
-  const wishlist =
-    user.wishlist || [];
-
-
-
+  const gameLibrary = {
+    wishlist: user.wishlist || [],
+    want_to_play: user.want_to_play || [],
+    playing: user.playing || [],
+    completed: user.completed || [],
+    dropped: user.dropped || []
+  };
+  
   // ======================
   // IMAGE UPLOAD
   // ======================
@@ -201,11 +201,16 @@ function ProfilePage() {
 
       reddit,
 
+      wishlist: user.wishlist || [],
 
-      favorites: user.favorites || [],
+      want_to_play: user.want_to_play || [],
 
-      wishlist: user.wishlist || []
+      playing: user.playing || [],
 
+      completed: user.completed || [],
+
+      dropped: user.dropped || []
+      
     };
 
 
@@ -239,6 +244,10 @@ function ProfilePage() {
 
 
     setUser(updatedUser);
+    
+    window.dispatchEvent(
+  new Event("profileUpdated")
+);
 
 
     setSavedMessage(true);
@@ -260,12 +269,9 @@ function ProfilePage() {
 
   const logout = () => {
 
-    localStorage.removeItem("user");
+  onLogout();
 
-    window.location.reload();
-
-  };
-
+};
 
 
   return (
@@ -390,16 +396,10 @@ function ProfilePage() {
 
         </div>
 
-
-
-
-
         {/* PROFILE CONTENT */}
 
 
         <div className="profile-grid">
-
-
 
           {/* LEFT SIDE */}
 
@@ -413,8 +413,6 @@ function ProfilePage() {
               <h3>
                 👤 About Me
               </h3>
-
-
 
               {isEditing ? (
 
@@ -443,10 +441,6 @@ function ProfilePage() {
 
 
             </div>
-
-
-
-
 
             <div className="profile-box">
 
@@ -482,10 +476,6 @@ function ProfilePage() {
 
 
             </div>
-
-
-
-
 
             <div className="profile-box">
 
@@ -558,9 +548,6 @@ function ProfilePage() {
             </div>
 
 
-
-
-
             <div className="profile-box">
 
 
@@ -624,48 +611,20 @@ function ProfilePage() {
           </div>
 
 
-
-
-
-
-
           {/* RIGHT SIDE */}
 
 
 
           <div className="profile-column">
 
-
-
-
-
             <div className="profile-box stats-box">
 
-
-              <h3>
-                ⭐ Library
-              </h3>
-
-
-              <div className="stats">
+                <h3>
+                  🎮 Game Library
+                </h3>
 
 
-                  <div
-                    className="stat-clickable"
-                    onClick={() => setOpenList("favorites")}
-                  >
-
-                    <strong>
-                      {favorites.length}
-                    </strong>
-
-                    <span>
-                      Favorites
-                    </span>
-
-                  </div>
-
-
+                <div className="stats">
 
 
                   <div
@@ -674,11 +633,79 @@ function ProfilePage() {
                   >
 
                     <strong>
-                      {wishlist.length}
+                      {gameLibrary.wishlist.length}
                     </strong>
 
                     <span>
-                      Wishlist
+                      ❤️ Wishlist
+                    </span>
+
+                  </div>
+
+
+
+                  <div
+                    className="stat-clickable"
+                    onClick={() => setOpenList("want_to_play")}
+                  >
+
+                    <strong>
+                      {gameLibrary.want_to_play.length}
+                    </strong>
+
+                    <span>
+                      💭 Want To Play
+                    </span>
+
+                  </div>
+
+
+
+                  <div
+                    className="stat-clickable"
+                    onClick={() => setOpenList("playing")}
+                  >
+
+                    <strong>
+                      {gameLibrary.playing.length}
+                    </strong>
+
+                    <span>
+                      🔥 Playing
+                    </span>
+
+                  </div>
+
+
+
+                  <div
+                    className="stat-clickable"
+                    onClick={() => setOpenList("completed")}
+                  >
+
+                    <strong>
+                      {gameLibrary.completed.length}
+                    </strong>
+
+                    <span>
+                      ✅ Completed
+                    </span>
+
+                  </div>
+
+
+
+                  <div
+                    className="stat-clickable"
+                    onClick={() => setOpenList("dropped")}
+                  >
+
+                    <strong>
+                      {gameLibrary.dropped.length}
+                    </strong>
+
+                    <span>
+                      ❌ Dropped
                     </span>
 
                   </div>
@@ -686,8 +713,7 @@ function ProfilePage() {
 
                 </div>
 
-
-            </div>
+              </div>
 
 
             <div className="profile-box">
@@ -717,12 +743,6 @@ function ProfilePage() {
 
 
             </div>
-
-
-
-
-
-
 
 
             <div className="profile-box">
@@ -836,9 +856,9 @@ function ProfilePage() {
               type={openList}
 
               games={
-                openList === "favorites"
-                ? favorites
-                : wishlist
+                gameLibrary[
+                  openList as keyof typeof gameLibrary
+                ]
               }
 
 
@@ -850,29 +870,24 @@ function ProfilePage() {
               onRemove={(id:number)=>{
 
 
+                const currentList =
+                  gameLibrary[
+                    openList as keyof typeof gameLibrary
+                  ];
+
+
+
                 const updatedUser = {
+
 
                   ...user,
 
-                  favorites:
-                  openList === "favorites"
 
-                  ? favorites.filter(
-                      (game:any)=>game.id !== id
-                    )
+                  [openList]: currentList.filter(
+                    (game:any) =>
+                      game.id !== id
+                  )
 
-                  : favorites,
-
-
-
-                  wishlist:
-                  openList === "wishlist"
-
-                  ? wishlist.filter(
-                      (game:any)=>game.id !== id
-                    )
-
-                  : wishlist
 
                 };
 
@@ -884,7 +899,9 @@ function ProfilePage() {
                 );
 
 
+
                 setUser(updatedUser);
+
 
 
               }}

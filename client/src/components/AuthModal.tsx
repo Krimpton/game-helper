@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./AuthModal.css";
+import { login, register, } from "../services/authService";
 
 const defaultProfilePictures = [
   "/images/dummy-profile-red.png",
@@ -12,95 +13,54 @@ function AuthModal({ onLogin }: any) {
   const [isLogin, setIsLogin] = useState(true);
 
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [error, setError] = useState("");
 
-  const handleLogin = () => {
-    const users = JSON.parse(
-      localStorage.getItem("users") || "[]"
+  const handleLogin = async () => {
+  try {
+    setError("");
+
+    await login(email, password);
+
+    // Benutzerdaten vom Backend laden
+    const response = await fetch(
+      "http://localhost:3000/api/auth/me",
+      {
+        credentials: "include",
+      }
     );
 
-    const user = users.find(
-      (u: any) => u.username === username
-    );
-
-    if (!user) {
-      setError("User not registered");
-      return;
-    }
-
-    if (user.password !== password) {
-      setError("Wrong password");
-      return;
-    }
-
-    localStorage.setItem(
-      "user",
-      JSON.stringify(user)
-    );
+    const user = await response.json();
 
     onLogin(user);
-  };
 
-  const handleRegister = () => {
-    const users = JSON.parse(
-      localStorage.getItem("users") || "[]"
-    );
+  } catch (err: any) {
+    setError(err.message);
+  }
+};
 
-    const existingUser = users.find(
-      (u: any) => u.username === username
-    );
+  const handleRegister = async () => {
+  try {
+    setError("");
 
-    if (existingUser) {
-      setError("Username already exists");
-      return;
-    }
-
-    
-    const randomProfilePicture =
-      defaultProfilePictures[
-        Math.floor(
-          Math.random() * defaultProfilePictures.length
-        )
-      ];
-
-    const newUser = {
+    const data = await register(
       username,
-      password,
-
-      profileImage: randomProfilePicture,
-
-      favoriteGenre: "",
-      favoritePlatform: "",
-      favoriteGame: "",
-      aboutMe: "",
-      banner: "",
-      steam: "",
-      discord: "",
-      github: "",
-      website: "",
-
-      gamesViewed: 0,
-      favoriteGames: 0,
-      wishlist: 0,
-      friends: [],
-    };
-
-    users.push(newUser);
-
-    localStorage.setItem(
-      "users",
-      JSON.stringify(users)
+      email,
+      password
     );
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify(newUser)
-    );
 
-    onLogin(newUser);
-  };
+    onLogin(data.user);
+
+
+  } catch (err: any) {
+
+    setError(err.message);
+
+  }
+};
 
   return (
     <div className="auth-overlay">
@@ -121,6 +81,13 @@ function AuthModal({ onLogin }: any) {
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+        />
+
+        <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         />
 
         <input

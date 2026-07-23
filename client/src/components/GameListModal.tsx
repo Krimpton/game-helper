@@ -9,11 +9,13 @@ function GameListModal({
 }: any) {
 
 
-  const title =
-    type === "favorites"
-      ? "⭐ Favorite Games"
-      : "❤️ Wishlist";
-
+  const titles: any = {
+    wishlist: "❤️ Wishlist",
+    want_to_play: "💭 Want To Play",
+    playing: "🔥 Playing",
+    completed: "✅ Completed",
+    dropped: "❌ Dropped",
+  };
 
 
   return (
@@ -33,7 +35,7 @@ function GameListModal({
         <div className="game-list-header">
 
           <h2>
-            {title}
+            {titles[type] || "🎮 Game List"}
           </h2>
 
 
@@ -53,7 +55,7 @@ function GameListModal({
 
 
           {
-            games.length === 0 ? (
+            !games || games.length === 0 ? (
 
               <p className="empty-list">
                 No games added yet.
@@ -85,7 +87,7 @@ function GameListModal({
 
 
                     <p>
-                      ⭐ {game.rating}
+                      ⭐ {game.rawRating || game.rating || "-"}
                     </p>
 
 
