@@ -503,3 +503,18 @@
   transform: translateX(3px);
 
 }
+
+
+.logout-header-btn {
+  background: #2a475e;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.logout-header-btn:hover {
+  background: #66c0f4;
+  color: #111;
+}
