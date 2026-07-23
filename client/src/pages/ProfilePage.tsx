@@ -274,6 +274,8 @@ function ProfilePage({onLogout,}: any) {
 };
 
 
+
+
   return (
     <div className="profile-page">
 
@@ -948,6 +950,7 @@ function ProfilePage({onLogout,}: any) {
               onClick={() =>
                 setIsEditing(false)
               }
+
             >
 
               Cancel

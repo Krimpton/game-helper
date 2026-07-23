@@ -9,6 +9,13 @@ const defaultProfilePictures = [
   "/images/dummy-profile-orange.png",
 ];
 
+const defaultProfilePictures = [
+  "/images/dummy-profile-red.png",
+  "/images/dummy-profile-blue.png",
+  "/images/dummy-profile-green.png",
+  "/images/dummy-profile-orange.png",
+];
+
 function AuthModal({ onLogin }: any) {
   const [isLogin, setIsLogin] = useState(true);
 
