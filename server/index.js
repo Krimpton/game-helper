@@ -6,6 +6,7 @@ require("dotenv").config();
 const { sequelize } = require("./models");
 const gamesRoutes = require("./routes/games.routes");
 const authRoutes = require("./routes/auth.routes");
+const chatRoutes = require("./routes/chat.routes");
 
 const app = express();
 
@@ -19,6 +20,8 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
+app.use("/api/chat", chatRoutes);
+
 
 // Проверка сервера
 app.get("/api/health", (req, res) => {
