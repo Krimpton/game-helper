@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { getCurrentUser, logout } from "./services/authService";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -21,6 +22,7 @@ import TermsPage from "./pages/TermsPage";
 
 import "./App.css";
 
+
 function Home() {
   return (
     <>
@@ -30,184 +32,363 @@ function Home() {
   );
 }
 
+
 function App() {
+
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [selectedGame, setSelectedGame] = useState<any>(null);
 
+  const [user, setUser] = useState<any>(null);
+
+
+
+  useEffect(() => {
+
+    getCurrentUser()
+      .then((user) => {
+
+        setUser(user);
+
+      });
+
+  }, []);
+
+
+
+
   const handleGameClick = (game:any) => {
-  setSelectedGame(game);
-};
+
+    setSelectedGame(game);
+
+  };
 
 
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
 
-    return savedUser
-      ? JSON.parse(savedUser)
-      : null;
-  });
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
+
+  const handleLogout = async () => {
+
+    console.log("Logout clicked");
+
+    await logout();
+
+    console.log("Logout finished");
+
     setUser(null);
-  };
-
-  const handleAddFavorite = (game: any) => {
-
-  const currentUser = JSON.parse(
-    localStorage.getItem("user") || "{}"
-  );
-
-
-  const favorites = currentUser.favorites || [];
-
-
-  const alreadyExists = favorites.some(
-    (g: any) => g.id === game.id
-  );
-
-
-  if (alreadyExists) {
-    return;
-  }
-
-
-  const updatedUser = {
-
-    ...currentUser,
-
-    favorites: [
-      ...favorites,
-      game
-    ]
 
   };
 
 
-  localStorage.setItem(
-    "user",
-    JSON.stringify(updatedUser)
-  );
 
 
-  setUser(updatedUser);
-
-};
 
 
-const handleAddWishlist = (game: any) => {
-
-  const currentUser = JSON.parse(
-    localStorage.getItem("user") || "{}"
-  );
+  // ==========================
+  // ADD GAME TO LIBRARY
+  // ==========================
 
 
-  const wishlist = currentUser.wishlist || [];
+  const handleAddGameStatus = (
+    game:any,
+    status:string
+  ) => {
 
 
-  const alreadyExists = wishlist.some(
-    (g: any) => g.id === game.id
-  );
+    const currentUser = JSON.parse(
+      localStorage.getItem("user") || "{}"
+    );
 
 
-  if (alreadyExists) {
-    return;
-  }
+
+    const games = currentUser[status] || [];
 
 
-  const updatedUser = {
 
-    ...currentUser,
+    const alreadyExists = games.some(
+      (g:any) => g.id === game.id
+    );
 
-    wishlist: [
-      ...wishlist,
-      game
-    ]
+
+
+    if(alreadyExists){
+
+      return;
+
+    }
+
+
+
+
+    const updatedUser = {
+
+      ...currentUser,
+
+      [status]: [
+        ...games,
+        game
+      ]
+
+    };
+
+
+
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(updatedUser)
+    );
+
+
+
+    setUser(updatedUser);
+
 
   };
 
 
-  localStorage.setItem(
-    "user",
-    JSON.stringify(updatedUser)
-  );
 
 
-  setUser(updatedUser);
 
-};
+
 
   return (
+
     <BrowserRouter>
+
       <div className="app">
 
+
         <Header
+
           onSearchResults={setSearchResults}
+
           user={user}
+
           onLogout={handleLogout}
+
         />
+
+
+
 
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/categories/:category" element={<CategoryPage onGameClick={handleGameClick} />} />
-          <Route path="/platforms/:platform" element={<PlatformPage onGameClick={handleGameClick} />} />
-          <Route path="/games" element={<AllGamesPage onGameClick={handleGameClick} />} />
-          <Route path="/games/best" element={<BestGamesPage onGameClick={handleGameClick}/>} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/imprint" element={<ImprintPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/terms" element={<TermsPage />} />
-          <Route path="/imprint" element={<ImprintPage />} />
+
+
+          <Route 
+            path="/" 
+            element={<Home />} 
+          />
+
+
+          <Route 
+            path="/categories/:category" 
+            element={
+              <CategoryPage 
+                onGameClick={handleGameClick} 
+              />
+            } 
+          />
+
+
+          <Route 
+            path="/platforms/:platform" 
+            element={
+              <PlatformPage 
+                onGameClick={handleGameClick} 
+              />
+            } 
+          />
+
+
+          <Route 
+            path="/games" 
+            element={
+              <AllGamesPage 
+                onGameClick={handleGameClick} 
+              />
+            } 
+          />
+
+
+          <Route 
+            path="/games/best" 
+            element={
+              <BestGamesPage 
+                onGameClick={handleGameClick}
+              />
+            } 
+          />
+
+
+
+          <Route 
+            path="/profile" 
+            element={
+              <ProfilePage 
+                onLogout={handleLogout}
+              />
+            } 
+          />
+
+
+
+          <Route 
+            path="/imprint" 
+            element={<ImprintPage />} 
+          />
+
+
+          <Route 
+            path="/about" 
+            element={<AboutPage />} 
+          />
+
+
+          <Route 
+            path="/contact" 
+            element={<ContactPage />} 
+          />
+
+
+          <Route 
+            path="/privacy" 
+            element={<PrivacyPage />} 
+          />
+
+
+          <Route 
+            path="/terms" 
+            element={<TermsPage />} 
+          />
+
+
+
         </Routes>
 
+
+
+
+
+
         {searchResults.length > 0 && (
+
           <div className="game-grid">
+
+
             {searchResults.map((game) => (
+
+
               <div
+
                 key={game.id}
+
                 className="game-card"
-                onClick={() => setSelectedGame(game)}
+
+                onClick={() => 
+                  setSelectedGame(game)
+                }
+
               >
+
+
                 <img
+
                   src={game.image}
+
                   alt={game.title}
+
                 />
 
+
+
                 <div className="game-info">
-                  <h2>{game.title}</h2>
+
+
+                  <h2>
+                    {game.title}
+                  </h2>
+
+
 
                   <div className="genre">
+
                     {game.genres?.join(", ")}
+
                   </div>
+
+
 
                   <div className="rating">
+
                     ⭐ {game.rating}
+
                   </div>
+
+
+
                 </div>
+
+
               </div>
+
+
             ))}
+
+
           </div>
+
         )}
+
+
+
+
+
+
 
         <GameModal
+
           game={selectedGame}
-          onClose={() => setSelectedGame(null)}
-          onAddFavorite={handleAddFavorite}
-          onAddWishlist={handleAddWishlist}
+
+          onClose={() => 
+            setSelectedGame(null)
+          }
+
+          onAddGameStatus={handleAddGameStatus}
+
         />
 
+
+
+
+
+
         {!user && (
+
           <AuthModal
+
             onLogin={setUser}
+
           />
+
         )}
 
+
+
+
+
+
         <Footer />
+
+
+
       </div>
+
+
     </BrowserRouter>
+
   );
+
 }
+
 
 export default App;

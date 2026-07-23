@@ -107,12 +107,23 @@
 
 
 
-/* ================= GAME ACTIONS ================= */
+/* ================= STATUS SELECTION ================= */
 
 
-.game-actions {
+.modal-info h3 {
 
-  display:flex;
+  margin-bottom:15px;
+
+}
+
+
+
+
+.status-buttons {
+
+  display:grid;
+
+  grid-template-columns:repeat(2, 1fr);
 
   gap:12px;
 
@@ -122,16 +133,15 @@
 
 
 
-.favorite-btn,
 
-.wishlist-btn {
+.status-buttons button {
 
 
-  flex:1;
+  background:#2a475e;
 
+  color:white;
 
   border:none;
-
 
   padding:12px;
 
@@ -147,14 +157,21 @@
 
   transition:.25s;
 
+}
+
+
+
+.status-buttons button:hover {
+
+
+  background:#3b617e;
 
 }
 
 
 
 
-
-.favorite-btn {
+.status-buttons .selected-status {
 
 
   background:#66c0f4;
@@ -165,47 +182,50 @@
 
 
 
-.favorite-btn:hover {
+
+/* ================= ADD BUTTON ================= */
+
+
+.add-game-btn {
+
+
+  width:100%;
+
+
+  background:#66c0f4;
+
+
+  color:#111;
+
+
+  border:none;
+
+
+  padding:12px;
+
+
+  border-radius:8px;
+
+
+  cursor:pointer;
+
+
+  font-weight:bold;
+
+
+  margin-bottom:15px;
+
+
+  transition:.25s;
+
+}
+
+
+
+.add-game-btn:hover {
 
 
   background:#8fd8ff;
-
-}
-
-
-
-
-
-.wishlist-btn {
-
-
-  background:#2a475e;
-
-  color:white;
-
-}
-
-
-
-.wishlist-btn:hover {
-
-
-  background:#3b617e;
-
-}
-
-
-
-
-
-.favorite-btn:disabled,
-
-.wishlist-btn:disabled {
-
-
-  opacity:.7;
-
-  cursor:default;
 
 }
 
@@ -281,9 +301,9 @@
 
 
 
-.game-actions {
+.status-buttons {
 
-  flex-direction:column;
+  grid-template-columns:1fr;
 
 }
 

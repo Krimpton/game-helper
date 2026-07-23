@@ -5,77 +5,54 @@ import { useState } from "react";
 function GameModal({
   game,
   onClose,
-  onAddFavorite,
-  onAddWishlist,
+  onAddGameStatus,
 }: any) {
 
 
-  const [refresh, setRefresh] = useState(false);
-
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   if (!game) return null;
 
 
 
-  const user = JSON.parse(
-    localStorage.getItem("user") || "{}"
-  );
+  const statuses = [
+    {
+      id: "wishlist",
+      label: "❤️ Wishlist"
+    },
+    {
+      id: "want_to_play",
+      label: "💭 Want To Play"
+    },
+    {
+      id: "playing",
+      label: "🔥 Playing"
+    },
+    {
+      id: "completed",
+      label: "✅ Completed"
+    },
+    {
+      id: "dropped",
+      label: "❌ Dropped"
+    }
+  ];
 
 
 
-  const favorites = user.favorites || [];
+  const handleAddGame = () => {
 
-  const wishlist = user.wishlist || [];
-
-
-
-  const isFavorite = favorites.some(
-    (g:any) => g.id === game.id
-  );
-
-
-
-  const isWishlist = wishlist.some(
-    (g:any) => g.id === game.id
-  );
-
-
-
-
-  const handleFavorite = () => {
-
-    if(isFavorite){
+    if(!selectedStatus){
       return;
     }
 
 
-    if(onAddFavorite){
+    if(onAddGameStatus){
 
-      onAddFavorite(game);
-
-      setRefresh(!refresh);
-
-    }
-
-  };
-
-
-
-
-  const handleWishlist = () => {
-
-
-    if(isWishlist){
-      return;
-    }
-
-
-
-    if(onAddWishlist){
-
-      onAddWishlist(game);
-
-      setRefresh(!refresh);
+      onAddGameStatus(
+        game,
+        selectedStatus
+      );
 
     }
 
@@ -133,55 +110,58 @@ function GameModal({
 
 
 
+          <h3>
+            Add to library
+          </h3>
 
 
-          <div className="game-actions">
+          <div className="status-buttons">
 
 
-            <button
+          {
+            statuses.map((status)=>(
 
-              className="favorite-btn"
+              <button
 
-              onClick={handleFavorite}
+                key={status.id}
 
-              disabled={isFavorite}
+                className={
+                  selectedStatus === status.id
+                  ? "selected-status"
+                  : ""
+                }
 
-            >
+                onClick={() =>
+                  setSelectedStatus(status.id)
+                }
 
-              {
-                isFavorite
-                ? "⭐ Added"
-                : "⭐ Add Favorite"
-              }
+              >
 
-            </button>
+                {status.label}
 
-
+              </button>
 
 
-
-
-            <button
-
-              className="wishlist-btn"
-
-              onClick={handleWishlist}
-
-              disabled={isWishlist}
-
-            >
-
-              {
-                isWishlist
-                ? "❤️ Added"
-                : "❤️ Add Wishlist"
-              }
-
-            </button>
+            ))
+          }
 
 
           </div>
 
+
+
+
+          <button
+
+            className="add-game-btn"
+
+            onClick={handleAddGame}
+
+          >
+
+            Add Game
+
+          </button>
 
 
 
