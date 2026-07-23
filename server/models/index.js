@@ -1,6 +1,7 @@
 const sequelize = require("../config/database");
 const User = require("./User");
 const UserGame = require("./UserGame");
+const ChatMessage = require("./ChatMessage");
 
 User.hasMany(UserGame, {
     foreignKey: "userId",
@@ -15,4 +16,5 @@ module.exports = {
     sequelize,
     User,
     UserGame,
+    ChatMessage,
 };
