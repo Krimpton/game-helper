@@ -166,10 +166,44 @@ function logout(req, res) {
     });
 }
 
-function me(req, res) {
-    return res.json({
-        user: req.user,
-    });
+async function me(req, res) {
+    try {
+        const user = await User.findByPk(req.user.id, {
+            attributes: [
+                "id",
+                "username",
+                "email",
+                "profileImage",
+                "banner",
+                "aboutMe",
+                "favoriteGame",
+                "favoriteGenre",
+                "favoritePlatform",
+                "discord",
+                "steam",
+                "github",
+                "reddit",
+                "createdAt",
+                "updatedAt",
+            ],
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+            });
+        }
+
+        return res.json({
+            user,
+        });
+    } catch (error) {
+        console.error("Get current user error:", error.message);
+
+        return res.status(500).json({
+            message: "Failed to get current user",
+        });
+    }
 }
 
 module.exports = {
