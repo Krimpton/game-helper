@@ -25,3 +25,4 @@ dist-ssr
 *.sw?
 server/.env
 server/.env.save
+client/.env
