@@ -8,6 +8,7 @@ import GameCarousel from "./components/GameCarousel";
 import GameModal from "./components/GameModal";
 import AuthModal from "./components/AuthModal";
 import Footer from "./components/Footer";
+import ChatButton from "./components/ChatButton";
 
 import CategoryPage from "./pages/CategoryPage";
 import PlatformPage from "./pages/PlatformPage";
@@ -19,6 +20,7 @@ import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
+import ChatPage from "./pages/ChatPage";
 
 import "./App.css";
 
@@ -63,24 +65,17 @@ function App() {
   };
 
 
-
-
-
   const handleLogout = async () => {
 
-    console.log("Logout clicked");
+  console.log("Logout clicked");
 
-    await logout();
+  await logout();
 
-    console.log("Logout finished");
+  localStorage.removeItem("user");
 
-    setUser(null);
+  setUser(null);
 
-  };
-
-
-
-
+};
 
 
   // ==========================
@@ -261,7 +256,10 @@ function App() {
             element={<TermsPage />} 
           />
 
-
+          <Route 
+            path="/chat" 
+            element={<ChatPage />} 
+          />
 
         </Routes>
 
@@ -376,7 +374,7 @@ function App() {
 
 
 
-
+        <ChatButton />
         <Footer />
 
 

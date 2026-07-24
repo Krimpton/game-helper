@@ -9,12 +9,6 @@ const defaultProfilePictures = [
   "/images/dummy-profile-orange.png",
 ];
 
-const defaultProfilePictures = [
-  "/images/dummy-profile-red.png",
-  "/images/dummy-profile-blue.png",
-  "/images/dummy-profile-green.png",
-  "/images/dummy-profile-orange.png",
-];
 
 function AuthModal({ onLogin }: any) {
   const [isLogin, setIsLogin] = useState(true);
@@ -27,11 +21,11 @@ function AuthModal({ onLogin }: any) {
 
   const handleLogin = async () => {
   try {
+
     setError("");
 
     await login(email, password);
 
-    // Benutzerdaten vom Backend laden
     const response = await fetch(
       "http://localhost:3000/api/auth/me",
       {
@@ -39,17 +33,38 @@ function AuthModal({ onLogin }: any) {
       }
     );
 
-    const user = await response.json();
+    const data = await response.json();
 
-    onLogin(user);
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
+
+
+     localStorage.setItem(
+  "user",
+  JSON.stringify(data.user)
+);
+
+
+onLogin(data.user);
+
+
+window.dispatchEvent(
+  new Event("userChanged")
+);   
 
   } catch (err: any) {
+
     setError(err.message);
+
   }
 };
 
-  const handleRegister = async () => {
+const handleRegister = async () => {
   try {
+
     setError("");
 
     const data = await register(
@@ -58,9 +73,11 @@ function AuthModal({ onLogin }: any) {
       password
     );
 
-
     onLogin(data.user);
 
+    window.dispatchEvent(
+      new Event("userChanged")
+    );
 
   } catch (err: any) {
 
