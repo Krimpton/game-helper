@@ -1,0 +1,227 @@
+.chat-box {
+
+  height:100%;
+
+  display:flex;
+
+  flex-direction:column;
+
+}
+
+
+
+.chat-header {
+
+  padding:20px;
+
+  color:white;
+
+  font-size:20px;
+
+  border-bottom:1px solid #2a475e;
+
+}
+
+
+
+.messages {
+
+  flex:1;
+
+  overflow-y:auto;
+
+  padding:20px;
+
+}
+
+
+
+.message {
+
+  background:#2a475e;
+
+  padding:12px;
+
+  border-radius:8px;
+
+  margin-bottom:12px;
+
+  color:white;
+
+  max-width:70%;
+
+}
+
+
+
+.message strong {
+
+  color:#66c0f4;
+
+}
+
+
+
+.message p {
+
+  margin:5px 0 0;
+
+}
+
+
+
+
+.chat-input{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+
+  padding:15px;
+
+  position:relative;
+
+}
+
+
+
+.chat-input input {
+
+  flex:1;
+
+  padding:12px;
+
+  border-radius:8px;
+
+  border:none;
+
+  background:#101822;
+
+  color:white;
+
+}
+
+
+
+.chat-input button {
+
+  background:#66c0f4;
+
+  border:none;
+
+  padding:12px 25px;
+
+  border-radius:8px;
+
+  cursor:pointer;
+
+}
+
+
+
+.chat-input button:hover {
+
+  background:#8fd8ff;
+
+}
+
+
+/* ==========================
+   EMOJI PICKER FINAL STYLE
+========================== */
+
+
+.EmojiPickerReact {
+
+  --epr-bg-color: #1b2838;
+  --epr-category-icon-active-color: #101822;
+  --epr-category-icon-color: white;
+  --epr-text-color: white;
+  --epr-hover-bg-color: #2a475e;
+  --epr-search-input-bg-color: #101822;
+  --epr-search-input-text-color: white;
+
+}
+
+
+/* komplette Box */
+
+.epr-main {
+
+  background:#1b2838 !important;
+
+  border:1px solid #2a475e !important;
+
+  border-radius:12px !important;
+
+}
+
+
+
+/* Kategorie Leiste */
+
+.epr-category-nav {
+
+  background:#1b2838 !important;
+
+  border-bottom:1px solid #2a475e !important;
+
+}
+
+
+
+/* Kategorie Buttons */
+
+.epr-cat-btn {
+
+  background:transparent !important;
+
+  opacity:1 !important;
+
+}
+
+
+/* Kategorie Icons */
+
+.epr-cat-btn[class*="epr-icn-"] {
+
+  opacity:1 !important;
+
+  filter:none !important;
+
+}
+
+
+/* aktiver Button */
+
+.epr-cat-btn.epr-active {
+
+  background:#66c0f4 !important;
+
+  border-radius:8px !important;
+
+}
+
+
+
+/* Hover */
+
+.epr-cat-btn:hover {
+
+  background:#2a475e !important;
+
+}
+
+
+
+/* Emoji Größe */
+
+.epr-emoji-img {
+
+  width:28px !important;
+
+  height:28px !important;
+
+}
