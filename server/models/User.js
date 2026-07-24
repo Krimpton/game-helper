@@ -16,6 +16,46 @@ const User = sequelize.define("User", {
         allowNull: false,
         unique: true,
     },
+    profileImage: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    banner: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    aboutMe: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    favoriteGame: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    favoriteGenre: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    favoritePlatform: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    discord: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    steam: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    github: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    reddit: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     passwordHash: {
         type: DataTypes.STRING,
         allowNull: false,
