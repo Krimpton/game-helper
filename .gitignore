@@ -26,3 +26,9 @@ dist-ssr
 server/.env
 server/.env.save
 client/.env
+
+server/uploads/*
+!server/uploads/.gitkeep
+!server/uploads/profile/
+server/uploads/profile/*
+!server/uploads/profile/.gitkeep

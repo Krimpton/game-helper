@@ -10,6 +10,7 @@ const chatRoutes = require("./routes/chat.routes");
 const usersRoutes = require("./routes/users.routes");
 
 const app = express();
+const path = require("path");
 
 // Middleware должны быть до routes
 app.use(
@@ -18,6 +19,8 @@ app.use(
         credentials: true,
     })
 );
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(express.json());
 app.use(cookieParser());
