@@ -89,7 +89,7 @@ npm install
 
 ## Environment Variables
 
-Create:
+Create a local backend environment file:
 
 ```text
 server/.env
@@ -99,13 +99,16 @@ Example:
 
 ```env
 PORT=3000
+
 DB_NAME=game_helper
 DB_USER=game_helper_user
 DB_PASSWORD=your_database_password
 DB_HOST=localhost
 DB_PORT=5432
+
 JWT_SECRET=your_jwt_secret
 JWT_EXPIRES_IN=7d
+
 RAWG_BASE_URL=https://api.rawg.io/api
 RAWG_API_KEY=your_rawg_api_key
 ```
@@ -114,31 +117,39 @@ Never commit real `.env` files or secrets.
 
 ## Start the Project
 
-Backend:
+Start the backend:
 
 ```bash
 cd server
 npm run dev
 ```
 
-Frontend in a second terminal:
+Start the frontend in a second terminal:
 
 ```bash
 cd client
 npm run dev
 ```
 
-Default URLs:
+Default development URLs:
 
 ```text
 Frontend: http://localhost:5173
 Backend:  http://localhost:3000
 ```
 
-Health check:
+Backend health check:
 
 ```text
 GET /api/health
+```
+
+Expected response:
+
+```json
+{
+  "status": "ok"
+}
 ```
 
 ## Main API Endpoints
@@ -148,11 +159,15 @@ POST /api/auth/register
 POST /api/auth/login
 POST /api/auth/logout
 GET  /api/auth/me
+
 PUT  /api/users/me
+
 GET  /api/games
 GET  /api/games/:id
+
 GET  /api/chat/messages
 POST /api/chat/messages
+
 GET  /api/health
 ```
 
@@ -166,17 +181,46 @@ Current Sequelize models:
 - `UserGame`
 - `ChatMessage`
 
-The `UserGame` model exists, but the backend library API is not completed yet. The current frontend library still persists data in `localStorage`.
+`User` has many `UserGame` records through the `userId` foreign key.
 
-See `DATABASE.md` for database details.
+The `UserGame` model already exists, but the backend game-library API is not completed yet. The current frontend library still persists data in `localStorage`.
+
+See `DATABASE.md` for database setup and model details.
+
+## Current Limitations
+
+- Profile frontend/backend synchronization is incomplete.
+- Game-library persistence currently uses `localStorage`.
+- Library backend routes/controllers are unfinished.
+- Global chat uses HTTP polling every two seconds instead of WebSockets.
+- Friends and private messaging are not fully implemented.
+- Voice chat is not implemented.
+- Profile images do not yet use a real server-side upload flow.
+- Deployment is not finalized.
 
 ## Git Workflow
+
+The project uses:
 
 ```text
 feature/* -> dev -> main
 ```
 
-Always run `git status` before committing and never commit `.env` files.
+Documentation work can use:
+
+```text
+docs/* -> dev -> main
+```
+
+Always check:
+
+```bash
+git status
+```
+
+before committing.
+
+Never commit `.env` files.
 
 ## Documentation
 
