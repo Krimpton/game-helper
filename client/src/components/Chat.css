@@ -127,101 +127,335 @@
 
 }
 
-
 /* ==========================
-   EMOJI PICKER FINAL STYLE
+   EMOJI PICKER
 ========================== */
 
+.emoji-picker {
+  position: absolute;
+
+  bottom: 52px;
+  left: 0;
+
+  z-index: 9999;
+}
+
+
+/* ==========================
+   PICKER BOX
+========================== */
 
 .EmojiPickerReact {
-
   --epr-bg-color: #1b2838;
-  --epr-category-icon-active-color: #101822;
-  --epr-category-icon-color: white;
-  --epr-text-color: white;
+  --epr-category-label-bg-color: #1b2838;
+
+  --epr-text-color: #ffffff;
+
   --epr-hover-bg-color: #2a475e;
+
   --epr-search-input-bg-color: #101822;
-  --epr-search-input-text-color: white;
+  --epr-search-input-text-color: #ffffff;
 
+  --epr-focus-color: #66c0f4;
+
+  border: 1px solid #2a475e !important;
+
+  border-radius: 12px !important;
+
+  overflow: hidden !important;
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
 
-/* komplette Box */
+/* ==========================
+   HEADER
+========================== */
 
-.epr-main {
-
-  background:#1b2838 !important;
-
-  border:1px solid #2a475e !important;
-
-  border-radius:12px !important;
-
+.EmojiPickerReact .epr-header {
+  background: #1b2838 !important;
 }
 
 
+/* ==========================
+   SEARCH
+========================== */
 
-/* Kategorie Leiste */
+.EmojiPickerReact .epr-search {
+  background: #1b2838 !important;
 
-.epr-category-nav {
+  padding: 12px !important;
+}
 
-  background:#1b2838 !important;
+.EmojiPickerReact .epr-search-container {
+  background: transparent !important;
+}
 
-  border-bottom:1px solid #2a475e !important;
+.EmojiPickerReact .epr-search-container input {
+  width: 100% !important;
 
+  height: 40px !important;
+
+  box-sizing: border-box !important;
+
+  background: #101822 !important;
+
+  color: #ffffff !important;
+
+  border: 1px solid #2a475e !important;
+
+  border-radius: 8px !important;
+
+  outline: none !important;
+
+  font-size: 14px !important;
+}
+
+.EmojiPickerReact .epr-search-container input::placeholder {
+  color: #7f8c99 !important;
+}
+
+.EmojiPickerReact
+.epr-search-container
+input:focus {
+  border-color: #66c0f4 !important;
+
+  box-shadow:
+    0 0 0 2px rgba(102, 192, 244, 0.15) !important;
+}
+
+/* ==========================
+   SEARCH ICON
+========================== */
+
+.EmojiPickerReact .epr-search-container {
+  position: relative !important;
+}
+
+.EmojiPickerReact .epr-search-container input {
+  padding-left: 40px !important;
+  padding-right: 12px !important;
+}
+
+/* Lupe */
+
+.EmojiPickerReact .epr-search-container svg {
+  position: absolute !important;
+
+  left: 12px !important;
+
+  top: 50% !important;
+
+  transform: translateY(-50%) !important;
+
+  width: 18px !important;
+  height: 18px !important;
+
+  z-index: 2 !important;
+
+  pointer-events: none !important;
 }
 
 
+/* ==========================
+   CATEGORY BAR
+========================== */
 
-/* Kategorie Buttons */
+.EmojiPickerReact .epr-category-nav {
+  background: #1b2838 !important;
 
-.epr-cat-btn {
+  border-bottom: 1px solid #2a475e !important;
 
-  background:transparent !important;
+  padding: 6px 10px !important;
 
-  opacity:1 !important;
+  display: flex !important;
 
+  align-items: center !important;
+
+  justify-content: space-between !important;
+
+  overflow: visible !important;
 }
 
 
-/* Kategorie Icons */
+/* ==========================
+   CATEGORY BUTTONS
+========================== */
 
-.epr-cat-btn[class*="epr-icn-"] {
+.EmojiPickerReact .epr-cat-btn {
+  width: 40px !important;
 
-  opacity:1 !important;
+  height: 40px !important;
 
-  filter:none !important;
+  min-width: 40px !important;
 
+  min-height: 40px !important;
+
+  flex: 0 0 40px !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+
+  justify-content: center !important;
+
+  padding: 0 !important;
+
+  margin: 0 !important;
+
+  background: transparent !important;
+
+  border: none !important;
+
+  border-radius: 8px !important;
+
+  opacity: 1 !important;
+
+  color: #ffffff !important;
+
+  overflow: visible !important;
+
+  cursor: pointer !important;
+
+  transition: background 0.15s ease;
 }
 
 
-/* aktiver Button */
+/* Kategorie Hover */
 
+.EmojiPickerReact .epr-cat-btn:hover {
+  background: #2a475e !important;
+}
+
+
+/* Aktive Kategorie */
+
+.EmojiPickerReact
 .epr-cat-btn.epr-active {
-
-  background:#66c0f4 !important;
-
-  border-radius:8px !important;
-
+  background: #66c0f4 !important;
 }
 
 
+/* Unsere Kategorie-Symbole */
 
-/* Hover */
+.EmojiPickerReact
+.epr-cat-btn
+span {
+  display: flex !important;
 
-.epr-cat-btn:hover {
+  align-items: center !important;
 
-  background:#2a475e !important;
+  justify-content: center !important;
 
+  width: 100% !important;
+
+  height: 100% !important;
+
+  font-size: 18px !important;
+
+  line-height: 1 !important;
+
+  white-space: nowrap !important;
 }
 
 
+/* ==========================
+   EMOJI BODY
+========================== */
 
-/* Emoji Größe */
+.EmojiPickerReact .epr-body {
+  background: #1b2838 !important;
 
-.epr-emoji-img {
+  padding: 4px !important;
+}
 
-  width:28px !important;
+.EmojiPickerReact
+.epr-emoji-category {
+  background: #1b2838 !important;
+}
 
-  height:28px !important;
 
+/* ==========================
+   CATEGORY TITLES
+========================== */
+
+.EmojiPickerReact
+.epr-emoji-category-label {
+  background: #1b2838 !important;
+
+  color: #ffffff !important;
+
+  font-size: 15px !important;
+
+  font-weight: 600 !important;
+
+  padding: 8px 10px !important;
+}
+
+
+/* ==========================
+   EMOJI BUTTONS
+========================== */
+
+.EmojiPickerReact .epr-emoji {
+  background: transparent !important;
+
+  border-radius: 8px !important;
+
+  padding: 4px !important;
+
+  margin: 1px !important;
+
+  box-sizing: border-box !important;
+}
+
+.EmojiPickerReact .epr-emoji:hover {
+  background: #2a475e !important;
+}
+
+
+/* ==========================
+   EMOJI IMAGES
+========================== */
+
+.EmojiPickerReact .epr-emoji-img {
+  width: 26px !important;
+
+  height: 26px !important;
+
+  object-fit: contain !important;
+}
+
+
+/* ==========================
+   FREQUENTLY USED
+========================== */
+
+.EmojiPickerReact
+.epr-emoji-category-content {
+  background: #1b2838 !important;
+}
+
+
+/* ==========================
+   SCROLLBAR
+========================== */
+
+.EmojiPickerReact ::-webkit-scrollbar {
+  width: 7px;
+}
+
+.EmojiPickerReact ::-webkit-scrollbar-track {
+  background: #101822;
+}
+
+.EmojiPickerReact ::-webkit-scrollbar-thumb {
+  background: #2a475e;
+
+  border-radius: 10px;
+}
+
+.EmojiPickerReact ::-webkit-scrollbar-thumb:hover {
+  background: #66c0f4;
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import EmojiPicker, {Theme} from "emoji-picker-react";
+import EmojiPicker, {Theme, Categories} from "emoji-picker-react";
 import {getChatMessages,sendChatMessage,} from "../services/chatService";
 
 import "./Chat.css";
@@ -254,7 +254,7 @@ const handleEmojiClick = (emojiData: any) => {
               <EmojiPicker
                   onEmojiClick={handleEmojiClick}
                   theme={Theme.DARK}
-                  width={380}
+                  width={430}
                   height={450}
                   searchDisabled={false}
                   skinTonesDisabled
@@ -262,7 +262,18 @@ const handleEmojiClick = (emojiData: any) => {
                     showPreview: false,
                   }}
                   lazyLoadEmojis
-                />
+                  categoryIcons={{
+                    [Categories.SUGGESTED]: <span>🕘</span>,
+                    [Categories.SMILEYS_PEOPLE]: <span>😀</span>,
+                    [Categories.ANIMALS_NATURE]: <span>🐻</span>,
+                    [Categories.FOOD_DRINK]: <span>🍔</span>,
+                    [Categories.TRAVEL_PLACES]: <span>✈️</span>,
+                    [Categories.ACTIVITIES]: <span>⚽</span>,
+                    [Categories.OBJECTS]: <span>💡</span>,
+                    [Categories.SYMBOLS]: <span>🔣</span>,
+                    [Categories.FLAGS]: <span>🚩</span>,
+                  }}
+              />
                  </div>
 
           )
