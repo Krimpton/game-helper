@@ -6,11 +6,14 @@ const {
     updateMyProfile,
     uploadProfileImage,
     uploadBanner,
+    searchUsers,
 } = require("../controllers/users.controller");
 
 const router = express.Router();
 
 router.put("/me", authMiddleware, updateMyProfile);
+
+router.get("/search", searchUsers);
 
 router.post(
     "/me/profile-image",
