@@ -8,6 +8,7 @@ const gamesRoutes = require("./routes/games.routes");
 const authRoutes = require("./routes/auth.routes");
 const chatRoutes = require("./routes/chat.routes");
 const usersRoutes = require("./routes/users.routes");
+const friendsRoutes = require("./routes/friends.routes");
 
 const app = express();
 const path = require("path");
@@ -20,12 +21,15 @@ app.use(
     })
 );
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
 app.use(express.json());
 app.use(cookieParser());
+
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.use("/api/chat", chatRoutes);
 app.use("/api/users", usersRoutes);
+app.use("/api/friends", friendsRoutes);
 
 // Проверка сервера
 app.get("/api/health", (req, res) => {

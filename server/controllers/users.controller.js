@@ -130,8 +130,41 @@ async function uploadBanner(req, res) {
     }
 }
 
+async function searchUsers(req, res) {
+    try {
+        const { username } = req.query;
+
+        if (!username || username.trim().length < 2) {
+            return res.status(400).json({
+                message: "Username query must contain at least 2 characters",
+            });
+        }
+
+        const users = await User.findAll({
+            where: {
+                username: {
+                    [require("sequelize").Op.iLike]: `%${username.trim()}%`,
+                },
+            },
+            attributes: ["id", "username", "profileImage"],
+            limit: 10,
+        });
+
+        return res.json({
+            users,
+        });
+    } catch (error) {
+        console.error("Search users error:", error.message);
+
+        return res.status(500).json({
+            message: "Failed to search users",
+        });
+    }
+}
+
 module.exports = {
     updateMyProfile,
     uploadProfileImage,
     uploadBanner,
+    searchUsers,
 };
