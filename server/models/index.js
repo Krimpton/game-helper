@@ -4,6 +4,7 @@ const User = require("./User");
 const UserGame = require("./UserGame");
 const ChatMessage = require("./ChatMessage");
 const Friendship = require("./Friendship");
+const PrivateMessage = require("./PrivateMessage");
 
 // User games
 
@@ -40,10 +41,35 @@ Friendship.belongsTo(User, {
     as: "Addressee",
 });
 
+// Private messages
+
+User.hasMany(PrivateMessage, {
+    foreignKey: "senderId",
+    as: "SentPrivateMessages",
+    onDelete: "CASCADE",
+});
+
+PrivateMessage.belongsTo(User, {
+    foreignKey: "senderId",
+    as: "Sender",
+});
+
+User.hasMany(PrivateMessage, {
+    foreignKey: "receiverId",
+    as: "ReceivedPrivateMessages",
+    onDelete: "CASCADE",
+});
+
+PrivateMessage.belongsTo(User, {
+    foreignKey: "receiverId",
+    as: "Receiver",
+});
+
 module.exports = {
     sequelize,
     User,
     UserGame,
     ChatMessage,
     Friendship,
+    PrivateMessage,
 };
