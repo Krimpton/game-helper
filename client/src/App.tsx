@@ -46,14 +46,55 @@ function App() {
 
   useEffect(() => {
 
-    getCurrentUser()
-      .then((user) => {
+  const loadUser = async () => {
 
-        setUser(user);
+    try {
 
-      });
+      const currentUser = await getCurrentUser();
 
-  }, []);
+      setUser(currentUser);
+
+    } catch (error) {
+
+      console.error(
+        "Failed to load current user:",
+        error
+      );
+
+    }
+
+  };
+
+
+  // User beim Start laden
+  loadUser();
+
+
+  // Wird ausgelöst, wenn sich das Profil ändert
+  const handleProfileUpdated = () => {
+
+    loadUser();
+
+  };
+
+
+  window.addEventListener(
+    "profileUpdated",
+    handleProfileUpdated
+  );
+
+
+  // Event Listener wieder entfernen
+  return () => {
+
+    window.removeEventListener(
+      "profileUpdated",
+      handleProfileUpdated
+    );
+
+  };
+
+}, []);
 
 
 

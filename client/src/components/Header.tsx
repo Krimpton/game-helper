@@ -80,12 +80,15 @@ function Header({
     <Link to="/profile" className="user-link">
 
       <img
-        src={
-          user.profileImage ||
-          "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-        }
-        className="header-avatar"
-        alt="Profile"
+          src={
+            user.profileImage
+              ? user.profileImage.startsWith("http")
+                ? user.profileImage
+                : `http://localhost:3000${user.profileImage}`
+              : "/images/dummy-profile-blue.png"
+          }
+          className="header-avatar"
+          alt="Profile"
       />
 
       <span>{user.username}</span>
