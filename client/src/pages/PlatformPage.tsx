@@ -27,7 +27,9 @@ function PlatformPage({ onGameClick }:any) {
     }
 
     if (platform === "pc") {
-      return game.platforms?.includes("PC");
+      return game.platforms?.some((p: string) =>
+          p.includes("PC")
+      );
     }
 
     return false;
