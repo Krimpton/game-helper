@@ -10,6 +10,7 @@ const chatRoutes = require("./routes/chat.routes");
 const usersRoutes = require("./routes/users.routes");
 const friendsRoutes = require("./routes/friends.routes");
 const privateChatRoutes = require("./routes/privateChat.routes");
+const libraryRoutes = require("./routes/library.routes");
 
 const app = express();
 const path = require("path");
@@ -41,6 +42,7 @@ app.get("/api/health", (req, res) => {
 app.use("/api/games", gamesRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/private-chat", privateChatRoutes);
+app.use("/api/library", libraryRoutes);
 
 const PORT = process.env.PORT || 3000;
 
