@@ -1,230 +1,304 @@
-# Game Helper
+Game Helper
 
 Game Helper is a full-stack web application for gamers, developed as a team project during the DCI Web Development course.
 
-The project combines game discovery through the RAWG API with authentication, user profiles, a personal game-library interface, and a persistent global chat.
+The project combines game discovery through the IGDB API with authentication, user profiles, a personal game-library interface, friend functionality, global chat, and private messaging.
 
-## Main Features
+Main Features
 
-- User registration and login
-- JWT authentication with HTTP-only cookies
-- User profile and profile customization
-- RAWG game discovery and search
-- Category and platform browsing
-- Best-rated games page
-- Personal game-library UI
-- Persistent global chat
-- Emoji support in chat
-- About, Contact, Privacy, Terms, and Imprint pages
+* User registration and login
+* JWT authentication with HTTP-only cookies
+* User profile and profile customization
+* Profile image and banner uploads
+* IGDB game discovery and search
+* Category and platform browsing
+* Best-rated games page
+* Personal game-library UI
+* Persistent global chat
+* Emoji support in chat
+* User search
+* Friend requests
+* Friend list management
+* Private messaging between accepted friends
+* About, Contact, Privacy, Terms, and Imprint pages
 
-> Some features are only partially integrated. The game library currently uses `localStorage`, and the profile frontend is not yet fully synchronized with the backend profile API.
+Some features are still partially integrated. The game library currently uses localStorage, and the backend library API is not yet completed.
 
-## Technology Stack
+Technology Stack
 
-### Frontend
+Frontend
 
-- React 19
-- TypeScript
-- Vite
-- React Router
-- CSS
-- Fetch API
-- emoji-picker-react
-- FontAwesome
-- react-icons
+* React 19
+* TypeScript
+* Vite
+* React Router
+* CSS
+* Fetch API
+* emoji-picker-react
+* FontAwesome
+* react-icons
 
-### Backend
+Backend
 
-- Node.js
-- Express.js
-- PostgreSQL
-- Sequelize
-- JWT (`jsonwebtoken`)
-- bcrypt
-- cookie-parser
-- cors
-- dotenv
-- axios
+* Node.js
+* Express.js
+* PostgreSQL
+* Sequelize
+* JWT (jsonwebtoken)
+* bcrypt
+* Multer
+* cookie-parser
+* cors
+* dotenv
+* axios
 
-### External API
+External API
 
-- RAWG Video Games Database API
+* IGDB (Internet Game Database)
+* Twitch OAuth for IGDB authentication
 
-## Project Structure
+Project Structure
 
-```text
 game-helper/
 ├── client/                  # React frontend
 ├── server/                  # Express backend
-├── docs/                    # Technical project context
-├── API.md                   # REST API documentation
-├── DATABASE.md              # PostgreSQL / Sequelize documentation
-├── DEVELOPMENT.md           # Local development guide
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── services/
+│   ├── uploads/
+│   └── index.js
 ├── README.md
 └── .gitignore
-```
 
-## Installation
+Project documentation is stored in the repository and includes API, database, development, and AI context documentation.
+
+Installation
 
 Clone the repository:
 
-```bash
 git clone https://github.com/Krimpton/game-helper.git
 cd game-helper
-```
 
 Install backend dependencies:
 
-```bash
 cd server
 npm install
-```
 
 Install frontend dependencies:
 
-```bash
 cd ../client
 npm install
-```
 
-## Environment Variables
+Environment Variables
 
 Create a local backend environment file:
 
-```text
 server/.env
-```
 
 Example:
 
-```env
 PORT=3000
-
 DB_NAME=game_helper
 DB_USER=game_helper_user
 DB_PASSWORD=your_database_password
 DB_HOST=localhost
 DB_PORT=5432
-
 JWT_SECRET=your_jwt_secret
 JWT_EXPIRES_IN=7d
+IGDB_CLIENT_ID=your_twitch_client_id
+IGDB_CLIENT_SECRET=your_twitch_client_secret
+IGDB_BASE_URL=https://api.igdb.com/v4
+TWITCH_TOKEN_URL=https://id.twitch.tv/oauth2/token
 
-RAWG_BASE_URL=https://api.rawg.io/api
-RAWG_API_KEY=your_rawg_api_key
-```
+Never commit real .env files or secrets.
 
-Never commit real `.env` files or secrets.
+The backend automatically obtains a Twitch App Access Token and uses it for requests to IGDB.
 
-## Start the Project
+Start the Project
 
 Start the backend:
 
-```bash
 cd server
 npm run dev
-```
 
 Start the frontend in a second terminal:
 
-```bash
 cd client
 npm run dev
-```
 
 Default development URLs:
 
-```text
 Frontend: http://localhost:5173
 Backend:  http://localhost:3000
-```
 
 Backend health check:
 
-```text
 GET /api/health
-```
 
 Expected response:
 
-```json
 {
-  "status": "ok"
+"status": "ok"
 }
-```
 
-## Main API Endpoints
+Main API Endpoints
 
-```text
+Authentication
+
 POST /api/auth/register
 POST /api/auth/login
 POST /api/auth/logout
 GET  /api/auth/me
 
-PUT  /api/users/me
+User Profile
 
-GET  /api/games
-GET  /api/games/:id
+PUT  /api/users/me
+POST /api/users/me/profile-image
+POST /api/users/me/banner
+GET  /api/users/search?username=...
+
+Games
+
+GET /api/games
+GET /api/games?search=...
+GET /api/games/:id
+
+Global Chat
 
 GET  /api/chat/messages
 POST /api/chat/messages
 
-GET  /api/health
-```
+Friends
 
-See `API.md` for detailed endpoint documentation.
+POST   /api/friends/requests
+GET    /api/friends/requests
+PUT    /api/friends/requests/:id/accept
+DELETE /api/friends/requests/:id
+GET    /api/friends
+DELETE /api/friends/:userId
 
-## Database
+Private Chat
+
+GET  /api/private-chat/:userId
+POST /api/private-chat/:userId
+
+Health
+
+GET /api/health
+
+See the API documentation for detailed request and response formats.
+
+Game Data
+
+Game data is retrieved from IGDB through the backend.
+
+Current flow:
+
+React Frontend
+↓
+Express Backend
+↓
+Twitch OAuth
+↓
+IGDB API
+
+The frontend never communicates with IGDB directly.
+
+The backend normalizes IGDB responses into the format expected by the frontend:
+
+id
+title
+image
+rating
+released
+genres
+platforms
+
+For detailed games:
+
+description
+website
+
+IGDB ratings are converted from a 0–100 scale to the 0–5 scale used by Game Helper.
+
+Database
 
 Current Sequelize models:
 
-- `User`
-- `UserGame`
-- `ChatMessage`
+* User
+* UserGame
+* ChatMessage
+* Friendship
+* PrivateMessage
 
-`User` has many `UserGame` records through the `userId` foreign key.
+Main Relationships
 
-The `UserGame` model already exists, but the backend game-library API is not completed yet. The current frontend library still persists data in `localStorage`.
+User -> UserGame
+User -> Friendship <- User
+User -> PrivateMessage <- User
 
-See `DATABASE.md` for database setup and model details.
+Friend requests and accepted friendships are stored using the Friendship model.
 
-## Current Limitations
+Private messages are stored using the PrivateMessage model and are only available between accepted friends.
 
-- Profile frontend/backend synchronization is incomplete.
-- Game-library persistence currently uses `localStorage`.
-- Library backend routes/controllers are unfinished.
-- Global chat uses HTTP polling every two seconds instead of WebSockets.
-- Friends and private messaging are not fully implemented.
-- Voice chat is not implemented.
-- Profile images do not yet use a real server-side upload flow.
-- Deployment is not finalized.
+The UserGame model exists, but the frontend game library currently still persists its state in localStorage.
 
-## Git Workflow
+File Uploads
+
+Profile images and banners are handled by the backend using Multer.
+
+Uploaded files are stored under:
+
+server/uploads/profile/
+
+The database stores only the resulting URL/path.
+
+Example:
+
+/uploads/profile/example.png
+
+Uploaded user files are excluded from Git.
+
+Current Limitations
+
+* Game-library persistence still uses localStorage.
+* Library backend routes/controllers are unfinished.
+* UserGame still contains legacy field names from the previous RAWG integration.
+* Global chat uses HTTP polling instead of WebSockets.
+* Private chat currently uses REST requests rather than real-time WebSockets.
+* Uploaded images are stored locally on the backend server.
+* Voice chat is not implemented.
+* Deployment is not finalized.
+* A formal Sequelize migration system is not yet implemented.
+
+Git Workflow
 
 The project uses:
 
-```text
 feature/* -> dev -> main
-```
 
 Documentation work can use:
 
-```text
 docs/* -> dev -> main
-```
 
-Always check:
+Before committing:
 
-```bash
 git status
-```
 
-before committing.
+Never commit:
 
-Never commit `.env` files.
+server/.env
+database passwords
+JWT secrets
+IGDB/Twitch credentials
+uploaded user files
 
-## Documentation
+Documentation
 
-- `API.md` — REST API reference
-- `DATABASE.md` — PostgreSQL and Sequelize documentation
-- `DEVELOPMENT.md` — local development setup, workflow, and troubleshooting
-- `docs/AI_CONTEXT.md` — detailed technical project context for AI-assisted development
+* API.md — REST API reference
+* DATABASE.md — PostgreSQL and Sequelize documentation
+* DEVELOPMENT.md — local development setup, workflow, and troubleshooting
+* AI_CONTEXT.md — detailed technical project context for AI-assisted development
