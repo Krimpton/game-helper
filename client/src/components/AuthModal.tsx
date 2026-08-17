@@ -90,14 +90,10 @@ const handleRegister = async () => {
     <div className="auth-overlay">
       <div className="auth-modal">
 
-        <div className="auth-avatar">
-          🎮
-        </div>
-
         <h1>GameHelper</h1>
 
         <p className="auth-subtitle">
-          Your personal gaming library
+          Where gamers connect.
         </p>
 
         <input

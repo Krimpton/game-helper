@@ -8,6 +8,7 @@ import {
   getFriendRequests,
   acceptFriendRequest,
   declineFriendRequest,
+  removeFriend,
 } from "../services/friendService";
 
 
@@ -339,6 +340,44 @@ const handleDeclineRequest = async (
 
 };
   
+
+// ==========================
+// REMOVE FRIEND
+// ==========================
+
+const handleRemoveFriend = async (
+  userId: number
+) => {
+  const confirmed = window.confirm(
+    "Are you sure you want to remove this friend?"
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    await removeFriend(userId);
+
+    const updatedFriends = await getFriends();
+
+    setFriends(updatedFriends);
+
+    setFriendMessage(
+      "Friend removed successfully."
+    );
+  } catch (error: any) {
+    console.error(
+      "Failed to remove friend:",
+      error
+    );
+
+    setFriendMessage(
+      error.message ||
+      "Failed to remove friend"
+    );
+  }
+};
     
   // ======================
   // GAME LIBRARY
@@ -1202,9 +1241,18 @@ const handleDeclineRequest = async (
             alt={friend.username}
           />
 
-          <span>
+          <span className="friend-username">
             {friend.username}
           </span>
+
+          <button
+            className="remove-friend-btn"
+            onClick={() =>
+              handleRemoveFriend(friend.id)
+            }
+          >
+            Remove
+          </button>
 
         </div>
 
