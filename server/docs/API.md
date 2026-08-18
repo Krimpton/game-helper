@@ -25,6 +25,10 @@ Authentication uses a JWT stored in an HTTP-only cookie named `token`.
 | GET | `/api/users/search?username=...` | Yes | Search users |
 | GET | `/api/games` | No | List/search games |
 | GET | `/api/games/:id` | No | Get game details |
+| GET | `/api/library` | Yes | Get current user's game library |
+| POST | `/api/library` | Yes | Add a game to the library |
+| PUT | `/api/library/:id` | Yes | Update a library entry |
+| DELETE | `/api/library/:id` | Yes | Remove a game from the library |
 | GET | `/api/chat/messages` | No | Get global chat messages |
 | POST | `/api/chat/messages` | No | Send global chat message |
 | POST | `/api/friends/requests` | Yes | Send friend request |
@@ -35,8 +39,6 @@ Authentication uses a JWT stored in an HTTP-only cookie named `token`.
 | DELETE | `/api/friends/:userId` | Yes | Remove friend |
 | GET | `/api/private-chat/:userId` | Yes | Get private conversation |
 | POST | `/api/private-chat/:userId` | Yes | Send private message |
-
-The game-library backend is not active yet. `UserGame` exists, but the library controller/routes are still unfinished.
 
 ---
 
@@ -235,7 +237,7 @@ Example response:
 ```json
 {
   "message": "Profile image uploaded successfully",
-  "profileImage": "/uploads/profile/1786373036917-255756504.png"
+  "profileImage": "/uploads/profile/example.png"
 }
 ```
 
@@ -270,7 +272,7 @@ Example response:
 ```json
 {
   "message": "Banner uploaded successfully",
-  "banner": "/uploads/profile/1786373127350-761151520.png"
+  "banner": "/uploads/profile/example-banner.png"
 }
 ```
 
@@ -427,28 +429,6 @@ genres
 platforms
 ```
 
-Example:
-
-```json
-{
-  "id": 1942,
-  "title": "The Witcher 3: Wild Hunt",
-  "image": "https://images.igdb.com/...",
-  "rating": 4.7,
-  "released": "2015-05-19",
-  "genres": [
-    "Role-playing (RPG)",
-    "Adventure"
-  ],
-  "platforms": [
-    "PC (Microsoft Windows)",
-    "PlayStation 5"
-  ],
-  "description": "Game description...",
-  "website": "https://example.com"
-}
-```
-
 IGDB integration uses:
 
 ```text
@@ -467,6 +447,183 @@ TWITCH_TOKEN_URL
 The backend automatically obtains and caches a Twitch App Access Token.
 
 IGDB/Twitch credentials must remain backend-only.
+
+---
+
+# Game Library
+
+The game-library backend is implemented.
+
+Library data is persisted in PostgreSQL through the `UserGame` Sequelize model.
+
+All library endpoints require authentication.
+
+The current user is determined through:
+
+```text
+req.user.id
+```
+
+This ensures that users can only access and modify their own library entries.
+
+---
+
+## GET `/api/library`
+
+Returns all game-library entries belonging to the authenticated user.
+
+Example response:
+
+```json
+{
+  "games": [
+    {
+      "id": 1,
+      "userId": 3,
+      "rawgGameId": 1942,
+      "title": "The Witcher 3: Wild Hunt",
+      "image": "https://images.igdb.com/...",
+      "rawgRating": 4.7,
+      "released": "2015-05-19",
+      "status": "playing",
+      "personalRating": null,
+      "note": null
+    }
+  ]
+}
+```
+
+---
+
+## POST `/api/library`
+
+Adds a game to the authenticated user's library.
+
+Example request:
+
+```json
+{
+  "gameId": 1942,
+  "title": "The Witcher 3: Wild Hunt",
+  "image": "https://images.igdb.com/igdb/image/upload/t_cover_big/coaarl.jpg",
+  "rating": 4.7,
+  "released": "2015-05-19",
+  "status": "playing"
+}
+```
+
+Required fields:
+
+```text
+gameId
+title
+```
+
+Supported status values:
+
+```text
+wishlist
+want_to_play
+playing
+completed
+dropped
+```
+
+The backend prevents the same user from adding the same external game more than once.
+
+---
+
+## PUT `/api/library/:id`
+
+Updates an existing library entry belonging to the authenticated user.
+
+The `:id` parameter represents the `UserGame` database record ID, not the IGDB game ID.
+
+Supported update fields:
+
+```text
+status
+personalRating
+note
+```
+
+Example:
+
+```text
+PUT /api/library/1
+```
+
+Example request:
+
+```json
+{
+  "status": "completed",
+  "personalRating": 5,
+  "note": "Great game"
+}
+```
+
+`personalRating` must be between `1` and `5` when provided.
+
+Users cannot update library entries belonging to another user.
+
+---
+
+## DELETE `/api/library/:id`
+
+Removes a library entry belonging to the authenticated user.
+
+Example:
+
+```text
+DELETE /api/library/1
+```
+
+Example response:
+
+```json
+{
+  "message": "Game removed from library"
+}
+```
+
+Users cannot delete library entries belonging to another user.
+
+---
+
+## Library Implementation Status
+
+```text
+UserGame model                Implemented
+User/UserGame relationship    Implemented
+Library frontend UI           Implemented
+Frontend persistence          localStorage
+Library backend controller    Implemented
+Library backend routes        Implemented
+Library API registration      Implemented
+Frontend/backend integration  Not implemented
+```
+
+The backend library API is ready and stores data in PostgreSQL.
+
+The frontend currently still uses `localStorage` for the game library. It must be connected to `/api/library` before PostgreSQL becomes the frontend library's source of truth.
+
+### Legacy field names
+
+The `UserGame` model currently contains:
+
+```text
+rawgGameId
+rawgRating
+```
+
+These are legacy field names from the previous RAWG integration.
+
+The project now uses IGDB, so `rawgGameId` currently stores the external IGDB game ID and `rawgRating` stores the normalized external game rating.
+
+These fields should eventually be renamed to provider-neutral or IGDB-specific names through a deliberate database migration.
+
+They should not be renamed directly in the Sequelize model without handling the existing database schema.
 
 ---
 
@@ -546,24 +703,6 @@ Request body:
 }
 ```
 
-Example response:
-
-```json
-{
-  "message": "Friend request sent successfully",
-  "request": {
-    "id": 4,
-    "status": "pending",
-    "user": {
-      "id": 5,
-      "username": "privatetest",
-      "profileImage": null
-    },
-    "createdAt": "2026-08-12T13:34:14.607Z"
-  }
-}
-```
-
 The backend prevents:
 
 - friend requests to yourself
@@ -576,25 +715,6 @@ The backend prevents:
 
 Returns incoming pending friend requests.
 
-Example response:
-
-```json
-{
-  "requests": [
-    {
-      "id": 4,
-      "status": "pending",
-      "sender": {
-        "id": 5,
-        "username": "privatetest",
-        "profileImage": null
-      },
-      "createdAt": "2026-08-12T13:34:14.607Z"
-    }
-  ]
-}
-```
-
 ---
 
 ## PUT `/api/friends/requests/:id/accept`
@@ -605,20 +725,6 @@ Example:
 
 ```text
 PUT /api/friends/requests/4/accept
-```
-
-Example response:
-
-```json
-{
-  "message": "Friend request accepted",
-  "friendship": {
-    "id": 4,
-    "requesterId": 5,
-    "addresseeId": 3,
-    "status": "accepted"
-  }
-}
 ```
 
 ---
@@ -633,33 +739,11 @@ Example:
 DELETE /api/friends/requests/4
 ```
 
-Example response:
-
-```json
-{
-  "message": "Friend request declined"
-}
-```
-
 ---
 
 ## GET `/api/friends`
 
 Returns all accepted friends of the current user.
-
-Example response:
-
-```json
-{
-  "friends": [
-    {
-      "id": 5,
-      "username": "privatetest",
-      "profileImage": null
-    }
-  ]
-}
-```
 
 ---
 
@@ -671,14 +755,6 @@ Example:
 
 ```text
 DELETE /api/friends/5
-```
-
-Example response:
-
-```json
-{
-  "message": "Friend removed successfully"
-}
 ```
 
 ---
@@ -711,22 +787,6 @@ Request body:
 }
 ```
 
-Example response:
-
-```json
-{
-  "message": "Private message sent successfully",
-  "privateMessage": {
-    "id": 1,
-    "senderId": 3,
-    "receiverId": 5,
-    "message": "Hello!",
-    "createdAt": "2026-08-12T13:41:45.590Z",
-    "updatedAt": "2026-08-12T13:41:45.590Z"
-  }
-}
-```
-
 Non-friends receive:
 
 ```text
@@ -749,66 +809,7 @@ Example:
 GET /api/private-chat/5
 ```
 
-Example response:
-
-```json
-{
-  "user": {
-    "id": 5,
-    "username": "privatetest",
-    "profileImage": null
-  },
-  "messages": [
-    {
-      "id": 1,
-      "senderId": 3,
-      "receiverId": 5,
-      "message": "Hello!",
-      "createdAt": "2026-08-12T13:41:45.590Z",
-      "updatedAt": "2026-08-12T13:41:45.590Z"
-    },
-    {
-      "id": 2,
-      "senderId": 5,
-      "receiverId": 3,
-      "message": "Hello back!",
-      "createdAt": "2026-08-12T13:54:31.234Z",
-      "updatedAt": "2026-08-12T13:54:31.234Z"
-    }
-  ]
-}
-```
-
 Messages are returned in chronological order.
-
----
-
-# Library API Status
-
-Current files:
-
-```text
-server/models/UserGame.js
-server/controllers/library.controllers.js
-server/routes/library.routes.js
-```
-
-Current status:
-
-```text
-UserGame model                Implemented
-Library frontend UI           Implemented
-Frontend persistence          localStorage
-Library backend controller    Incomplete
-Library backend routes        Incomplete
-Frontend/backend integration  Not implemented
-```
-
-`rawgGameId` and `rawgRating` currently remain as legacy field names in the `UserGame` model.
-
-They should be renamed to provider-neutral or IGDB-specific names in a future database migration.
-
-Do not treat `/api/library` as available until it is fully implemented and registered.
 
 ---
 
@@ -822,5 +823,6 @@ Do not treat `/api/library` as available until it is fully implemented and regis
 - Protected routes must use `authMiddleware`.
 - Passwords must be hashed with bcrypt.
 - Private chat is restricted to accepted friends.
+- Library operations are restricted to the authenticated user's own records.
 - Uploaded files should be validated by type and size.
 - Keep external API credentials on the backend only.
