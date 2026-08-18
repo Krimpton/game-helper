@@ -650,130 +650,751 @@
 }
 
 
-/* =========================
-   CAROUSEL
-========================= */
+/* =========================================================
+   GAME CAROUSEL
+========================================================= */
 
 .carousel-wrapper {
   width: 100%;
 
-  display: flex;
-  justify-content: center;
-
-  margin: 30px 0;
-}
-
-
-.carousel-slide {
-  width: 90%;
-  max-width: 1200px;
-
-  height: 420px;
-
-  position: relative;
+  padding: 70px 0 90px;
 
   overflow: hidden;
 
-  border-radius: 12px;
-
-  box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.3);
-}
-
-
-.carousel-slide img {
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-}
-
-
-.carousel-overlay {
-  display: flex;
-  flex-direction: column;
-
-  gap: 8px;
-
-  position: absolute;
-
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  padding: 25px;
-
-  color: white;
-
   background:
-    linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.9),
-      transparent
+    radial-gradient(
+      circle at center,
+      rgba(102, 192, 244, 0.06),
+      transparent 55%
     );
 }
 
 
-.carousel-overlay h2 {
-  font-size: 2rem;
+/* =========================================================
+   MAIN CAROUSEL
+========================================================= */
 
-  margin: 0;
+.carousel {
+  position: relative;
+
+  width: 100%;
+  height: 620px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 
+/* =========================================================
+   TRACK
+========================================================= */
+
+.carousel-track {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  perspective: 1400px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.carousel-card {
+  position: absolute;
+
+  width: 330px;
+  height: 500px;
+
+  overflow: hidden;
+
+  background: #111923;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.08);
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.45);
+
+  transition:
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.75s ease,
+    filter 0.75s ease,
+    box-shadow 0.75s ease;
+
+  will-change:
+    transform,
+    opacity;
+
+  transform-origin: center center;
+}
+
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+.carousel-card img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  object-position: center;
+
+  transition:
+    transform 0.8s ease,
+    filter 0.7s ease;
+}
+
+
+/* =========================================================
+   CENTER CARD
+========================================================= */
+
+.carousel-card[data-position="0"] {
+
+  z-index: 5;
+
+  transform:
+    translateX(0)
+    scale(1.08)
+    rotateY(0deg);
+
+  opacity: 1;
+
+  filter: brightness(1);
+
+  box-shadow:
+    0 35px 90px rgba(0, 0, 0, 0.65),
+    0 0 45px rgba(102, 192, 244, 0.08);
+}
+
+
+/* =========================================================
+   LEFT -1
+========================================================= */
+
+.carousel-card[data-position="-1"] {
+
+  z-index: 4;
+
+  transform:
+    translateX(-360px)
+    scale(0.88)
+    rotateY(18deg);
+
+  opacity: 0.68;
+
+  filter:
+    brightness(0.65)
+    saturate(0.75);
+}
+
+
+/* =========================================================
+   LEFT -2
+========================================================= */
+
+.carousel-card[data-position="-2"] {
+
+  z-index: 3;
+
+  transform:
+    translateX(-650px)
+    scale(0.72)
+    rotateY(25deg);
+
+  opacity: 0.30;
+
+  filter:
+    brightness(0.45)
+    saturate(0.55);
+}
+
+
+/* =========================================================
+   RIGHT +1
+========================================================= */
+
+.carousel-card[data-position="1"] {
+
+  z-index: 4;
+
+  transform:
+    translateX(360px)
+    scale(0.88)
+    rotateY(-18deg);
+
+  opacity: 0.68;
+
+  filter:
+    brightness(0.65)
+    saturate(0.75);
+}
+
+
+/* =========================================================
+   RIGHT +2
+========================================================= */
+
+.carousel-card[data-position="2"] {
+
+  z-index: 3;
+
+  transform:
+    translateX(650px)
+    scale(0.72)
+    rotateY(-25deg);
+
+  opacity: 0.30;
+
+  filter:
+    brightness(0.45)
+    saturate(0.55);
+}
+
+
+/* =========================================================
+   CENTER IMAGE EFFECT
+========================================================= */
+
+.carousel-card[data-position="0"] img {
+  transform: scale(1.02);
+}
+
+
+/* =========================================================
+   DARK GRADIENT ON CENTER GAME
+========================================================= */
+
+.carousel-card[data-position="0"]::after {
+
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.02) 30%,
+      rgba(0, 0, 0, 0.15) 50%,
+      rgba(0, 0, 0, 0.9) 100%
+    );
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.carousel-title {
+
+  position: absolute;
+
+  z-index: 2;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  padding: 35px 32px 30px;
+
+  color: white;
+
+  pointer-events: none;
+
+  text-align: left;
+}
+
+
+/* =========================================================
+   FEATURED LABEL
+========================================================= */
+
+.carousel-label {
+
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: #66c0f4;
+
+  font-size: 0.7rem;
+
+  font-weight: 700;
+
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   TITLE TEXT
+========================================================= */
+
+.carousel-title h2 {
+
+  margin: 0;
+
+  max-width: 100%;
+
+  color: #ffffff;
+
+  font-size: 2.15rem;
+
+  font-weight: 800;
+
+  line-height: 1.05;
+
+  letter-spacing: -0.03em;
+
+  text-shadow:
+    0 4px 18px rgba(0, 0, 0, 0.8);
+}
+
+
+/* =========================================================
+   RATING
+========================================================= */
+
+.carousel-rating {
+
+  margin-top: 12px;
+
+  color: #66c0f4;
+
+  font-size: 0.95rem;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   NAVIGATION BUTTONS
+========================================================= */
+
 .carousel-btn {
+
   position: absolute;
 
   top: 50%;
 
+  z-index: 10;
+
+  width: 58px;
+  height: 110px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
   transform: translateY(-50%);
 
-  background:
-    rgba(10, 15, 22, 0.65);
-
   border:
-    1px solid rgba(255, 255, 255, 0.1);
+    1px solid rgba(255, 255, 255, 0.12);
+
+  background:
+    rgba(8, 13, 19, 0.75);
 
   color: white;
 
-  font-size: 2rem;
+  font-size: 48px;
 
-  padding: 10px 15px;
+  font-weight: 200;
+
+  line-height: 1;
 
   cursor: pointer;
 
-  border-radius: 8px;
+  backdrop-filter: blur(8px);
 
   transition:
-    background 0.2s ease,
-    transform 0.2s ease,
-    border-color 0.2s ease;
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 
 .carousel-btn:hover {
+
   background:
-    rgba(102, 192, 244, 0.18);
+    rgba(102, 192, 244, 0.15);
 
   border-color:
-    rgba(102, 192, 244, 0.35);
+    rgba(102, 192, 244, 0.45);
+
+  box-shadow:
+    0 0 25px rgba(102, 192, 244, 0.12);
+
+  transform:
+    translateY(-50%)
+    scale(1.05);
 }
 
 
 .carousel-btn:active {
+
   transform:
     translateY(-50%)
     scale(0.95);
 }
 
 
-.carousel-btn.left {
-  left: 10px;
+/* =========================================================
+   LEFT BUTTON
+========================================================= */
+
+.carousel-btn-left {
+  left: 35px;
 }
 
 
-.carousel-btn.right {
-  right: 10px;
+/* =========================================================
+   RIGHT BUTTON
+========================================================= */
+
+.carousel-btn-right {
+  right: 35px;
+}
+
+
+/* =========================================================
+   INDICATOR
+========================================================= */
+
+.carousel-indicator {
+
+  position: absolute;
+
+  z-index: 10;
+
+  left: 50%;
+
+  bottom: 18px;
+
+  transform: translateX(-50%);
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 7px 13px;
+
+  background:
+    rgba(8, 13, 19, 0.7);
+
+  border:
+    1px solid rgba(255, 255, 255, 0.08);
+
+  color: #758594;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.08em;
+
+  backdrop-filter: blur(8px);
+}
+
+
+.current-number {
+  color: #66c0f4;
+}
+
+
+.indicator-divider {
+  color: #445361;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1200px) {
+
+  .carousel-card {
+    width: 290px;
+    height: 460px;
+  }
+
+
+  .carousel-card[data-position="-1"] {
+    transform:
+      translateX(-310px)
+      scale(0.86)
+      rotateY(17deg);
+  }
+
+
+  .carousel-card[data-position="1"] {
+    transform:
+      translateX(310px)
+      scale(0.86)
+      rotateY(-17deg);
+  }
+
+
+  .carousel-card[data-position="-2"] {
+    transform:
+      translateX(-550px)
+      scale(0.70)
+      rotateY(24deg);
+  }
+
+
+  .carousel-card[data-position="2"] {
+    transform:
+      translateX(550px)
+      scale(0.70)
+      rotateY(-24deg);
+  }
+
+
+  .carousel-title h2 {
+    font-size: 1.9rem;
+  }
+}
+
+
+/* =========================================================
+   SMALLER TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .carousel-wrapper {
+    padding: 50px 0 70px;
+  }
+
+
+  .carousel {
+    height: 500px;
+  }
+
+
+  .carousel-card {
+    width: 270px;
+    height: 420px;
+  }
+
+
+  /*
+     Nur noch die direkten Nachbarn
+     deutlich sichtbar.
+  */
+
+  .carousel-card[data-position="-2"],
+  .carousel-card[data-position="2"] {
+
+    opacity: 0.12;
+
+  }
+
+
+  .carousel-card[data-position="-1"] {
+
+    transform:
+      translateX(-260px)
+      scale(0.82)
+      rotateY(15deg);
+
+  }
+
+
+  .carousel-card[data-position="1"] {
+
+    transform:
+      translateX(260px)
+      scale(0.82)
+      rotateY(-15deg);
+
+  }
+
+
+  .carousel-title {
+
+    padding: 28px 25px 25px;
+  }
+
+
+  .carousel-title h2 {
+
+    font-size: 1.75rem;
+
+  }
+
+
+  .carousel-btn {
+
+    width: 48px;
+    height: 85px;
+
+    font-size: 38px;
+
+  }
+
+
+  .carousel-btn-left {
+    left: 15px;
+  }
+
+
+  .carousel-btn-right {
+    right: 15px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+  .carousel-wrapper {
+    padding: 35px 0 55px;
+  }
+
+
+  .carousel {
+    height: 440px;
+  }
+
+
+  .carousel-card {
+
+    width: 230px;
+    height: 360px;
+
+  }
+
+
+  /*
+     Auf dem Handy nur 3 Karten.
+  */
+
+  .carousel-card[data-position="-2"],
+  .carousel-card[data-position="2"] {
+
+    opacity: 0;
+
+    pointer-events: none;
+
+  }
+
+
+  .carousel-card[data-position="-1"] {
+
+    transform:
+      translateX(-155px)
+      scale(0.78)
+      rotateY(12deg);
+
+    opacity: 0.4;
+
+  }
+
+
+  .carousel-card[data-position="1"] {
+
+    transform:
+      translateX(155px)
+      scale(0.78)
+      rotateY(-12deg);
+
+    opacity: 0.4;
+
+  }
+
+
+  .carousel-card[data-position="0"] {
+
+    transform:
+      translateX(0)
+      scale(1);
+
+  }
+
+
+  .carousel-title {
+
+    padding:
+      25px 20px 20px;
+
+  }
+
+
+  .carousel-label {
+
+    font-size: 0.6rem;
+
+  }
+
+
+  .carousel-title h2 {
+
+    font-size: 1.45rem;
+
+  }
+
+
+  .carousel-rating {
+
+    font-size: 0.85rem;
+
+  }
+
+
+  .carousel-btn {
+
+    width: 42px;
+    height: 70px;
+
+    font-size: 32px;
+
+  }
+
+
+  .carousel-btn-left {
+    left: 5px;
+  }
+
+
+  .carousel-btn-right {
+    right: 5px;
+  }
+
+
+  .carousel-indicator {
+
+    bottom: 8px;
+
+  }
+
 }
 
 
@@ -1052,4 +1673,71 @@
   .user-link span {
     display: none;
   }
+}
+
+/* ==========================
+   LOAD MORE GAMES
+========================== */
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 35px 20px 50px;
+}
+
+
+.load-more-button {
+  padding: 12px 28px;
+
+  background: #1b2838;
+
+  color: #c7d5e0;
+
+  border: 1px solid rgba(102, 192, 244, 0.25);
+
+  border-radius: 6px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.load-more-button:hover {
+  background: #243b50;
+
+  color: #ffffff;
+
+  border-color: #66c0f4;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 6px 20px rgba(102, 192, 244, 0.12);
+}
+
+
+.load-more-button:active {
+  transform: translateY(0);
+}
+
+
+.load-more-button:disabled {
+  opacity: 0.6;
+
+  cursor: not-allowed;
+
+  transform: none;
+
+  box-shadow: none;
 }

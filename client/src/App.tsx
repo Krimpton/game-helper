@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { getCurrentUser, logout } from "./services/authService";
+import { searchGames } from "./services/gameService";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -26,38 +27,141 @@ import "./App.css";
 
 
 function Home() {
+
   return (
+
     <>
       <Hero />
+
       <GameCarousel />
     </>
+
   );
+
 }
 
 
 function App() {
 
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [selectedGame, setSelectedGame] = useState<any>(null);
+  const [searchResults, setSearchResults] =
+    useState<any[]>([]);
 
-  const [user, setUser] = useState<any>(null);
+  const [selectedGame, setSelectedGame] =
+    useState<any>(null);
+
+  const [user, setUser] =
+    useState<any>(null);
 
 
+  // ==========================
+  // SEARCH
+  // ==========================
+
+  const [searchQuery, setSearchQuery] =
+    useState("");
+
+  const [searchPage, setSearchPage] =
+    useState(1);
+
+  const [loadingMore, setLoadingMore] =
+    useState(false);
+
+
+  // ==========================
+  // LOAD USER
+  // ==========================
 
   useEffect(() => {
 
-  const loadUser = async () => {
+    const loadUser = async () => {
+
+      try {
+
+        const currentUser =
+          await getCurrentUser();
+
+        setUser(currentUser);
+
+      } catch (error) {
+
+        console.error(
+          "Failed to load current user:",
+          error
+        );
+
+      }
+
+    };
+
+
+    loadUser();
+
+
+    const handleProfileUpdated = () => {
+
+      loadUser();
+
+    };
+
+
+    window.addEventListener(
+      "profileUpdated",
+      handleProfileUpdated
+    );
+
+
+    return () => {
+
+      window.removeEventListener(
+        "profileUpdated",
+        handleProfileUpdated
+      );
+
+    };
+
+  }, []);
+
+
+  // ==========================
+  // HANDLE SEARCH
+  // ==========================
+
+  const handleSearch = async (
+    query: string
+  ) => {
+
+    if (!query.trim()) {
+
+      return;
+
+    }
+
 
     try {
 
-      const currentUser = await getCurrentUser();
+      const results =
+        await searchGames(
+          query.trim(),
+          1
+        );
 
-      setUser(currentUser);
+
+      setSearchQuery(
+        query.trim()
+      );
+
+
+      setSearchPage(1);
+
+
+      setSearchResults(
+        results
+      );
 
     } catch (error) {
 
       console.error(
-        "Failed to load current user:",
+        "Searching games failed:",
         error
       );
 
@@ -66,93 +170,136 @@ function App() {
   };
 
 
-  // User beim Start laden
-  loadUser();
-
-
-  // Wird ausgelöst, wenn sich das Profil ändert
-  const handleProfileUpdated = () => {
-
-    loadUser();
-
-  };
-
-
-  window.addEventListener(
-    "profileUpdated",
-    handleProfileUpdated
-  );
-
-
-  // Event Listener wieder entfernen
-  return () => {
-
-    window.removeEventListener(
-      "profileUpdated",
-      handleProfileUpdated
-    );
-
-  };
-
-}, []);
-
-
-
-
-  const handleGameClick = (game:any) => {
-
-    setSelectedGame(game);
-
-  };
-
-
-  const handleLogout = async () => {
-
-  console.log("Logout clicked");
-
-  await logout();
-
-  localStorage.removeItem("user");
-
-  setUser(null);
-
-};
-
-
   // ==========================
-  // ADD GAME TO LIBRARY
+  // LOAD MORE SEARCH RESULTS
   // ==========================
 
+  const handleLoadMore = async () => {
 
-  const handleAddGameStatus = (
-    game:any,
-    status:string
-  ) => {
-
-
-    const currentUser = JSON.parse(
-      localStorage.getItem("user") || "{}"
-    );
-
-
-
-    const games = currentUser[status] || [];
-
-
-
-    const alreadyExists = games.some(
-      (g:any) => g.id === game.id
-    );
-
-
-
-    if(alreadyExists){
+    if (
+      !searchQuery ||
+      loadingMore
+    ) {
 
       return;
 
     }
 
 
+    try {
+
+      setLoadingMore(true);
+
+
+      const nextPage =
+        searchPage + 1;
+
+
+      const results =
+        await searchGames(
+          searchQuery,
+          nextPage
+        );
+
+
+      setSearchResults(
+        (currentResults) => [
+          ...currentResults,
+          ...results,
+        ]
+      );
+
+
+      setSearchPage(
+        nextPage
+      );
+
+    } catch (error) {
+
+      console.error(
+        "Loading more games failed:",
+        error
+      );
+
+    } finally {
+
+      setLoadingMore(false);
+
+    }
+
+  };
+
+
+  // ==========================
+  // GAME CLICK
+  // ==========================
+
+  const handleGameClick = (
+    game: any
+  ) => {
+
+    setSelectedGame(game);
+
+  };
+
+
+  // ==========================
+  // LOGOUT
+  // ==========================
+
+  const handleLogout = async () => {
+
+    console.log(
+      "Logout clicked"
+    );
+
+
+    await logout();
+
+
+    localStorage.removeItem(
+      "user"
+    );
+
+
+    setUser(null);
+
+  };
+
+
+  // ==========================
+  // ADD GAME TO LIBRARY
+  // ==========================
+
+  const handleAddGameStatus = (
+    game: any,
+    status: string
+  ) => {
+
+    const currentUser =
+      JSON.parse(
+        localStorage.getItem(
+          "user"
+        ) || "{}"
+      );
+
+
+    const games =
+      currentUser[status] || [];
+
+
+    const alreadyExists =
+      games.some(
+        (g: any) =>
+          g.id === game.id
+      );
+
+
+    if (alreadyExists) {
+
+      return;
+
+    }
 
 
     const updatedUser = {
@@ -167,25 +314,24 @@ function App() {
     };
 
 
-
-
     localStorage.setItem(
       "user",
-      JSON.stringify(updatedUser)
+      JSON.stringify(
+        updatedUser
+      )
     );
 
 
-
-    setUser(updatedUser);
-
+    setUser(
+      updatedUser
+    );
 
   };
 
 
-
-
-
-
+  // ==========================
+  // RETURN
+  // ==========================
 
   return (
 
@@ -194,184 +340,253 @@ function App() {
       <div className="app">
 
 
+        {/* ==========================
+            HEADER
+        ========================== */}
+
         <Header
 
-          onSearchResults={setSearchResults}
+          onSearchResults={
+            handleSearch
+          }
 
           user={user}
 
-          onLogout={handleLogout}
+          onLogout={
+            handleLogout
+          }
 
         />
 
 
-
+        {/* ==========================
+            ROUTES
+        ========================== */}
 
         <Routes>
 
 
-          <Route 
-            path="/" 
-            element={<Home />} 
-          />
-
-
-          <Route 
-            path="/categories/:category" 
+          <Route
+            path="/"
             element={
-              <CategoryPage 
-                onGameClick={handleGameClick} 
-              />
-            } 
+              <Home />
+            }
           />
 
 
-          <Route 
-            path="/platforms/:platform" 
+          <Route
+            path="/categories/:category"
             element={
-              <PlatformPage 
-                onGameClick={handleGameClick} 
+              <CategoryPage
+                onGameClick={
+                  handleGameClick
+                }
               />
-            } 
+            }
           />
 
 
-          <Route 
-            path="/games" 
+          <Route
+            path="/platforms/:platform"
             element={
-              <AllGamesPage 
-                onGameClick={handleGameClick} 
+              <PlatformPage
+                onGameClick={
+                  handleGameClick
+                }
               />
-            } 
+            }
           />
 
 
-          <Route 
-            path="/games/best" 
+          <Route
+            path="/games"
             element={
-              <BestGamesPage 
-                onGameClick={handleGameClick}
+              <AllGamesPage
+                onGameClick={
+                  handleGameClick
+                }
               />
-            } 
+            }
           />
 
 
-
-          <Route 
-            path="/profile" 
+          <Route
+            path="/games/best"
             element={
-              <ProfilePage 
-                onLogout={handleLogout}
+              <BestGamesPage
+                onGameClick={
+                  handleGameClick
+                }
               />
-            } 
+            }
           />
 
 
-
-          <Route 
-            path="/imprint" 
-            element={<ImprintPage />} 
+          <Route
+            path="/profile"
+            element={
+              <ProfilePage
+                onLogout={
+                  handleLogout
+                }
+              />
+            }
           />
 
 
-          <Route 
-            path="/about" 
-            element={<AboutPage />} 
+          <Route
+            path="/imprint"
+            element={
+              <ImprintPage />
+            }
           />
 
 
-          <Route 
-            path="/contact" 
-            element={<ContactPage />} 
+          <Route
+            path="/about"
+            element={
+              <AboutPage />
+            }
           />
 
 
-          <Route 
-            path="/privacy" 
-            element={<PrivacyPage />} 
+          <Route
+            path="/contact"
+            element={
+              <ContactPage />
+            }
           />
 
 
-          <Route 
-            path="/terms" 
-            element={<TermsPage />} 
+          <Route
+            path="/privacy"
+            element={
+              <PrivacyPage />
+            }
           />
 
-          <Route 
-            path="/chat" 
-            element={<ChatPage />} 
+
+          <Route
+            path="/terms"
+            element={
+              <TermsPage />
+            }
+          />
+
+
+          <Route
+            path="/chat"
+            element={
+              <ChatPage />
+            }
           />
 
         </Routes>
 
 
-
-
-
+        {/* ==========================
+            SEARCH RESULTS
+        ========================== */}
 
         {searchResults.length > 0 && (
 
-          <div className="game-grid">
+          <div className="search-results-section">
 
 
-            {searchResults.map((game) => (
+            <div className="game-grid">
 
 
-              <div
+              {searchResults.map(
+                (game) => (
 
-                key={game.id}
+                  <div
 
-                className="game-card"
+                    key={game.id}
 
-                onClick={() => 
-                  setSelectedGame(game)
+                    className="game-card"
+
+                    onClick={() =>
+                      setSelectedGame(
+                        game
+                      )
+                    }
+
+                  >
+
+
+                    <img
+
+                      src={game.image}
+
+                      alt={game.title}
+
+                    />
+
+
+                    <div className="game-info">
+
+
+                      <h2>
+                        {game.title}
+                      </h2>
+
+
+                      <div className="genre">
+
+                        {game.genres?.join(
+                          ", "
+                        )}
+
+                      </div>
+
+
+                      <div className="rating">
+
+                        ⭐ {game.rating}
+
+                      </div>
+
+
+                    </div>
+
+
+                  </div>
+
+                )
+              )}
+
+
+            </div>
+
+
+            {/* ==========================
+                LOAD MORE BUTTON
+            ========================== */}
+
+            <div className="load-more-container">
+
+              <button
+
+                className="load-more-button"
+
+                onClick={
+                  handleLoadMore
+                }
+
+                disabled={
+                  loadingMore
                 }
 
               >
 
+                {loadingMore
+                  ? "Loading..."
+                  : "Load more games"
+                }
 
-                <img
+              </button>
 
-                  src={game.image}
-
-                  alt={game.title}
-
-                />
-
-
-
-                <div className="game-info">
-
-
-                  <h2>
-                    {game.title}
-                  </h2>
-
-
-
-                  <div className="genre">
-
-                    {game.genres?.join(", ")}
-
-                  </div>
-
-
-
-                  <div className="rating">
-
-                    ⭐ {game.rating}
-
-                  </div>
-
-
-
-                </div>
-
-
-              </div>
-
-
-            ))}
+            </div>
 
 
           </div>
@@ -379,49 +594,56 @@ function App() {
         )}
 
 
-
-
-
-
+        {/* ==========================
+            GAME MODAL
+        ========================== */}
 
         <GameModal
 
-          game={selectedGame}
-
-          onClose={() => 
-            setSelectedGame(null)
+          game={
+            selectedGame
           }
 
-          onAddGameStatus={handleAddGameStatus}
+          onClose={() =>
+            setSelectedGame(
+              null
+            )
+          }
+
+          onAddGameStatus={
+            handleAddGameStatus
+          }
 
         />
 
 
-
-
-
+        {/* ==========================
+            AUTH
+        ========================== */}
 
         {!user && (
 
           <AuthModal
 
-            onLogin={setUser}
+            onLogin={
+              setUser
+            }
 
           />
 
         )}
 
 
-
-
+        {/* ==========================
+            CHAT + FOOTER
+        ========================== */}
 
         <ChatButton />
+
         <Footer />
 
 
-
       </div>
-
 
     </BrowserRouter>
 
