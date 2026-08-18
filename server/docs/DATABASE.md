@@ -258,7 +258,18 @@ are legacy field names from the previous RAWG integration.
 
 The project now uses IGDB.
 
-These field names should eventually be renamed to provider-neutral or IGDB-specific names, for example:
+Current backend mapping:
+
+```text
+gameId -> rawgGameId
+rating -> rawgRating
+```
+
+This allows the frontend API to use provider-neutral field names while the database schema still contains the legacy names.
+
+The fields should eventually be renamed through a deliberate database migration.
+
+Possible future names:
 
 ```text
 externalGameId
@@ -272,15 +283,72 @@ igdbGameId
 igdbRating
 ```
 
-Current limitation:
+Do not rename these fields directly in the Sequelize model without handling the existing database schema.
+
+---
+
+# Game Library Persistence
+
+The backend game-library API is implemented.
+
+Available endpoints:
 
 ```text
-UserGame model exists
-BUT
-the frontend game library still uses localStorage
+GET    /api/library
+POST   /api/library
+PUT    /api/library/:id
+DELETE /api/library/:id
 ```
 
-The backend library API is not yet fully integrated.
+All endpoints require authentication.
+
+The authenticated user is identified using:
+
+```text
+req.user.id
+```
+
+Backend flow:
+
+```text
+/api/library
+    ↓
+library.controllers.js
+    ↓
+UserGame model
+    ↓
+PostgreSQL
+```
+
+Implemented behavior:
+
+```text
+get authenticated user's library
+add a game
+update status
+update personal rating
+update note
+remove a game
+prevent duplicate games for one user
+prevent access to other users' library records
+```
+
+The backend now persists library data in PostgreSQL.
+
+Current frontend limitation:
+
+```text
+Library frontend still uses localStorage
+```
+
+The frontend has not yet been connected to `/api/library`.
+
+Therefore:
+
+```text
+Backend library source of truth  -> PostgreSQL
+Frontend library source of truth -> localStorage until integration is completed
+```
 
 ---
 
@@ -499,7 +567,7 @@ User 1 ─────< PrivateMessage >───── 1 User
 | Friend requests | PostgreSQL |
 | Accepted friendships | PostgreSQL |
 | Private messages | PostgreSQL |
-| UserGame model | PostgreSQL model exists |
+| UserGame backend | PostgreSQL through `/api/library` |
 | Game-library frontend | `localStorage` |
 | Game catalogue | IGDB API |
 
@@ -525,7 +593,21 @@ IGDB API
 
 IGDB game data is fetched dynamically.
 
-Only user-specific game information is intended to be persisted in `UserGame`.
+Only user-specific game information is persisted in `UserGame`.
+
+Example:
+
+```text
+IGDB game data
+    ↓
+user adds game to library
+    ↓
+POST /api/library
+    ↓
+UserGame
+    ↓
+PostgreSQL
+```
 
 IGDB credentials are not stored in PostgreSQL.
 
@@ -568,13 +650,13 @@ Describe a table:
 \d "Users"
 ```
 
-Example additional tables:
+Other useful tables:
 
 ```sql
+\d "UserGames"
+\d "ChatMessages"
 \d "Friendships"
 \d "PrivateMessages"
-\d "ChatMessages"
-\d "UserGames"
 ```
 
 List roles:
@@ -662,6 +744,7 @@ unless a deliberate schema update requires it.
 - Never expose `passwordHash` through API responses.
 - Keep IGDB/Twitch authentication on the backend.
 - Never commit uploaded user images.
+- Library endpoints must only access the authenticated user's own records.
 - Private messages must only be accessible to authorized users.
 - Private chat requires an accepted friendship.
 
@@ -673,7 +756,7 @@ Exposed credentials should be rotated.
 
 # Current Database Limitations
 
-- Game-library frontend still uses `localStorage`.
+- Game-library frontend still uses `localStorage` even though the backend library API is implemented.
 - `UserGame` still contains legacy `rawgGameId` and `rawgRating` field names.
 - `ChatMessage` has no `User` foreign key.
 - No formal Sequelize migration system is currently implemented.
@@ -686,9 +769,9 @@ Exposed credentials should be rotated.
 
 Possible future improvements:
 
-- complete the backend library API around `UserGame`
-- connect the frontend library to PostgreSQL
-- rename legacy `rawgGameId` and `rawgRating` fields
+- connect the frontend game library to `/api/library`
+- remove `localStorage` as the frontend library source of truth
+- rename legacy `rawgGameId` and `rawgRating` fields through a database migration
 - link global chat messages directly to users
 - introduce Sequelize migrations
 - add production-ready image/file storage
