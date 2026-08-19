@@ -1,14 +1,6 @@
 import { useState } from "react";
 import "./AuthModal.css";
-import { login, register, } from "../services/authService";
-
-const defaultProfilePictures = [
-  "/images/dummy-profile-red.png",
-  "/images/dummy-profile-blue.png",
-  "/images/dummy-profile-green.png",
-  "/images/dummy-profile-orange.png",
-];
-
+import { login, register } from "../services/authService";
 
 function AuthModal({ onLogin }: any) {
   const [isLogin, setIsLogin] = useState(true);
@@ -18,151 +10,382 @@ function AuthModal({ onLogin }: any) {
   const [password, setPassword] = useState("");
 
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
-  try {
+  const switchMode = (loginMode: boolean) => {
+    setIsLogin(loginMode);
 
     setError("");
+    setSuccess("");
 
-    await login(email, password);
+    setUsername("");
+    setEmail("");
+    setPassword("");
+  };
 
-    const response = await fetch(
-      "http://localhost:3000/api/auth/me",
-      {
-        credentials: "include",
+  const handleLogin = async () => {
+    try {
+      setError("");
+      setSuccess("");
+      setLoading(true);
+
+      await login(email, password);
+
+      const response = await fetch(
+        "http://localhost:3000/api/auth/me",
+        {
+          credentials: "include",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.user) {
+        throw new Error("Could not load user data.");
       }
-    );
-
-    const data = await response.json();
-
 
       localStorage.setItem(
         "user",
         JSON.stringify(data.user)
       );
 
+      setSuccess("Login successful!");
 
-     localStorage.setItem(
-  "user",
-  JSON.stringify(data.user)
-);
+      onLogin(data.user);
 
+      window.dispatchEvent(
+        new Event("userChanged")
+      );
 
-onLogin(data.user);
+    } catch (err: any) {
+      setError(
+        err.message || "Login failed. Please check your details."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const handleRegister = async () => {
+    try {
+      setError("");
+      setSuccess("");
+      setLoading(true);
 
-window.dispatchEvent(
-  new Event("userChanged")
-);   
+      const data = await register(
+        username,
+        email,
+        password
+      );
 
-  } catch (err: any) {
+      if (!data.user) {
+        throw new Error("Registration failed.");
+      }
 
-    setError(err.message);
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
 
-  }
-};
+      setSuccess("Account created successfully!");
 
-const handleRegister = async () => {
-  try {
+      onLogin(data.user);
 
-    setError("");
+      window.dispatchEvent(
+        new Event("userChanged")
+      );
 
-    const data = await register(
-      username,
-      email,
-      password
-    );
+    } catch (err: any) {
+      setError(
+        err.message ||
+        "Registration failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    onLogin(data.user);
+  const handleSubmit = () => {
+    if (loading) return;
 
-    window.dispatchEvent(
-      new Event("userChanged")
-    );
+    if (!email || !password) {
+      setError("Please fill in all required fields.");
+      return;
+    }
 
-  } catch (err: any) {
+    if (!isLogin && !username) {
+      setError("Please enter a username.");
+      return;
+    }
 
-    setError(err.message);
-
-  }
-};
+    if (isLogin) {
+      handleLogin();
+    } else {
+      handleRegister();
+    }
+  };
 
   return (
     <div className="auth-overlay">
+
       <div className="auth-modal">
 
-        <div className="auth-avatar">
-          🎮
+        {/* =========================
+            HEADER
+        ========================= */}
+
+        <div className="auth-header">
+
+          <h1>GameHelper</h1>
+
+          <p>
+            {isLogin
+              ? "Welcome back, gamer."
+              : "Create your gaming profile."
+            }
+          </p>
+
         </div>
 
-        <h1>GameHelper</h1>
 
-        <p className="auth-subtitle">
-          Your personal gaming library
-        </p>
+        {/* =========================
+            LOGIN / REGISTER TABS
+        ========================= */}
 
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+        <div className="auth-tabs">
 
-        <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        />
+          <button
+            type="button"
+            className={isLogin ? "active" : ""}
+            onClick={() => switchMode(true)}
+            disabled={loading}
+          >
+            LOGIN
+          </button>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <button
+            type="button"
+            className={!isLogin ? "active" : ""}
+            onClick={() => switchMode(false)}
+            disabled={loading}
+          >
+            REGISTER
+          </button>
 
-        {error && (
-          <div className="auth-error">
-            {error}
+        </div>
+
+
+        {/* =========================
+            FORM
+        ========================= */}
+
+        <div className="auth-form">
+
+          {!isLogin && (
+            <div className="auth-field">
+
+              <label>USERNAME</label>
+
+              <div className="auth-input-wrapper">
+
+                <span className="input-icon">
+                  @
+                </span>
+
+                <input
+                  type="text"
+                  placeholder="Choose a username"
+                  value={username}
+                  onChange={(e) =>
+                    setUsername(e.target.value)
+                  }
+                  disabled={loading}
+                  autoComplete="username"
+                />
+
+              </div>
+
+            </div>
+          )}
+
+
+          <div className="auth-field">
+
+            <label>EMAIL</label>
+
+            <div className="auth-input-wrapper">
+
+              <span className="input-icon">
+                ✉
+              </span>
+
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) =>
+                  setEmail(e.target.value)
+                }
+                disabled={loading}
+                autoComplete="email"
+              />
+
+            </div>
+
           </div>
-        )}
 
-        <button
-          className="auth-submit"
-          onClick={isLogin ? handleLogin : handleRegister}
-        >
-          {isLogin ? "Login" : "Create Account"}
-        </button>
 
-        <div className="auth-switch">
+          <div className="auth-field">
+
+            <label>PASSWORD</label>
+
+            <div className="auth-input-wrapper">
+
+              <span className="input-icon">
+                •••
+              </span>
+
+              <input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) =>
+                  setPassword(e.target.value)
+                }
+                disabled={loading}
+                autoComplete={
+                  isLogin
+                    ? "current-password"
+                    : "new-password"
+                }
+              />
+
+            </div>
+
+          </div>
+
+
+          {/* =========================
+              ERROR
+          ========================= */}
+
+          {error && (
+            <div className="auth-message auth-error">
+
+              <span>!</span>
+
+              <p>{error}</p>
+
+            </div>
+          )}
+
+
+          {/* =========================
+              SUCCESS
+          ========================= */}
+
+          {success && (
+            <div className="auth-message auth-success">
+
+              <span>✓</span>
+
+              <p>{success}</p>
+
+            </div>
+          )}
+
+
+          {/* =========================
+              SUBMIT
+          ========================= */}
+
+          <button
+            type="button"
+            className="auth-submit"
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+
+            {loading ? (
+              <>
+                <span className="loading-spinner"></span>
+
+                {isLogin
+                  ? "Signing in..."
+                  : "Creating account..."
+                }
+              </>
+            ) : (
+              <>
+                <span>
+                  {isLogin ? "LOGIN" : "CREATE ACCOUNT"}
+                </span>
+
+                <span className="submit-arrow">
+                  →
+                </span>
+              </>
+            )}
+
+          </button>
+
+        </div>
+
+
+        {/* =========================
+            FOOTER
+        ========================= */}
+
+        <div className="auth-footer">
+
           {isLogin ? (
             <>
-              Don't have an account?
-              <span
-                onClick={() => {
-                  setIsLogin(false);
-                  setError("");
-                }}
-              >
-                Register
+              <span>
+                Don't have an account?
               </span>
+
+              <button
+                type="button"
+                onClick={() => switchMode(false)}
+                disabled={loading}
+              >
+                Create one
+              </button>
             </>
           ) : (
             <>
-              Already have an account?
-              <span
-                onClick={() => {
-                  setIsLogin(true);
-                  setError("");
-                }}
-              >
-                Login
+              <span>
+                Already have an account?
               </span>
+
+              <button
+                type="button"
+                onClick={() => switchMode(true)}
+                disabled={loading}
+              >
+                Sign in
+              </button>
             </>
           )}
+
+        </div>
+
+
+        {/* =========================
+            BOTTOM DECORATION
+        ========================= */}
+
+        <div className="auth-decoration">
+
+          <span></span>
+          <span></span>
+          <span></span>
+
         </div>
 
       </div>
+
     </div>
   );
 }

@@ -1,49 +1,171 @@
 import { useEffect, useState } from "react";
 import { getGamesUpToPage } from "../services/gameService";
+
 import "./CategoryPage.css";
 
-function BestGamesPage({ onGameClick }:any) {
-  const [games, setGames] = useState<any[]>([]);
+
+function BestGamesPage({
+  onGameClick
+}: any) {
+
+  const [games, setGames] =
+    useState<any[]>([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
 
   useEffect(() => {
+
+    let isMounted = true;
+
+
     getGamesUpToPage(10)
-      .then(setGames)
-      .catch(console.error);
+
+      .then((data) => {
+
+        if (isMounted) {
+
+          setGames(data);
+
+        }
+
+      })
+
+      .catch((error) => {
+
+        console.error(
+          "Failed to load best games:",
+          error
+        );
+
+      })
+
+      .finally(() => {
+
+        if (isMounted) {
+
+          setLoading(false);
+
+        }
+
+      });
+
+
+    return () => {
+
+      isMounted = false;
+
+    };
+
   }, []);
 
-  const filteredGames = games.filter((game) => game.rating >= 4);
+
+  const filteredGames =
+    games.filter(
+      (game) =>
+        game.rating >= 4
+    );
+
 
   return (
+
     <div className="category-page">
-      <h1>BEST RANKING (4+ ⭐)</h1>
 
-      <div className="game-grid">
-        {filteredGames.map((game) => (
-          <div className="game-card" key={game.id} onClick={() => onGameClick(game)}>
-            <img src={game.image} alt={game.title} />
 
-            <div className="game-info">
-              <h2>{game.title}</h2>
+      <h1>
+        BEST RANKING (4+ ⭐)
+      </h1>
 
-              <div className="genre">
-                {game.genres?.join(", ")}
+
+      {loading ? (
+
+        <div className="games-loading">
+
+          <div className="loading-spinner"></div>
+
+          <p>
+            Loading games...
+          </p>
+
+        </div>
+
+      ) : (
+
+        <div className="game-grid">
+
+          {filteredGames.map(
+            (game) => (
+
+              <div
+                className="game-card"
+
+                key={game.id}
+
+                onClick={() =>
+                  onGameClick(game)
+                }
+              >
+
+                <img
+                  src={game.image}
+                  alt={game.title}
+                />
+
+
+                <div className="game-info">
+
+                  <h2>
+                    {game.title}
+                  </h2>
+
+
+                  <div className="genre">
+
+                    {game.genres?.join(
+                      ", "
+                    )}
+
+                  </div>
+
+
+                  <div className="platforms">
+
+                    {game.platforms?.map(
+                      (p: string) => (
+
+                        <span key={p}>
+                          {p}
+                        </span>
+
+                      )
+                    )}
+
+                  </div>
+
+
+                  <div className="rating">
+
+                    ⭐ {game.rating}
+
+                  </div>
+
+                </div>
+
               </div>
 
-              <div className="platforms">
-                {game.platforms?.map((p: string) => (
-                  <span key={p}>{p}</span>
-                ))}
-              </div>
+            )
+          )}
 
-              <div className="rating">
-                ⭐ {game.rating}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+        </div>
+
+      )}
+
     </div>
+
   );
+
 }
+
 
 export default BestGamesPage;

@@ -1,311 +1,513 @@
-/* ================= MODAL ================= */
+/* ==========================
+   MODAL OVERLAY
+========================== */
 
 .modal-overlay {
   position: fixed;
-
   inset: 0;
 
-  background: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  display:flex;
+  padding: 30px;
 
-  justify-content:center;
+  background: rgba(5, 9, 14, 0.82);
 
-  align-items:center;
+  backdrop-filter: blur(8px);
 
-  z-index:999;
+  z-index: 999;
+
+  animation: modalOverlayAppear 0.2s ease;
 }
 
 
-
+/* ==========================
+   MODAL
+========================== */
 
 .modal-content {
+  position: relative;
 
-  background:#1b2838;
+  width: 680px;
+  max-width: 100%;
+  max-height: 90vh;
 
-  width:650px;
+  overflow-y: auto;
 
-  border-radius:12px;
+  background:
+    linear-gradient(
+      145deg,
+      #182536 0%,
+      #111923 100%
+    );
 
-  overflow:hidden;
+  color: #ffffff;
 
-  color:white;
+  border: 1px solid rgba(102, 192, 244, 0.12);
+
+  border-radius: 6px;
 
   box-shadow:
-    0 20px 50px rgba(0,0,0,.5);
+    0 30px 80px rgba(0, 0, 0, 0.65),
+    0 0 40px rgba(102, 192, 244, 0.06);
 
+  animation: modalAppear 0.25s ease;
 }
 
 
+/* ==========================
+   MODAL SCROLLBAR
+========================== */
 
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
 
-.modal-content img {
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
 
-  width:100%;
+.modal-content::-webkit-scrollbar-thumb {
+  background: #2a475e;
+  border-radius: 10px;
+}
 
-  height:300px;
-
-  object-fit:cover;
-
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #66c0f4;
 }
 
 
+/* ==========================
+   GAME IMAGE
+========================== */
 
+.modal-content > img {
+  display: block;
+
+  width: 100%;
+  height: 320px;
+
+  object-fit: cover;
+
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.07);
+}
+
+
+/* ==========================
+   IMAGE GRADIENT
+========================== */
+
+.modal-content::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 320px;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 55%,
+      rgba(17, 25, 35, 0.85) 100%
+    );
+}
+
+
+/* ==========================
+   MODAL INFO
+========================== */
 
 .modal-info {
-
-  padding:25px;
-
+  padding: 26px 30px 30px;
 }
 
 
-
+/* ==========================
+   TITLE
+========================== */
 
 .modal-info h2 {
+  margin: 0 0 16px;
 
-  margin-bottom:12px;
+  color: #ffffff;
 
-  font-size:1.8rem;
+  font-size: 1.9rem;
+  font-weight: 700;
 
+  letter-spacing: -0.02em;
+
+  line-height: 1.2;
 }
 
 
+/* ==========================
+   GENRES
+========================== */
 
+.modal-info .genre {
+  display: flex;
+  flex-wrap: wrap;
 
-.genre {
+  gap: 7px;
 
-  color:#c7d5e0;
+  margin-bottom: 16px;
 
-  margin-bottom:10px;
+  color: #a9bac8;
 
+  font-size: 13px;
 }
 
 
+/* ==========================
+   PLATFORMS
+========================== */
 
+.modal-info .platforms {
+  display: flex;
+  flex-wrap: wrap;
 
-.platforms {
+  gap: 7px;
 
-  color:#9aa7b5;
+  margin-bottom: 16px;
 
-  margin-bottom:10px;
+  color: #8fa3b3;
 
+  font-size: 13px;
 }
 
 
+/* Falls die Plattformen als einzelne spans kommen */
 
+.modal-info .platforms span {
+  padding: 5px 9px;
 
-.rating {
+  background: #0d141d;
 
-  color:#66c0f4;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 
-  font-weight:bold;
+  border-radius: 3px;
 
-  margin-bottom:20px;
+  color: #aebdca;
 
+  font-size: 12px;
 }
 
 
+/* ==========================
+   RATING
+========================== */
+
+.modal-info .rating {
+  display: inline-flex;
+  align-items: center;
+
+  margin-bottom: 24px;
+
+  padding: 6px 10px;
+
+  background:
+    rgba(102, 192, 244, 0.08);
+
+  border-left:
+    2px solid #66c0f4;
+
+  color: #66c0f4;
+
+  font-size: 14px;
+  font-weight: 700;
+}
 
 
-/* ================= STATUS SELECTION ================= */
-
+/* ==========================
+   STATUS SECTION
+========================== */
 
 .modal-info h3 {
+  margin: 0 0 12px;
 
-  margin-bottom:15px;
+  color: #ffffff;
 
+  font-size: 14px;
+  font-weight: 600;
+
+  letter-spacing: 0.02em;
 }
 
 
-
+/* ==========================
+   STATUS BUTTONS
+========================== */
 
 .status-buttons {
+  display: grid;
 
-  display:grid;
+  grid-template-columns: repeat(2, 1fr);
 
-  grid-template-columns:repeat(2, 1fr);
+  gap: 8px;
 
-  gap:12px;
-
-  margin-bottom:20px;
-
+  margin-bottom: 20px;
 }
-
-
 
 
 .status-buttons button {
+  padding: 11px 14px;
 
+  background: #172331;
 
-  background:#2a475e;
+  border: 1px solid rgba(255, 255, 255, 0.07);
 
-  color:white;
+  border-radius: 3px;
 
-  border:none;
+  color: #b8c7d3;
 
-  padding:12px;
+  font-size: 13px;
+  font-weight: 600;
 
+  cursor: pointer;
 
-  border-radius:8px;
-
-
-  cursor:pointer;
-
-
-  font-weight:600;
-
-
-  transition:.25s;
-
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
 }
-
 
 
 .status-buttons button:hover {
+  background: #203346;
 
+  border-color:
+    rgba(102, 192, 244, 0.35);
 
-  background:#3b617e;
+  color: #ffffff;
 
+  transform: translateY(-1px);
 }
 
 
-
+/* ==========================
+   SELECTED STATUS
+========================== */
 
 .status-buttons .selected-status {
+  background:
+    rgba(102, 192, 244, 0.14);
 
+  border-color:
+    rgba(102, 192, 244, 0.65);
 
-  background:#66c0f4;
+  color: #66c0f4;
 
-  color:#111;
-
+  box-shadow:
+    inset 3px 0 0 #66c0f4;
 }
 
 
-
-
-/* ================= ADD BUTTON ================= */
-
+/* ==========================
+   ADD GAME BUTTON
+========================== */
 
 .add-game-btn {
+  width: 100%;
 
+  padding: 13px 16px;
 
-  width:100%;
+  margin-bottom: 9px;
 
+  background:
+    linear-gradient(
+      135deg,
+      #66c0f4,
+      #4da6d8
+    );
 
-  background:#66c0f4;
+  border: none;
 
+  border-radius: 3px;
 
-  color:#111;
+  color: #071019;
 
+  font-size: 14px;
+  font-weight: 700;
 
-  border:none;
+  cursor: pointer;
 
+  box-shadow:
+    0 5px 18px rgba(102, 192, 244, 0.12);
 
-  padding:12px;
-
-
-  border-radius:8px;
-
-
-  cursor:pointer;
-
-
-  font-weight:bold;
-
-
-  margin-bottom:15px;
-
-
-  transition:.25s;
-
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease,
+    box-shadow 0.18s ease;
 }
-
 
 
 .add-game-btn:hover {
+  filter: brightness(1.08);
 
+  transform: translateY(-1px);
 
-  background:#8fd8ff;
-
+  box-shadow:
+    0 8px 24px rgba(102, 192, 244, 0.2);
 }
 
 
+.add-game-btn:active {
+  transform: translateY(0);
+}
 
 
-
-/* ================= CLOSE BUTTON ================= */
-
+/* ==========================
+   CLOSE BUTTON
+========================== */
 
 .close-btn {
+  width: 100%;
 
+  padding: 12px 16px;
 
-  width:100%;
+  background: #0d141d;
 
+  border:
+    1px solid rgba(255, 255, 255, 0.08);
 
-  background:#171a21;
+  border-radius: 3px;
 
+  color: #8fa0ae;
 
-  border:1px solid rgba(255,255,255,.1);
+  font-size: 13px;
+  font-weight: 600;
 
+  cursor: pointer;
 
-  padding:12px;
-
-
-  color:white;
-
-
-  cursor:pointer;
-
-
-  border-radius:8px;
-
-
-  transition:.25s;
-
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
 }
-
 
 
 .close-btn:hover {
+  background: #172331;
+
+  border-color:
+    rgba(255, 255, 255, 0.16);
+
+  color: #ffffff;
+}
 
 
-  background:#66c0f4;
+/* ==========================
+   ANIMATIONS
+========================== */
 
-  color:#111;
+@keyframes modalOverlayAppear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(12px)
+      scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+
+/* ==========================
+   MOBILE
+========================== */
+
+@media (max-width: 700px) {
+
+  .modal-overlay {
+    padding: 15px;
+  }
+
+
+  .modal-content {
+    width: 100%;
+    max-height: 92vh;
+
+    border-radius: 5px;
+  }
+
+
+  .modal-content > img {
+    height: 220px;
+  }
+
+
+  .modal-content::before {
+    height: 220px;
+  }
+
+
+  .modal-info {
+    padding: 22px;
+  }
+
+
+  .modal-info h2 {
+    font-size: 1.5rem;
+  }
+
+
+  .status-buttons {
+    grid-template-columns: 1fr;
+  }
 
 }
 
 
+/* ==========================
+   SMALL MOBILE
+========================== */
+
+@media (max-width: 450px) {
+
+  .modal-overlay {
+    padding: 8px;
+  }
 
 
-
-/* ================= MOBILE ================= */
-
-
-@media(max-width:700px){
+  .modal-info {
+    padding: 18px;
+  }
 
 
-.modal-content {
-
-  width:90%;
-
-}
+  .modal-content > img {
+    height: 190px;
+  }
 
 
-
-.modal-content img {
-
-  height:220px;
-
-}
-
-
-
-.status-buttons {
-
-  grid-template-columns:1fr;
-
-}
-
+  .modal-content::before {
+    height: 190px;
+  }
 
 }

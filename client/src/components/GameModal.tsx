@@ -8,58 +8,96 @@ function GameModal({
   onAddGameStatus,
 }: any) {
 
+  const [selectedStatus, setSelectedStatus] =
+    useState("");
 
-  const [selectedStatus, setSelectedStatus] = useState("");
+  const [loading, setLoading] =
+    useState(false);
 
-  if (!game) return null;
+  const [message, setMessage] =
+    useState("");
 
+  const [error, setError] =
+    useState("");
+
+
+  if (!game) {
+    return null;
+  }
 
 
   const statuses = [
     {
       id: "wishlist",
-      label: "❤️ Wishlist"
+      label: "❤️ Wishlist",
     },
     {
       id: "want_to_play",
-      label: "💭 Want To Play"
+      label: "💭 Want To Play",
     },
     {
       id: "playing",
-      label: "🔥 Playing"
+      label: "🔥 Playing",
     },
     {
       id: "completed",
-      label: "✅ Completed"
+      label: "✅ Completed",
     },
     {
       id: "dropped",
-      label: "❌ Dropped"
-    }
+      label: "❌ Dropped",
+    },
   ];
 
 
+  const handleAddGame = async () => {
 
-  const handleAddGame = () => {
+    if (!selectedStatus) {
 
-    if(!selectedStatus){
+      setError(
+        "Please select a status first."
+      );
+
+      setMessage("");
+
       return;
+
     }
 
 
-    if(onAddGameStatus){
+    try {
 
-      onAddGameStatus(
+      setLoading(true);
+
+      setError("");
+
+      setMessage("");
+
+
+      await onAddGameStatus(
         game,
         selectedStatus
       );
 
+
+      setMessage(
+        "Game added to your library!"
+      );
+
+    } catch (error: any) {
+
+      setError(
+        error.message ||
+        "Failed to add game to library."
+      );
+
+    } finally {
+
+      setLoading(false);
+
     }
 
-
   };
-
-
 
 
   return (
@@ -69,12 +107,12 @@ function GameModal({
       onClick={onClose}
     >
 
-
       <div
         className="modal-content"
-        onClick={(e)=>e.stopPropagation()}
+        onClick={(e) =>
+          e.stopPropagation()
+        }
       >
-
 
         <img
           src={game.image}
@@ -82,14 +120,11 @@ function GameModal({
         />
 
 
-
         <div className="modal-info">
-
 
           <h2>
             {game.title}
           </h2>
-
 
 
           <div className="genre">
@@ -97,17 +132,14 @@ function GameModal({
           </div>
 
 
-
           <div className="platforms">
             {game.platforms?.join(", ")}
           </div>
 
 
-
           <div className="rating">
             ⭐ {game.rating}
           </div>
-
 
 
           <h3>
@@ -117,80 +149,118 @@ function GameModal({
 
           <div className="status-buttons">
 
+            {statuses.map(
+              (status) => (
 
-          {
-            statuses.map((status)=>(
+                <button
+                  key={status.id}
 
-              <button
+                  className={
+                    selectedStatus ===
+                    status.id
+                      ? "selected-status"
+                      : ""
+                  }
 
-                key={status.id}
+                  onClick={() => {
 
-                className={
-                  selectedStatus === status.id
-                  ? "selected-status"
-                  : ""
-                }
+                    if (!loading) {
 
-                onClick={() =>
-                  setSelectedStatus(status.id)
-                }
+                      setSelectedStatus(
+                        status.id
+                      );
 
-              >
+                      setError("");
 
-                {status.label}
+                      setMessage("");
 
-              </button>
+                    }
 
+                  }}
 
-            ))
-          }
+                  disabled={loading}
+                >
 
+                  {status.label}
+
+                </button>
+
+              )
+            )}
 
           </div>
 
 
+          {message && (
+
+            <div
+              style={{
+                marginBottom: "15px",
+                color: "#72e3a0",
+                fontSize: "14px",
+                textAlign: "center",
+              }}
+            >
+
+              ✓ {message}
+
+            </div>
+
+          )}
+
+
+          {error && (
+
+            <div
+              style={{
+                marginBottom: "15px",
+                color: "#ff7b7b",
+                fontSize: "14px",
+                textAlign: "center",
+              }}
+            >
+
+              {error}
+
+            </div>
+
+          )}
 
 
           <button
-
             className="add-game-btn"
 
-            onClick={handleAddGame}
+            onClick={
+              handleAddGame
+            }
 
+            disabled={loading}
           >
 
-            Add Game
+            {loading
+              ? "Adding..."
+              : "Add Game"
+            }
 
           </button>
 
 
-
-
-
           <button
-
             className="close-btn"
-
             onClick={onClose}
-
+            disabled={loading}
           >
 
             Close
 
           </button>
 
-
-
         </div>
-
 
       </div>
 
-
     </div>
-
   );
-
 }
 
 
