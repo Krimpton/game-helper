@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { getCurrentUser, logout } from "./services/authService";
+import {
+  getCurrentUser,
+  logout,
+} from "./services/authService";
 import { searchGames } from "./services/gameService";
+import {
+  addGameToLibrary,
+} from "./services/libraryService";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -271,60 +277,58 @@ function App() {
   // ADD GAME TO LIBRARY
   // ==========================
 
-  const handleAddGameStatus = (
+  const handleAddGameStatus = async (
     game: any,
     status: string
   ) => {
 
-    const currentUser =
-      JSON.parse(
-        localStorage.getItem(
-          "user"
-        ) || "{}"
+    try {
+
+      await addGameToLibrary(
+        {
+          id: game.id,
+
+          title: game.title,
+
+          image:
+            game.image || null,
+
+          rating:
+            game.rating ?? null,
+
+          released:
+            game.released || null,
+        },
+
+        status as
+          | "wishlist"
+          | "want_to_play"
+          | "playing"
+          | "completed"
+          | "dropped"
       );
 
 
-    const games =
-      currentUser[status] || [];
+      /*
+       * ProfilePage benachrichtigen,
+       * damit die Bibliothek neu geladen wird.
+       */
 
-
-    const alreadyExists =
-      games.some(
-        (g: any) =>
-          g.id === game.id
+      window.dispatchEvent(
+        new Event("libraryUpdated")
       );
 
 
-    if (alreadyExists) {
+    } catch (error) {
 
-      return;
+      console.error(
+        "Failed to add game to library:",
+        error
+      );
+
+      throw error;
 
     }
-
-
-    const updatedUser = {
-
-      ...currentUser,
-
-      [status]: [
-        ...games,
-        game
-      ]
-
-    };
-
-
-    localStorage.setItem(
-      "user",
-      JSON.stringify(
-        updatedUser
-      )
-    );
-
-
-    setUser(
-      updatedUser
-    );
 
   };
 
