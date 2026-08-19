@@ -1,30 +1,26 @@
 const {
-    getGamesFromRawg,
-    getGameDetailsFromRawg,
-} = require("../services/rawg.service");
+    getGamesFromIgdb,
+    getGameDetailsFromIgdb,
+} = require("../services/igdb.service");
 
 async function getGames(req, res) {
     try {
-        const data = await getGamesFromRawg(req.query);
+        const data = await getGamesFromIgdb(req.query);
 
-        const games = data.results.map((game) => ({
-            id: game.id,
-            title: game.name,
-            image: game.background_image,
-            rating: game.rating,
-            released: game.released,
-            genres: game.genres?.map((genre) => genre.name),
-            platforms: game.platforms?.map((item) => item.platform.name),
-        }));
-
-        res.json({
-            count: data.count,
+        return res.json({
+            count: data.results.length,
             page: Number(req.query.page) || 1,
-            results: games,
+            results: data.results,
         });
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ message: "Failed to fetch games" });
+        console.error(
+            "IGDB games error:",
+            error.response?.data || error.message
+        );
+
+        return res.status(500).json({
+            message: "Failed to fetch games",
+        });
     }
 }
 
@@ -32,22 +28,24 @@ async function getGameDetails(req, res) {
     try {
         const { id } = req.params;
 
-        const game = await getGameDetailsFromRawg(id);
+        const game = await getGameDetailsFromIgdb(id);
 
-        res.json({
-            id: game.id,
-            title: game.name,
-            description: game.description_raw,
-            image: game.background_image,
-            rating: game.rating,
-            released: game.released,
-            website: game.website,
-            genres: game.genres?.map((genre) => genre.name),
-            platforms: game.platforms?.map((item) => item.platform.name),
-        });
+        if (!game) {
+            return res.status(404).json({
+                message: "Game not found",
+            });
+        }
+
+        return res.json(game);
     } catch (error) {
-        console.error(error.message);
-        res.status(500).json({ message: "Failed to fetch game details" });
+        console.error(
+            "IGDB game details error:",
+            error.response?.data || error.message
+        );
+
+        return res.status(500).json({
+            message: "Failed to fetch game details",
+        });
     }
 }
 

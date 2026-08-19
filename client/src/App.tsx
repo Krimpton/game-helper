@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { getCurrentUser, logout } from "./services/authService";
+import socket from "./services/socketService";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -55,6 +56,13 @@ function App() {
 
   }, []);
 
+  useEffect(() => {
+    socket.connect();
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
 
 

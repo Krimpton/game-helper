@@ -62,6 +62,109 @@ async function updateMyProfile(req, res) {
     }
 }
 
+async function uploadProfileImage(req, res) {
+    try {
+        const user = await User.findByPk(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+            });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({
+                message: "No file uploaded",
+            });
+        }
+
+        const imagePath = `/uploads/profile/${req.file.filename}`;
+
+        user.profileImage = imagePath;
+        await user.save();
+
+        return res.json({
+            message: "Profile image uploaded successfully",
+            profileImage: imagePath,
+        });
+    } catch (error) {
+        console.error("Profile image upload error:", error.message);
+
+        return res.status(500).json({
+            message: "Failed to upload profile image",
+        });
+    }
+}
+
+async function uploadBanner(req, res) {
+    try {
+        const user = await User.findByPk(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found",
+            });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({
+                message: "No file uploaded",
+            });
+        }
+
+        const imagePath = `/uploads/profile/${req.file.filename}`;
+
+        user.banner = imagePath;
+        await user.save();
+
+        return res.json({
+            message: "Banner uploaded successfully",
+            banner: imagePath,
+        });
+    } catch (error) {
+        console.error("Banner upload error:", error.message);
+
+        return res.status(500).json({
+            message: "Failed to upload banner",
+        });
+    }
+}
+
+async function searchUsers(req, res) {
+    try {
+        const { username } = req.query;
+
+        if (!username || username.trim().length < 2) {
+            return res.status(400).json({
+                message: "Username query must contain at least 2 characters",
+            });
+        }
+
+        const users = await User.findAll({
+            where: {
+                username: {
+                    [require("sequelize").Op.iLike]: `%${username.trim()}%`,
+                },
+            },
+            attributes: ["id", "username", "profileImage"],
+            limit: 10,
+        });
+
+        return res.json({
+            users,
+        });
+    } catch (error) {
+        console.error("Search users error:", error.message);
+
+        return res.status(500).json({
+            message: "Failed to search users",
+        });
+    }
+}
+
 module.exports = {
     updateMyProfile,
+    uploadProfileImage,
+    uploadBanner,
+    searchUsers,
 };
