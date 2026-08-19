@@ -364,8 +364,6 @@ Rules:
 - keep external API credentials on the backend
 - documentation must use placeholders only
 
-A real `.env` file was accidentally tracked earlier in development. Removing it from the current branch does not remove secrets from Git history, so exposed secrets should be rotated.
-
 ---
 
 ## 9. Backend Architecture
@@ -401,6 +399,7 @@ Current registered backend groups:
 /api/auth
 /api/users
 /api/games
+/api/library
 /api/chat
 /api/friends
 /api/private-chat
@@ -411,8 +410,6 @@ Additional health route:
 ```text
 /api/health
 ```
-
-The library files exist, but `/api/library` is not currently a completed and registered API.
 
 ---
 
@@ -504,7 +501,7 @@ Important IGDB mappings:
 
 ```text
 RPG -> Role-playing (RPG)
-Action -> several genres, e.g. Shooter, Adventure, Hack and slash/Beat 'em up, Fighting
+Action -> Shooter, Adventure, Hack and slash/Beat 'em up, Fighting
 ```
 
 Current platform filtering is also client-side.
@@ -610,13 +607,6 @@ Fallback:
 ```
 
 `GET /api/auth/me` loads the current user from PostgreSQL.
-
-Possible auth errors:
-
-```text
-401 Not authenticated
-401 Invalid or expired token
-```
 
 ---
 
@@ -726,18 +716,6 @@ server/uploads/profile/
 
 The database stores only the relative path.
 
-Example:
-
-```text
-/uploads/profile/example.png
-```
-
-Files are exposed through:
-
-```text
-http://localhost:3000/uploads/...
-```
-
 Uploaded user files must not be committed to Git.
 
 ---
@@ -752,15 +730,13 @@ GET /api/users/search?username=...
 
 Authentication required.
 
-Returns safe public user fields only:
+Returns safe public user fields:
 
 ```text
 id
 username
 profileImage
 ```
-
-Search is case-insensitive and currently limited to a small result set.
 
 ---
 
@@ -788,17 +764,7 @@ IGDB API
 
 IGDB uses Twitch OAuth Client Credentials Flow.
 
-The backend uses:
-
-```text
-IGDB_CLIENT_ID
-IGDB_CLIENT_SECRET
-TWITCH_TOKEN_URL
-```
-
-to obtain an App Access Token.
-
-The token is cached in memory and refreshed when expired.
+The backend obtains and caches an App Access Token.
 
 IGDB base URL:
 
@@ -851,29 +817,7 @@ genres
 platforms
 ```
 
-IGDB rating is converted from:
-
-```text
-0-100
-```
-
-to:
-
-```text
-0-5
-```
-
-using roughly:
-
-```text
-rating / 20
-```
-
-Example:
-
-```text
-94 -> 4.7
-```
+IGDB rating is converted from `0-100` to `0-5`.
 
 IGDB cover URLs are normalized to larger cover images.
 
@@ -883,7 +827,7 @@ Default game lists filter out low-quality/no-rating results and prefer games wit
 
 ## 21. Games Frontend Behavior
 
-Observed current behavior:
+Current behavior:
 
 ```text
 AllGamesPage       loads several pages from backend
@@ -893,15 +837,13 @@ PlatformPage       filters supported platforms client-side
 GameCarousel       loads multiple pages
 ```
 
-Best Games currently works with normalized IGDB ratings.
-
-Search works through:
+Search:
 
 ```text
 GET /api/games?search=...
 ```
 
-Game detail works through:
+Game details:
 
 ```text
 GET /api/games/:id
@@ -909,7 +851,9 @@ GET /api/games/:id
 
 Important:
 
+```text
 IGDB IDs are not compatible with old RAWG IDs.
+```
 
 ---
 
@@ -967,44 +911,110 @@ rawgGameId
 rawgRating
 ```
 
-are now legacy field names from the previous RAWG integration.
+are legacy field names from the previous RAWG integration.
 
-They have not yet been renamed to IGDB/provider-neutral names.
+They currently store the IGDB game ID and normalized IGDB rating.
 
-Possible future names:
-
-```text
-externalGameId
-externalRating
-```
-
-or:
-
-```text
-igdbGameId
-igdbRating
-```
-
-Do not rename these fields without considering database migration and existing data.
+Do not rename these fields without a deliberate database migration.
 
 ---
 
-## 23. Game Library Status
+## 23. Game Library Backend
+
+The backend game-library API is implemented and registered.
+
+Endpoints:
+
+```text
+GET    /api/library
+POST   /api/library
+PUT    /api/library/:id
+DELETE /api/library/:id
+```
+
+All endpoints require authentication.
+
+The current user is determined through:
+
+```text
+req.user.id
+```
+
+### GET `/api/library`
+
+Returns all `UserGame` records belonging to the authenticated user.
+
+### POST `/api/library`
+
+Adds a game to the authenticated user's library.
+
+Frontend request format:
+
+```json
+{
+  "gameId": 1942,
+  "title": "The Witcher 3: Wild Hunt",
+  "image": "https://images.igdb.com/...",
+  "rating": 4.7,
+  "released": "2015-05-19",
+  "status": "playing"
+}
+```
+
+Backend mapping:
+
+```text
+gameId -> rawgGameId
+rating -> rawgRating
+```
+
+This keeps legacy database field names hidden from the frontend API.
+
+Duplicate games for the same user are rejected.
+
+### PUT `/api/library/:id`
+
+Supported update fields:
+
+```text
+status
+personalRating
+note
+```
+
+`personalRating` accepts values from:
+
+```text
+1-5
+```
+
+The `:id` parameter is the `UserGame` database record ID, not the external IGDB game ID.
+
+### DELETE `/api/library/:id`
+
+Deletes a library record belonging to the authenticated user.
+
+Users cannot read, modify, or delete library records belonging to another user.
+
+---
+
+## 24. Game Library Integration Status
 
 Current state:
 
 ```text
 UserGame Sequelize model             Implemented
 User/UserGame association            Implemented
+Library backend controller           Implemented
+Library backend routes               Implemented
+/api/library registration            Implemented
+Backend PostgreSQL persistence       Implemented
 Library frontend UI                  Implemented
-Frontend library statuses            Implemented
 Frontend library persistence         localStorage
-Library backend controller           Incomplete
-Library backend routes               Incomplete
 Frontend/backend library integration Not implemented
 ```
 
-Current flow:
+Current frontend flow:
 
 ```text
 Game UI
@@ -1014,23 +1024,25 @@ React/local state
 localStorage
 ```
 
-Intended future flow:
+Available backend flow:
 
 ```text
-Game UI
+/api/library
     ↓
-Library API
+library.controllers.js
     ↓
-UserGame model
+UserGame
     ↓
 PostgreSQL
 ```
 
-Do not describe the current game library as PostgreSQL-backed until this integration is implemented.
+The remaining task is to replace the frontend `localStorage` library persistence with calls to `/api/library`.
+
+Do not describe the frontend library as PostgreSQL-backed until that integration is completed.
 
 ---
 
-## 24. Global Chat
+## 25. Global Chat
 
 Current flow:
 
@@ -1043,7 +1055,7 @@ chatService.ts
     ↓
 chat.controller.js
     ↓
-ChatMessage model
+ChatMessage
     ↓
 PostgreSQL
 ```
@@ -1055,28 +1067,13 @@ GET /api/chat/messages
 POST /api/chat/messages
 ```
 
-GET behavior:
-
-```text
-maximum 50 messages
-ordered by createdAt ASC
-```
-
-Frontend behavior:
-
-```text
-global chat
-PostgreSQL persistence
-polling every 2 seconds
-emoji picker
-Enter sends message
-```
+Frontend currently polls every two seconds.
 
 WebSockets are not implemented.
 
 ---
 
-## 25. ChatMessage Model
+## 26. ChatMessage Model
 
 Current fields:
 
@@ -1088,13 +1085,11 @@ createdAt
 updatedAt
 ```
 
-Important limitation:
-
-`ChatMessage` stores the username as a normal string and currently has no Sequelize foreign-key relationship to `User`.
+`ChatMessage` currently has no Sequelize foreign-key relationship to `User`.
 
 ---
 
-## 26. Friendship Model
+## 27. Friendship Model
 
 File:
 
@@ -1113,35 +1108,20 @@ createdAt
 updatedAt
 ```
 
-Status values:
+Status:
 
 ```text
 pending
 accepted
 ```
 
-A single model represents both:
-
-```text
-friend requests
-accepted friendships
-```
-
-Relationships:
-
-```text
-User hasMany Friendship as SentFriendRequests
-Friendship belongsTo User as Requester
-
-User hasMany Friendship as ReceivedFriendRequests
-Friendship belongsTo User as Addressee
-```
+A single model represents friend requests and accepted friendships.
 
 Friendship records are also used to authorize private chat.
 
 ---
 
-## 27. Friends API
+## 28. Friends API
 
 Implemented endpoints:
 
@@ -1156,17 +1136,6 @@ DELETE /api/friends/:userId
 
 All endpoints require authentication.
 
-Implemented behavior:
-
-```text
-send friend request
-get incoming pending requests
-accept request
-decline request
-get accepted friends
-remove friend
-```
-
 Backend prevents:
 
 ```text
@@ -1175,7 +1144,7 @@ duplicate pending requests
 duplicate friendships
 ```
 
-Safe returned user fields:
+Returned public user fields:
 
 ```text
 id
@@ -1185,13 +1154,7 @@ profileImage
 
 ---
 
-## 28. PrivateMessage Model
-
-File:
-
-```text
-server/models/PrivateMessage.js
-```
+## 29. PrivateMessage Model
 
 Current fields:
 
@@ -1216,7 +1179,7 @@ PrivateMessage belongsTo User as Receiver
 
 ---
 
-## 29. Private Chat API
+## 30. Private Chat API
 
 Implemented endpoints:
 
@@ -1227,45 +1190,25 @@ POST /api/private-chat/:userId
 
 Authentication required.
 
-Private chat is only allowed when an accepted friendship exists.
+Private chat requires an accepted friendship.
 
-Backend checks friendship in both directions:
-
-```text
-A -> B
-B -> A
-```
-
-GET returns both directions of conversation:
-
-```text
-A -> B
-B -> A
-```
-
-ordered by:
+Messages from both directions are returned ordered by:
 
 ```text
 createdAt ASC
 ```
 
-Private messages cannot be:
+The backend prevents:
 
 ```text
-sent to yourself
-sent to non-friends
-empty
-```
-
-Non-friends receive:
-
-```text
-403
+messages to yourself
+messages to non-friends
+empty messages
 ```
 
 ---
 
-## 30. Current Sources of Truth
+## 31. Current Sources of Truth
 
 Authentication/users:
 
@@ -1291,7 +1234,7 @@ Private messages:
 PostgreSQL
 ```
 
-Profile text fields:
+Profile fields:
 
 ```text
 PostgreSQL
@@ -1303,7 +1246,7 @@ Profile image/banner paths:
 PostgreSQL
 ```
 
-Actual profile image/banner files:
+Actual uploaded profile files:
 
 ```text
 server/uploads/profile/
@@ -1315,23 +1258,29 @@ Game catalogue:
 IGDB through backend
 ```
 
-Game library:
+Game-library backend:
 
 ```text
-frontend localStorage
+PostgreSQL through UserGame
+```
+
+Game-library frontend:
+
+```text
+localStorage until frontend integration is completed
 ```
 
 ---
 
-## 31. Feature Status Matrix
+## 32. Feature Status Matrix
 
 | Area | Status | Current source/integration |
 |---|---|---|
 | Registration/login/logout | Implemented | PostgreSQL + JWT cookie |
 | Current user `/me` | Implemented | PostgreSQL |
 | Profile backend | Implemented | PostgreSQL |
-| Profile image upload | Implemented | Local server storage + PostgreSQL path |
-| Banner upload | Implemented | Local server storage + PostgreSQL path |
+| Profile image upload | Implemented | Server storage + PostgreSQL path |
+| Banner upload | Implemented | Server storage + PostgreSQL path |
 | User search | Implemented | PostgreSQL |
 | IGDB game listing | Implemented | IGDB through backend |
 | IGDB search | Implemented | IGDB through backend |
@@ -1339,23 +1288,23 @@ frontend localStorage
 | Category filtering | Implemented frontend | Client-side |
 | Platform filtering | Implemented frontend | Client-side |
 | Best games | Implemented frontend | Normalized IGDB ratings |
+| Library backend API | Implemented | PostgreSQL through UserGame |
+| Game library UI | Implemented frontend | localStorage |
+| Library frontend/backend integration | Not implemented | — |
 | Global chat | Implemented | PostgreSQL |
 | Emoji support | Implemented | Frontend |
 | Friend requests | Implemented | PostgreSQL |
 | Friend list | Implemented | PostgreSQL |
 | Remove friend | Implemented | PostgreSQL |
 | Private messaging | Implemented backend | PostgreSQL |
-| Game library UI | Implemented frontend | localStorage |
-| UserGame model | Implemented | Sequelize model exists |
-| Library backend API | Incomplete | controller/routes unfinished |
 | WebSockets | Not implemented | — |
 | Voice chat | Not implemented | — |
-| Production image storage | Not implemented | local server only |
+| Production image storage | Not implemented | Local server only |
 | Deployment | Not finalized | — |
 
 ---
 
-## 32. Database Notes
+## 33. Database Notes
 
 Database:
 
@@ -1379,25 +1328,17 @@ Friendship
 PrivateMessage
 ```
 
-Current normal sync logic:
+Current sync:
 
 ```js
 await sequelize.sync();
 ```
 
-Do not leave:
-
-```js
-sequelize.sync({ alter: true })
-```
-
-enabled permanently unless a schema change is intentional.
-
 A formal Sequelize migration system has not yet been introduced.
 
 ---
 
-## 33. Git Workflow
+## 34. Git Workflow
 
 Expected flow:
 
@@ -1419,12 +1360,6 @@ Before committing:
 git status
 ```
 
-Prefer explicit staging instead of blindly using:
-
-```bash
-git add .
-```
-
 Never commit:
 
 ```text
@@ -1437,9 +1372,7 @@ uploaded user files
 
 ---
 
-## 34. Team Responsibilities
-
-General responsibility split:
+## 35. Team Responsibilities
 
 ### Backend focus
 
@@ -1458,6 +1391,7 @@ file uploads
 friends backend
 private chat backend
 global chat backend
+library backend
 Postman/API testing
 ```
 
@@ -1474,6 +1408,7 @@ profile UI
 friends UI
 private chat UI
 global chat UI
+library UI
 frontend services
 CSS
 responsive design
@@ -1483,15 +1418,15 @@ Integration tasks can overlap.
 
 ---
 
-## 35. Current Development Priorities
+## 36. Current Development Priorities
 
 Likely next technical work:
 
 1. connect frontend friend system to backend endpoints
 2. connect frontend private chat to backend endpoints
-3. complete library controller/routes around `UserGame`
-4. replace library `localStorage` persistence with PostgreSQL
-5. rename legacy `rawgGameId` and `rawgRating`
+3. connect frontend game library to `/api/library`
+4. remove game-library `localStorage` as the source of truth
+5. rename legacy `rawgGameId` and `rawgRating` through a database migration
 6. improve multiplayer filtering for IGDB
 7. consider message pagination
 8. consider WebSockets for real-time private/global chat
@@ -1504,7 +1439,7 @@ These are development directions, not completed features.
 
 ---
 
-## 36. Files to Inspect by Task
+## 37. Files to Inspect by Task
 
 ### Backend startup / database
 
@@ -1547,6 +1482,18 @@ client/src/pages/PlatformPage.tsx
 client/src/pages/BestGamesPage.tsx
 ```
 
+### Library
+
+```text
+server/models/UserGame.js
+server/controllers/library.controllers.js
+server/routes/library.routes.js
+server/index.js
+client/src/components/GameModal.tsx
+client/src/components/GameListModal.tsx
+client/src/App.tsx
+```
+
 ### Global Chat
 
 ```text
@@ -1576,20 +1523,9 @@ server/models/Friendship.js
 server/models/index.js
 ```
 
-### Library
-
-```text
-server/models/UserGame.js
-server/controllers/library.controllers.js
-server/routes/library.routes.js
-client/src/components/GameModal.tsx
-client/src/components/GameListModal.tsx
-client/src/App.tsx
-```
-
 ---
 
-## 37. Rules for Future AI Work
+## 38. Rules for Future AI Work
 
 When this file is supplied in a future AI session:
 
@@ -1599,18 +1535,18 @@ When this file is supplied in a future AI session:
 4. Preserve the existing architecture unless redesign is explicitly requested.
 5. Distinguish implemented, partially implemented, and planned features.
 6. Distinguish PostgreSQL persistence from browser `localStorage` persistence.
-7. Do not assume a route exists merely because a route file exists.
+7. `/api/library` exists and is implemented; only frontend integration remains.
 8. Do not expose or request real secrets unnecessarily.
 9. Keep IGDB/Twitch credentials server-side.
 10. Preserve cookie-based authentication unless auth redesign is intentional.
 11. Private chat must continue to require accepted friendships.
 12. Do not rename legacy `rawgGameId`/`rawgRating` fields casually.
-13. Follow `feature/* -> dev -> main` unless workflow changes are explicitly requested.
+13. Follow `feature/* -> dev -> main` unless workflow changes.
 14. Update this context after major architecture or implementation changes.
 
 ---
 
-## 38. Documentation Map
+## 39. Documentation Map
 
 ```text
 README.md
