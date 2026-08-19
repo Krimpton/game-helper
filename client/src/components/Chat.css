@@ -1,227 +1,727 @@
+/* ==========================
+   GLOBAL CHAT
+========================== */
+
 .chat-box {
+  width: 100%;
+  height: 100%;
 
-  height:100%;
+  min-height: 0;
 
-  display:flex;
+  display: flex;
+  flex-direction: column;
 
-  flex-direction:column;
+  background:
+    radial-gradient(
+      circle at 80% 0%,
+      rgba(102, 192, 244, 0.05),
+      transparent 35%
+    ),
+    #111923;
 
+  color: white;
+
+  overflow: hidden;
 }
 
 
+/* ==========================
+   HEADER
+========================== */
 
 .chat-header {
+  flex-shrink: 0;
 
-  padding:20px;
+  padding: 18px 24px;
 
-  color:white;
+  color: #ffffff;
 
-  font-size:20px;
+  font-size: 16px;
+  font-weight: 600;
 
-  border-bottom:1px solid #2a475e;
+  background:
+    rgba(13, 20, 29, 0.8);
 
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.06);
+
+  backdrop-filter: blur(12px);
 }
 
 
+/* ==========================
+   MESSAGES
+========================== */
 
 .messages {
+  flex: 1;
 
-  flex:1;
+  min-height: 0;
 
-  overflow-y:auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 
-  padding:20px;
+  padding: 25px;
 
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+
+  box-sizing: border-box;
 }
 
 
+/* ==========================
+   MESSAGE
+========================== */
 
 .message {
+  width: fit-content;
+  max-width: 70%;
 
-  background:#2a475e;
+  padding: 10px 14px;
 
-  padding:12px;
+  margin: 0;
 
-  border-radius:8px;
+  background:
+    linear-gradient(
+      135deg,
+      #243b50,
+      #1d3143
+    );
 
-  margin-bottom:12px;
+  border:
+    1px solid rgba(255, 255, 255, 0.05);
 
-  color:white;
+  border-radius: 5px 12px 12px 12px;
 
-  max-width:70%;
+  color: white;
 
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.15);
+
+  animation:
+    messageAppear 0.2s ease;
+
+  word-break: break-word;
 }
 
 
+/* ==========================
+   OTHER USERS
+========================== */
+
+.message-other {
+  align-self: flex-start;
+
+  border-radius:
+    5px 12px 12px 12px;
+
+  border-left:
+    3px solid var(--user-color);
+}
+
+
+/* ==========================
+   OWN MESSAGE
+========================== */
+
+.message-own {
+  align-self: flex-end;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2563a6,
+      #357fc1
+    );
+
+  border-radius:
+    12px 5px 12px 12px;
+
+  border-right:
+    3px solid #66c0f4;
+
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+
+/* ==========================
+   USERNAME
+========================== */
 
 .message strong {
+  display: block;
 
-  color:#66c0f4;
+  color: var(--user-color, #66c0f4);
 
+  font-size: 12px;
+
+  font-weight: 600;
+
+  margin-bottom: 4px;
 }
 
 
+/* eigener Name */
+
+.message-own strong {
+  color: #ffffff;
+}
+
+
+/* ==========================
+   MESSAGE TEXT
+========================== */
 
 .message p {
+  margin: 0;
 
-  margin:5px 0 0;
+  color: #e4edf3;
 
+  font-size: 14px;
+
+  line-height: 1.45;
+
+  word-break: break-word;
 }
 
 
+/* ==========================
+   INPUT AREA
+========================== */
 
+.chat-input {
+  flex-shrink: 0;
 
-.chat-input{
+  width: 100%;
 
-  display:flex;
+  display: flex;
 
-  align-items:center;
+  align-items: center;
 
-  gap:10px;
+  gap: 8px;
 
-  padding:15px;
+  padding: 14px 18px;
 
-  position:relative;
+  position: relative;
 
+  box-sizing: border-box;
+
+  background:
+    rgba(13, 20, 29, 0.95);
+
+  border-top:
+    1px solid rgba(255, 255, 255, 0.06);
+
+  backdrop-filter: blur(12px);
 }
 
 
+/* ==========================
+   INPUT
+========================== */
 
 .chat-input input {
+  flex: 1;
 
-  flex:1;
+  min-width: 0;
 
-  padding:12px;
+  height: 42px;
 
-  border-radius:8px;
+  box-sizing: border-box;
 
-  border:none;
+  padding: 12px 14px;
 
-  background:#101822;
+  border:
+    1px solid rgba(255, 255, 255, 0.08);
 
-  color:white;
+  border-radius: 8px;
+
+  background: #0d141d;
+
+  color: white;
+
+  outline: none;
+
+  font-size: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.chat-input input:hover {
+  border-color:
+    rgba(102, 192, 244, 0.2);
+}
+
+
+.chat-input input:focus {
+  background: #101923;
+
+  border-color:
+    rgba(102, 192, 244, 0.55);
+
+  box-shadow:
+    0 0 0 3px rgba(102, 192, 244, 0.08);
+}
+
+
+.chat-input input::placeholder {
+  color: #667684;
+}
+
+
+/* ==========================
+   SEND BUTTON
+========================== */
+
+.chat-input > button {
+  flex-shrink: 0;
+
+  height: 42px;
+
+  padding: 0 20px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #66c0f4,
+      #4da6d8
+    );
+
+  color: #081018;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 4px 12px rgba(102, 192, 244, 0.12);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+
+.chat-input > button:hover {
+  transform: translateY(-1px);
+
+  filter: brightness(1.08);
+
+  box-shadow:
+    0 6px 18px rgba(102, 192, 244, 0.2);
+}
+
+
+.chat-input > button:active {
+  transform: translateY(0);
+}
+
+
+/* ==========================
+   EMOJI CONTAINER
+========================== */
+
+.emoji-container {
+  position: relative;
+
+  flex-shrink: 0;
+
+  width: 40px;
+
+  height: 42px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+/* ==========================
+   EMOJI BUTTON
+========================== */
+
+.emoji-button {
+  width: 40px;
+
+  height: 40px;
+
+  padding: 0 !important;
+
+  border:
+    1px solid transparent !important;
+
+  border-radius:
+    8px !important;
+
+  background:
+    transparent !important;
+
+  color: white !important;
+
+  font-size: 20px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.emoji-button:hover {
+  background:
+    rgba(102, 192, 244, 0.1) !important;
+
+  transform: scale(1.05);
+}
+
+
+.emoji-button:active {
+  transform: scale(0.95);
+}
+
+
+/* ==========================
+   EMOJI PICKER
+========================== */
+
+.emoji-picker {
+  position: absolute;
+
+  bottom: 52px;
+
+  left: 0;
+
+  z-index: 9999;
+
+  animation:
+    emojiAppear 0.15s ease;
+}
+
+
+/* ==========================
+   EMOJI PICKER DESIGN
+========================== */
+
+.EmojiPickerReact {
+  --epr-bg-color: #172331;
+  --epr-category-label-bg-color: #172331;
+
+  --epr-text-color: #ffffff;
+
+  --epr-hover-bg-color: #243b50;
+
+  --epr-search-input-bg-color: #0d141d;
+
+  --epr-search-input-text-color: #ffffff;
+
+  --epr-focus-color: #66c0f4;
+
+  border:
+    1px solid rgba(102, 192, 244, 0.15) !important;
+
+  border-radius:
+    12px !important;
+
+  overflow:
+    hidden !important;
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.55),
+    0 0 25px rgba(102, 192, 244, 0.05);
+}
+
+
+/* ==========================
+   EMOJI HEADER
+========================== */
+
+.EmojiPickerReact .epr-header {
+  background:
+    #172331 !important;
+}
+
+
+/* ==========================
+   SEARCH
+========================== */
+
+.EmojiPickerReact .epr-search-container {
+  position: relative !important;
+}
+
+
+.EmojiPickerReact
+.epr-search-container input {
+  padding-left:
+    40px !important;
+
+  padding-right:
+    12px !important;
+}
+
+
+.EmojiPickerReact
+.epr-search-container svg {
+  position: absolute !important;
+
+  left: 12px !important;
+
+  top: 50% !important;
+
+  transform:
+    translateY(-50%) !important;
+
+  width: 18px !important;
+
+  height: 18px !important;
+
+  z-index: 5 !important;
+
+  pointer-events: none !important;
+}
+
+
+/* ==========================
+   CATEGORY BAR
+========================== */
+
+.EmojiPickerReact .epr-category-nav {
+  background:
+    #172331 !important;
+
+  border-bottom:
+    1px solid rgba(255, 255, 255, 0.06) !important;
+
+  padding:
+    6px 10px !important;
+}
+
+
+.EmojiPickerReact .epr-cat-btn {
+  border-radius:
+    8px !important;
+
+  transition:
+    background 0.15s ease;
+}
+
+
+.EmojiPickerReact .epr-cat-btn:hover {
+  background:
+    #243b50 !important;
+}
+
+
+.EmojiPickerReact
+.epr-cat-btn.epr-active {
+  background:
+    #66c0f4 !important;
+}
+
+
+/* ==========================
+   EMOJI BODY
+========================== */
+
+.EmojiPickerReact .epr-body,
+.EmojiPickerReact .epr-emoji-category,
+.EmojiPickerReact .epr-emoji-category-content {
+  background:
+    #172331 !important;
+}
+
+
+.EmojiPickerReact
+.epr-emoji-category-label {
+  background:
+    #172331 !important;
+
+  color:
+    #ffffff !important;
+}
+
+
+/* ==========================
+   EMOJI HOVER
+========================== */
+
+.EmojiPickerReact .epr-emoji {
+  background:
+    transparent !important;
+
+  border-radius:
+    8px !important;
+
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+
+.EmojiPickerReact .epr-emoji:hover {
+  background:
+    #243b50 !important;
+
+  transform:
+    scale(1.05);
+}
+
+
+/* ==========================
+   SCROLLBAR
+========================== */
+
+.EmojiPickerReact
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+
+.EmojiPickerReact
+::-webkit-scrollbar-track {
+  background:
+    #0d141d;
+}
+
+
+.EmojiPickerReact
+::-webkit-scrollbar-thumb {
+  background:
+    #2a475e;
+
+  border-radius:
+    10px;
+}
+
+
+.EmojiPickerReact
+::-webkit-scrollbar-thumb:hover {
+  background:
+    #66c0f4;
+}
+
+
+/* ==========================
+   CHAT SCROLLBAR
+========================== */
+
+.messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+
+.messages::-webkit-scrollbar-track {
+  background:
+    transparent;
+}
+
+
+.messages::-webkit-scrollbar-thumb {
+  background:
+    #2a475e;
+
+  border-radius:
+    10px;
+}
+
+
+.messages::-webkit-scrollbar-thumb:hover {
+  background:
+    #66c0f4;
+}
+
+
+/* ==========================
+   ANIMATIONS
+========================== */
+
+@keyframes messageAppear {
+
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0);
+  }
 
 }
 
 
+@keyframes emojiAppear {
 
-.chat-input button {
+  from {
+    opacity: 0;
 
-  background:#66c0f4;
+    transform:
+      translateY(8px)
+      scale(0.98);
+  }
 
-  border:none;
+  to {
+    opacity: 1;
 
-  padding:12px 25px;
-
-  border-radius:8px;
-
-  cursor:pointer;
-
-}
-
-
-
-.chat-input button:hover {
-
-  background:#8fd8ff;
+    transform:
+      translateY(0)
+      scale(1);
+  }
 
 }
 
 
 /* ==========================
-   EMOJI PICKER FINAL STYLE
+   MOBILE
 ========================== */
 
+@media (max-width: 600px) {
 
-.EmojiPickerReact {
-
-  --epr-bg-color: #1b2838;
-  --epr-category-icon-active-color: #101822;
-  --epr-category-icon-color: white;
-  --epr-text-color: white;
-  --epr-hover-bg-color: #2a475e;
-  --epr-search-input-bg-color: #101822;
-  --epr-search-input-text-color: white;
-
-}
+  .messages {
+    padding: 16px;
+  }
 
 
-/* komplette Box */
-
-.epr-main {
-
-  background:#1b2838 !important;
-
-  border:1px solid #2a475e !important;
-
-  border-radius:12px !important;
-
-}
+  .message {
+    max-width: 85%;
+  }
 
 
-
-/* Kategorie Leiste */
-
-.epr-category-nav {
-
-  background:#1b2838 !important;
-
-  border-bottom:1px solid #2a475e !important;
-
-}
+  .chat-input {
+    padding: 10px;
+  }
 
 
-
-/* Kategorie Buttons */
-
-.epr-cat-btn {
-
-  background:transparent !important;
-
-  opacity:1 !important;
-
-}
+  .chat-input > button {
+    padding:
+      0 14px;
+  }
 
 
-/* Kategorie Icons */
+  .emoji-picker {
+    left: auto;
 
-.epr-cat-btn[class*="epr-icn-"] {
-
-  opacity:1 !important;
-
-  filter:none !important;
-
-}
-
-
-/* aktiver Button */
-
-.epr-cat-btn.epr-active {
-
-  background:#66c0f4 !important;
-
-  border-radius:8px !important;
-
-}
-
-
-
-/* Hover */
-
-.epr-cat-btn:hover {
-
-  background:#2a475e !important;
-
-}
-
-
-
-/* Emoji Größe */
-
-.epr-emoji-img {
-
-  width:28px !important;
-
-  height:28px !important;
+    right: 0;
+  }
 
 }

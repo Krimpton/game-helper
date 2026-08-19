@@ -1,76 +1,516 @@
+
+/* =========================================================
+   CATEGORY PAGE
+========================================================= */
+
 .category-page {
-  background: #101822;
   min-height: 100vh;
-  padding: 40px;
-  color: white;
+
+  padding: 45px 40px 70px;
+
+  box-sizing: border-box;
+
+  color: #ffffff;
+
+  background:
+    radial-gradient(
+      circle at 50% -20%,
+      rgba(102, 192, 244, 0.08),
+      transparent 45%
+    ),
+    #0d141d;
 }
+
+
+/* =========================================================
+   PAGE TITLE
+========================================================= */
 
 .category-page h1 {
-  margin-bottom: 30px;
-  font-size: 2.5rem;
+  max-width: 1400px;
+
+  margin: 0 auto 30px;
+
+  color: #ffffff;
+
+  font-size: 2.2rem;
+  font-weight: 700;
+
+  letter-spacing: -0.5px;
 }
+
+
+/* =========================================================
+   GAME GRID
+========================================================= */
 
 .game-grid {
+  max-width: 1400px;
+
+  margin: 0 auto;
+
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 24px;
+
+  grid-template-columns:
+    repeat(auto-fill, minmax(300px, 1fr));
+
+  gap: 22px;
 }
+
+
+/* =========================================================
+   GAME CARD
+========================================================= */
 
 .game-card {
-  background: #1b2838;
-  border-radius: 14px;
+  position: relative;
+
+  display: flex;
+
+  flex-direction: column;
+
   overflow: hidden;
-  transition: all 0.3s ease;
+
+  background: #172331;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.07);
+
+  border-radius: 4px;
+
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.28);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
+
+/* =========================================================
+   CARD HOVER
+========================================================= */
+
 .game-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+  transform: translateY(-5px);
+
+  border-color:
+    rgba(102, 192, 244, 0.35);
+
+  box-shadow:
+    0 14px 35px rgba(0, 0, 0, 0.45),
+    0 0 18px rgba(102, 192, 244, 0.06);
 }
+
+
+/* =========================================================
+   GAME IMAGE
+========================================================= */
 
 .game-card img {
   width: 100%;
+
   height: 220px;
+
+  display: block;
+
   object-fit: cover;
+
+  background: #0d141d;
+
+  transition:
+    transform 0.35s ease,
+    filter 0.35s ease;
 }
 
+
+.game-card:hover img {
+  transform: scale(1.035);
+
+  filter:
+    brightness(1.07)
+    saturate(1.05);
+}
+
+
+/* =========================================================
+   IMAGE BOTTOM GRADIENT
+========================================================= */
+
+.game-card::after {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 220px;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 60%,
+      rgba(8, 13, 19, 0.45)
+    );
+}
+
+
+/* =========================================================
+   GAME INFORMATION
+========================================================= */
+
 .game-info {
+  position: relative;
+
+  z-index: 2;
+
+  display: flex;
+
+  flex-direction: column;
+
+  flex: 1;
+
   padding: 18px;
 }
 
+
+/* =========================================================
+   GAME TITLE
+========================================================= */
+
 .game-info h2 {
-  margin-bottom: 10px;
+  margin: 0 0 10px;
+
+  color: #ffffff;
+
+  font-size: 1.1rem;
+
+  font-weight: 650;
+
+  line-height: 1.35;
+
+  letter-spacing: -0.2px;
 }
+
+
+/* =========================================================
+   GENRE
+========================================================= */
 
 .genre {
   display: inline-block;
-  background: #2a475e;
-  padding: 5px 12px;
-  border-radius: 20px;
-  margin-bottom: 12px;
+
+  align-self: flex-start;
+
+  margin-bottom: 13px;
+
+  padding: 4px 8px;
+
+  background:
+    rgba(102, 192, 244, 0.09);
+
+  border-left:
+    2px solid #66c0f4;
+
+  border-radius: 2px;
+
+  color: #83c9ef;
+
+  font-size: 0.7rem;
+
+  font-weight: 600;
+
+  letter-spacing: 0.5px;
+
+  text-transform: uppercase;
 }
 
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
 .game-info p {
-  color: #c7d5e0;
-  margin-bottom: 15px;
-  line-height: 1.5;
+  margin: 0 0 17px;
+
+  color: #9eacb8;
+
+  font-size: 0.87rem;
+
+  line-height: 1.55;
+
+  display: -webkit-box;
+
+  -webkit-line-clamp: 3;
+
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
 }
+
+
+/* =========================================================
+   PLATFORMS
+========================================================= */
 
 .platforms {
   display: flex;
+
   flex-wrap: wrap;
-  gap: 8px;
+
+  gap: 6px;
+
+  margin-top: auto;
+
   margin-bottom: 15px;
 }
 
+
 .platforms span {
-  background: #0d1117;
-  padding: 5px 10px;
-  border-radius: 8px;
-  font-size: 0.85rem;
+  padding: 4px 8px;
+
+  background: #0f1821;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.06);
+
+  border-radius: 2px;
+
+  color: #9eabb7;
+
+  font-size: 0.72rem;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
+
+.game-card:hover .platforms span {
+  background: #142331;
+
+  border-color:
+    rgba(102, 192, 244, 0.15);
+
+  color: #c8d5de;
+}
+
+
+/* =========================================================
+   RATING
+========================================================= */
+
 .rating {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  padding-top: 12px;
+
+  border-top:
+    1px solid rgba(255, 255, 255, 0.06);
+
   color: #66c0f4;
-  font-weight: bold;
+
+  font-size: 0.9rem;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   TOP EDGE EFFECT
+========================================================= */
+
+.game-card:hover {
+  border-top-color:
+    rgba(102, 192, 244, 0.45);
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.category-page::-webkit-scrollbar {
+  width: 7px;
+}
+
+
+.category-page::-webkit-scrollbar-track {
+  background: #0b1118;
+}
+
+
+.category-page::-webkit-scrollbar-thumb {
+  background: #2a475e;
+
+  border-radius: 2px;
+}
+
+
+.category-page::-webkit-scrollbar-thumb:hover {
+  background: #66c0f4;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+  .category-page {
+    padding: 40px 25px 60px;
+  }
+
+
+  .game-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 20px;
+  }
+
+}
+
+
+@media (max-width: 850px) {
+
+  .category-page h1 {
+    font-size: 2rem;
+  }
+
+
+  .game-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .category-page {
+    padding: 30px 15px 45px;
+  }
+
+
+  .category-page h1 {
+    margin-bottom: 24px;
+
+    font-size: 1.7rem;
+  }
+
+
+  .game-grid {
+    grid-template-columns: 1fr;
+
+    gap: 18px;
+  }
+
+
+  .game-card img {
+    height: 230px;
+  }
+
+
+  .game-info {
+    padding: 16px;
+  }
+
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.games-loading {
+  width: 100%;
+
+  min-height: 500px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 18px;
+
+  box-sizing: border-box;
+
+  color: #8fa3b7;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   LOADING SPINNER
+========================================================= */
+
+.loading-spinner {
+  width: 52px;
+  height: 52px;
+
+  box-sizing: border-box;
+
+  border: 4px solid rgba(102, 192, 244, 0.12);
+
+  border-top-color: #66c0f4;
+
+  border-right-color: rgba(102, 192, 244, 0.45);
+
+  border-radius: 50%;
+
+  animation: loadingSpin 0.8s linear infinite;
+
+  box-shadow:
+    0 0 20px rgba(102, 192, 244, 0.08);
+}
+
+
+/* =========================================================
+   LOADING TEXT
+========================================================= */
+
+.games-loading p {
+  margin: 0;
+
+  color: #8fa3b7;
+
+  font-size: 0.95rem;
+
+  font-weight: 500;
+
+  letter-spacing: 0.4px;
+}
+
+
+/* =========================================================
+   SPINNER ANIMATION
+========================================================= */
+
+@keyframes loadingSpin {
+
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+
 }
