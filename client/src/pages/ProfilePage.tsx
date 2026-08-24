@@ -30,56 +30,56 @@ import type {
 
 
 const API_URL =
-  "http://localhost:3000";
+    "http://localhost:3000";
 
 
 type GameListType =
-  | "wishlist"
-  | "want_to_play"
-  | "playing"
-  | "completed"
-  | "dropped"
-  | "";
+    | "wishlist"
+    | "want_to_play"
+    | "playing"
+    | "completed"
+    | "dropped"
+    | "";
 
 
 function ProfilePage({
-  onLogout,
-}: any) {
+                       onLogout,
+                     }: any) {
 
   const storedUser =
-    JSON.parse(
-      localStorage.getItem(
-        "user"
-      ) || "{}"
-    );
+      JSON.parse(
+          localStorage.getItem(
+              "user"
+          ) || "{}"
+      );
 
 
   const [user, setUser] =
-    useState(storedUser);
+      useState(storedUser);
 
 
   const [isEditing, setIsEditing] =
-    useState(false);
+      useState(false);
 
 
   const [savedMessage, setSavedMessage] =
-    useState(false);
+      useState(false);
 
 
   const [errorMessage, setErrorMessage] =
-    useState("");
+      useState("");
 
 
   const [uploadingImage, setUploadingImage] =
-    useState(false);
+      useState(false);
 
 
   const [uploadingBanner, setUploadingBanner] =
-    useState(false);
+      useState(false);
 
 
   const [openList, setOpenList] =
-    useState<GameListType>("");
+      useState<GameListType>("");
 
 
   // =====================================================
@@ -87,11 +87,11 @@ function ProfilePage({
   // =====================================================
 
   const [library, setLibrary] =
-    useState<LibraryGame[]>([]);
+      useState<LibraryGame[]>([]);
 
 
   const [libraryLoading, setLibraryLoading] =
-    useState(true);
+      useState(true);
 
 
   // =====================================================
@@ -99,11 +99,11 @@ function ProfilePage({
   // =====================================================
 
   const [image, setImage] =
-    useState(
-      user.profileImage
-        ? `${API_URL}${user.profileImage}`
-        : "/images/dummy-profile-blue.png"
-    );
+      useState(
+          user.profileImage
+              ? `${API_URL}${user.profileImage}`
+              : "/images/dummy-profile-blue.png"
+      );
 
 
   // =====================================================
@@ -111,11 +111,11 @@ function ProfilePage({
   // =====================================================
 
   const [banner, setBanner] =
-    useState(
-      user.banner
-        ? `${API_URL}${user.banner}`
-        : ""
-    );
+      useState(
+          user.banner
+              ? `${API_URL}${user.banner}`
+              : ""
+      );
 
 
   // =====================================================
@@ -123,33 +123,33 @@ function ProfilePage({
   // =====================================================
 
   const [username, setUsername] =
-    useState(
-      user.username || ""
-    );
+      useState(
+          user.username || ""
+      );
 
 
   const [aboutMe, setAboutMe] =
-    useState(
-      user.aboutMe || ""
-    );
+      useState(
+          user.aboutMe || ""
+      );
 
 
   const [favoriteGame, setFavoriteGame] =
-    useState(
-      user.favoriteGame || ""
-    );
+      useState(
+          user.favoriteGame || ""
+      );
 
 
   const [favoriteGenre, setFavoriteGenre] =
-    useState(
-      user.favoriteGenre || ""
-    );
+      useState(
+          user.favoriteGenre || ""
+      );
 
 
   const [favoritePlatform, setFavoritePlatform] =
-    useState(
-      user.favoritePlatform || ""
-    );
+      useState(
+          user.favoritePlatform || ""
+      );
 
 
   // =====================================================
@@ -157,27 +157,27 @@ function ProfilePage({
   // =====================================================
 
   const [discord, setDiscord] =
-    useState(
-      user.discord || ""
-    );
+      useState(
+          user.discord || ""
+      );
 
 
   const [steam, setSteam] =
-    useState(
-      user.steam || ""
-    );
+      useState(
+          user.steam || ""
+      );
 
 
   const [github, setGithub] =
-    useState(
-      user.github || ""
-    );
+      useState(
+          user.github || ""
+      );
 
 
   const [reddit, setReddit] =
-    useState(
-      user.reddit || ""
-    );
+      useState(
+          user.reddit || ""
+      );
 
 
   // =====================================================
@@ -185,23 +185,23 @@ function ProfilePage({
   // =====================================================
 
   const [friends, setFriends] =
-    useState<any[]>([]);
+      useState<any[]>([]);
 
 
   const [friendSearch, setFriendSearch] =
-    useState("");
+      useState("");
 
 
   const [searchResults, setSearchResults] =
-    useState<any[]>([]);
+      useState<any[]>([]);
 
 
   const [friendRequests, setFriendRequests] =
-    useState<any[]>([]);
+      useState<any[]>([]);
 
 
   const [friendMessage, setFriendMessage] =
-    useState("");
+      useState("");
 
 
   // =====================================================
@@ -209,42 +209,36 @@ function ProfilePage({
   // =====================================================
 
   const loadLibrary =
-    async () => {
+      async () => {
 
-      try {
+        try {
 
-        setLibraryLoading(
-          true
-        );
+          setLibraryLoading(true);
 
 
-        const games =
-          await getLibrary();
+          const games =
+              await getLibrary();
 
 
-        setLibrary(
-          games
-        );
+          setLibrary(games);
 
-      } catch (error) {
+        } catch (error) {
 
-        console.error(
-          "Failed to load game library:",
-          error
-        );
+          console.error(
+              "Failed to load game library:",
+              error
+          );
 
 
-        setLibrary([]);
+          setLibrary([]);
 
-      } finally {
+        } finally {
 
-        setLibraryLoading(
-          false
-        );
+          setLibraryLoading(false);
 
-      }
+        }
 
-    };
+      };
 
 
   useEffect(() => {
@@ -253,24 +247,24 @@ function ProfilePage({
 
 
     const handleLibraryUpdated =
-      () => {
+        () => {
 
-        loadLibrary();
+          loadLibrary();
 
-      };
+        };
 
 
     window.addEventListener(
-      "libraryUpdated",
-      handleLibraryUpdated
+        "libraryUpdated",
+        handleLibraryUpdated
     );
 
 
     return () => {
 
       window.removeEventListener(
-        "libraryUpdated",
-        handleLibraryUpdated
+          "libraryUpdated",
+          handleLibraryUpdated
       );
 
     };
@@ -285,53 +279,53 @@ function ProfilePage({
   useEffect(() => {
 
     const loadFriends =
-      async () => {
+        async () => {
 
-        try {
+          try {
 
-          const friendsData =
-            await getFriends();
+            const friendsData =
+                await getFriends();
 
 
-          setFriends(
-            friendsData
-          );
+            setFriends(
+                friendsData
+            );
 
-        } catch (error) {
+          } catch (error) {
 
-          console.error(
-            "Failed to load friends:",
-            error
-          );
+            console.error(
+                "Failed to load friends:",
+                error
+            );
 
-        }
+          }
 
-      };
+        };
 
 
     const loadFriendRequests =
-      async () => {
+        async () => {
 
-        try {
+          try {
 
-          const requests =
-            await getFriendRequests();
+            const requests =
+                await getFriendRequests();
 
 
-          setFriendRequests(
-            requests
-          );
+            setFriendRequests(
+                requests
+            );
 
-        } catch (error) {
+          } catch (error) {
 
-          console.error(
-            "Failed to load friend requests:",
-            error
-          );
+            console.error(
+                "Failed to load friend requests:",
+                error
+            );
 
-        }
+          }
 
-      };
+        };
 
 
     loadFriends();
@@ -346,55 +340,55 @@ function ProfilePage({
   // =====================================================
 
   const handleFriendSearch =
-    async () => {
+      async () => {
 
-      if (
-        friendSearch
-          .trim()
-          .length < 2
-      ) {
-
-        setSearchResults([]);
-
-        return;
-
-      }
-
-
-      try {
-
-        const users =
-          await searchUsers(
+        if (
             friendSearch
+                .trim()
+                .length < 2
+        ) {
+
+          setSearchResults([]);
+
+          return;
+
+        }
+
+
+        try {
+
+          const users =
+              await searchUsers(
+                  friendSearch
+              );
+
+
+          setSearchResults(
+              users
           );
 
 
-        setSearchResults(
-          users
-        );
+          setFriendMessage("");
+
+        } catch (error: any) {
+
+          console.error(
+              "User search failed:",
+              error
+          );
 
 
-        setFriendMessage("");
-
-      } catch (error: any) {
-
-        console.error(
-          "User search failed:",
-          error
-        );
+          setSearchResults([]);
 
 
-        setSearchResults([]);
+          setFriendMessage(
+              error.message ||
+              "Failed to search users"
+          );
 
+        }
 
-        setFriendMessage(
-          error.message ||
-          "Failed to search users"
-        );
-
-      }
-
-    };
+      };
 
 
   // =====================================================
@@ -402,42 +396,42 @@ function ProfilePage({
   // =====================================================
 
   const handleSendFriendRequest =
-    async (
-      userId: number
-    ) => {
+      async (
+          userId: number
+      ) => {
 
-      try {
+        try {
 
-        await sendFriendRequest(
-          userId
-        );
-
-
-        setFriendMessage(
-          "Friend request sent successfully!"
-        );
+          await sendFriendRequest(
+              userId
+          );
 
 
-        setSearchResults([]);
-
-        setFriendSearch("");
-
-      } catch (error: any) {
-
-        console.error(
-          "Failed to send friend request:",
-          error
-        );
+          setFriendMessage(
+              "Friend request sent successfully!"
+          );
 
 
-        setFriendMessage(
-          error.message ||
-          "Failed to send friend request"
-        );
+          setSearchResults([]);
 
-      }
+          setFriendSearch("");
 
-    };
+        } catch (error: any) {
+
+          console.error(
+              "Failed to send friend request:",
+              error
+          );
+
+
+          setFriendMessage(
+              error.message ||
+              "Failed to send friend request"
+          );
+
+        }
+
+      };
 
 
   // =====================================================
@@ -445,55 +439,55 @@ function ProfilePage({
   // =====================================================
 
   const handleAcceptRequest =
-    async (
-      requestId: number
-    ) => {
+      async (
+          requestId: number
+      ) => {
 
-      try {
+        try {
 
-        await acceptFriendRequest(
-          requestId
-        );
-
-
-        const updatedFriends =
-          await getFriends();
+          await acceptFriendRequest(
+              requestId
+          );
 
 
-        setFriends(
-          updatedFriends
-        );
+          const updatedFriends =
+              await getFriends();
 
 
-        const updatedRequests =
-          await getFriendRequests();
+          setFriends(
+              updatedFriends
+          );
 
 
-        setFriendRequests(
-          updatedRequests
-        );
+          const updatedRequests =
+              await getFriendRequests();
 
 
-        setFriendMessage(
-          "Friend request accepted!"
-        );
-
-      } catch (error: any) {
-
-        console.error(
-          "Failed to accept friend request:",
-          error
-        );
+          setFriendRequests(
+              updatedRequests
+          );
 
 
-        setFriendMessage(
-          error.message ||
-          "Failed to accept friend request"
-        );
+          setFriendMessage(
+              "Friend request accepted!"
+          );
 
-      }
+        } catch (error: any) {
 
-    };
+          console.error(
+              "Failed to accept friend request:",
+              error
+          );
+
+
+          setFriendMessage(
+              error.message ||
+              "Failed to accept friend request"
+          );
+
+        }
+
+      };
 
 
   // =====================================================
@@ -501,46 +495,46 @@ function ProfilePage({
   // =====================================================
 
   const handleDeclineRequest =
-    async (
-      requestId: number
-    ) => {
+      async (
+          requestId: number
+      ) => {
 
-      try {
+        try {
 
-        await declineFriendRequest(
-          requestId
-        );
-
-
-        const updatedRequests =
-          await getFriendRequests();
+          await declineFriendRequest(
+              requestId
+          );
 
 
-        setFriendRequests(
-          updatedRequests
-        );
+          const updatedRequests =
+              await getFriendRequests();
 
 
-        setFriendMessage(
-          "Friend request declined."
-        );
-
-      } catch (error: any) {
-
-        console.error(
-          "Failed to decline friend request:",
-          error
-        );
+          setFriendRequests(
+              updatedRequests
+          );
 
 
-        setFriendMessage(
-          error.message ||
-          "Failed to decline friend request"
-        );
+          setFriendMessage(
+              "Friend request declined."
+          );
 
-      }
+        } catch (error: any) {
 
-    };
+          console.error(
+              "Failed to decline friend request:",
+              error
+          );
+
+
+          setFriendMessage(
+              error.message ||
+              "Failed to decline friend request"
+          );
+
+        }
+
+      };
 
 
   // =====================================================
@@ -548,57 +542,57 @@ function ProfilePage({
   // =====================================================
 
   const handleRemoveFriend =
-    async (
-      userId: number
-    ) => {
+      async (
+          userId: number
+      ) => {
 
-      const confirmed =
-        window.confirm(
-          "Are you sure you want to remove this friend?"
-        );
-
-
-      if (!confirmed) {
-        return;
-      }
+        const confirmed =
+            window.confirm(
+                "Are you sure you want to remove this friend?"
+            );
 
 
-      try {
-
-        await removeFriend(
-          userId
-        );
+        if (!confirmed) {
+          return;
+        }
 
 
-        const updatedFriends =
-          await getFriends();
+        try {
+
+          await removeFriend(
+              userId
+          );
 
 
-        setFriends(
-          updatedFriends
-        );
+          const updatedFriends =
+              await getFriends();
 
 
-        setFriendMessage(
-          "Friend removed successfully."
-        );
-
-      } catch (error: any) {
-
-        console.error(
-          "Failed to remove friend:",
-          error
-        );
+          setFriends(
+              updatedFriends
+          );
 
 
-        setFriendMessage(
-          error.message ||
-          "Failed to remove friend"
-        );
+          setFriendMessage(
+              "Friend removed successfully."
+          );
 
-      }
+        } catch (error: any) {
 
-    };
+          console.error(
+              "Failed to remove friend:",
+              error
+          );
+
+
+          setFriendMessage(
+              error.message ||
+              "Failed to remove friend"
+          );
+
+        }
+
+      };
 
 
   // =====================================================
@@ -608,41 +602,45 @@ function ProfilePage({
   const gameLibrary = {
 
     wishlist:
-      library.filter(
-        (game) =>
-          game.status ===
-          "wishlist"
-      ),
+        library.filter(
+            (game) =>
+                game.status ===
+                "wishlist"
+        ),
 
     want_to_play:
-      library.filter(
-        (game) =>
-          game.status ===
-          "want_to_play"
-      ),
+        library.filter(
+            (game) =>
+                game.status ===
+                "want_to_play"
+        ),
 
     playing:
-      library.filter(
-        (game) =>
-          game.status ===
-          "playing"
-      ),
+        library.filter(
+            (game) =>
+                game.status ===
+                "playing"
+        ),
 
     completed:
-      library.filter(
-        (game) =>
-          game.status ===
-          "completed"
-      ),
+        library.filter(
+            (game) =>
+                game.status ===
+                "completed"
+        ),
 
     dropped:
-      library.filter(
-        (game) =>
-          game.status ===
-          "dropped"
-      ),
+        library.filter(
+            (game) =>
+                game.status ===
+                "dropped"
+        ),
 
   };
+
+
+  const totalGames =
+      library.length;
 
 
   // =====================================================
@@ -650,76 +648,62 @@ function ProfilePage({
   // =====================================================
 
   const handleMoveLibraryGame =
-    async (
-      libraryId: number,
-      newStatus: LibraryStatus
-    ) => {
+      async (
+          libraryId: number,
+          newStatus: LibraryStatus
+      ) => {
 
-      try {
+        try {
 
-        setErrorMessage("");
+          setErrorMessage("");
 
 
-        const updatedGame =
-          await updateLibraryGame(
-            libraryId,
-            {
-              status:
-                newStatus,
-            }
+          const updatedGame =
+              await updateLibraryGame(
+                  libraryId,
+                  {
+                    status:
+                    newStatus,
+                  }
+              );
+
+
+          setLibrary(
+              (currentLibrary) =>
+                  currentLibrary.map(
+                      (game) =>
+                          game.id === libraryId
+                              ? updatedGame
+                              : game
+                  )
           );
 
 
-        /*
-         * Das lokale React-State wird
-         * direkt aktualisiert.
-         *
-         * Dadurch:
-         * - verschwindet das Spiel aus
-         *   dem aktuellen Modal
-         * - der alte Zähler sinkt
-         * - der neue Zähler steigt
-         *
-         * ohne Reload.
-         */
+          window.dispatchEvent(
+              new Event(
+                  "libraryUpdated"
+              )
+          );
 
-        setLibrary(
-          (currentLibrary) =>
-            currentLibrary.map(
-              (game) =>
-                game.id === libraryId
-                  ? updatedGame
-                  : game
-            )
-        );
+        } catch (error: any) {
+
+          console.error(
+              "Failed to move library game:",
+              error
+          );
 
 
-        window.dispatchEvent(
-          new Event(
-            "libraryUpdated"
-          )
-        );
+          setErrorMessage(
+              error.message ||
+              "Failed to move game."
+          );
 
 
-      } catch (error: any) {
+          throw error;
 
-        console.error(
-          "Failed to move library game:",
-          error
-        );
+        }
 
-
-        setErrorMessage(
-          error.message ||
-          "Failed to move game."
-        );
-
-
-        throw error;
-
-      }
-
-    };
+      };
 
 
   // =====================================================
@@ -727,53 +711,52 @@ function ProfilePage({
   // =====================================================
 
   const handleRemoveLibraryGame =
-    async (
-      libraryId: number
-    ) => {
+      async (
+          libraryId: number
+      ) => {
 
-      try {
+        try {
 
-        setErrorMessage("");
-
-
-        await removeGameFromLibrary(
-          libraryId
-        );
+          setErrorMessage("");
 
 
-        setLibrary(
-          (currentLibrary) =>
-            currentLibrary.filter(
-              (game) =>
-                game.id !==
-                libraryId
-            )
-        );
+          await removeGameFromLibrary(
+              libraryId
+          );
 
 
-        window.dispatchEvent(
-          new Event(
-            "libraryUpdated"
-          )
-        );
+          setLibrary(
+              (currentLibrary) =>
+                  currentLibrary.filter(
+                      (game) =>
+                          game.id !==
+                          libraryId
+                  )
+          );
 
 
-      } catch (error: any) {
+          window.dispatchEvent(
+              new Event(
+                  "libraryUpdated"
+              )
+          );
 
-        console.error(
-          "Failed to remove library game:",
-          error
-        );
+        } catch (error: any) {
+
+          console.error(
+              "Failed to remove library game:",
+              error
+          );
 
 
-        setErrorMessage(
-          error.message ||
-          "Failed to remove game from library."
-        );
+          setErrorMessage(
+              error.message ||
+              "Failed to remove game from library."
+          );
 
-      }
+        }
 
-    };
+      };
 
 
   // =====================================================
@@ -781,136 +764,129 @@ function ProfilePage({
   // =====================================================
 
   const handleImageUpload =
-    async (
-      e: React.ChangeEvent<HTMLInputElement>
-    ) => {
+      async (
+          e: React.ChangeEvent<HTMLInputElement>
+      ) => {
 
-      const file =
-        e.target.files?.[0];
-
-
-      if (!file) {
-        return;
-      }
+        const file =
+            e.target.files?.[0];
 
 
-      try {
-
-        setUploadingImage(
-          true
-        );
-
-        setErrorMessage("");
-
-
-        const formData =
-          new FormData();
-
-
-        formData.append(
-          "image",
-          file
-        );
-
-
-        const response =
-          await fetch(
-            `${API_URL}/api/users/me/profile-image`,
-            {
-              method: "POST",
-
-              credentials:
-                "include",
-
-              body: formData,
-            }
-          );
-
-
-        const data =
-          await response.json();
-
-
-        if (!response.ok) {
-
-          throw new Error(
-            data.message ||
-            "Failed to upload profile image."
-          );
-
+        if (!file) {
+          return;
         }
 
 
-        const imagePath =
-          data.profileImage;
+        try {
+
+          setUploadingImage(true);
+
+          setErrorMessage("");
 
 
-        const imageUrl =
-          `${API_URL}${imagePath}`;
+          const formData =
+              new FormData();
 
 
-        setImage(
-          imageUrl
-        );
+          formData.append(
+              "image",
+              file
+          );
 
 
-        const updatedUser = {
+          const response =
+              await fetch(
+                  `${API_URL}/api/users/me/profile-image`,
+                  {
+                    method: "POST",
 
-          ...user,
+                    credentials:
+                        "include",
 
-          profileImage:
+                    body: formData,
+                  }
+              );
+
+
+          const data =
+              await response.json();
+
+
+          if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Failed to upload profile image."
+            );
+
+          }
+
+
+          const imagePath =
+              data.profileImage;
+
+
+          const imageUrl =
+              `${API_URL}${imagePath}`;
+
+
+          setImage(
+              imageUrl
+          );
+
+
+          const updatedUser = {
+
+            ...user,
+
+            profileImage:
             imagePath,
 
-        };
+          };
 
 
-        setUser(
-          updatedUser
-        );
+          setUser(
+              updatedUser
+          );
 
 
-        localStorage.setItem(
-          "user",
-          JSON.stringify(
-            updatedUser
-          )
-        );
+          localStorage.setItem(
+              "user",
+              JSON.stringify(
+                  updatedUser
+              )
+          );
 
 
-        window.dispatchEvent(
-          new Event(
-            "profileUpdated"
-          )
-        );
+          window.dispatchEvent(
+              new Event(
+                  "profileUpdated"
+              )
+          );
+
+        } catch (error) {
+
+          console.error(
+              "Profile image upload error:",
+              error
+          );
 
 
-      } catch (error) {
+          setErrorMessage(
+              error instanceof Error
+                  ? error.message
+                  : "Failed to upload profile image."
+          );
 
-        console.error(
-          "Profile image upload error:",
-          error
-        );
+        } finally {
 
+          setUploadingImage(false);
 
-        setErrorMessage(
-          error instanceof Error
-            ? error.message
-            : "Failed to upload profile image."
-        );
+          e.target.value = "";
 
-      } finally {
+        }
 
-        setUploadingImage(
-          false
-        );
-
-
-        e.target.value =
-          "";
-
-      }
-
-    };
+      };
 
 
   // =====================================================
@@ -918,136 +894,129 @@ function ProfilePage({
   // =====================================================
 
   const handleBannerUpload =
-    async (
-      e: React.ChangeEvent<HTMLInputElement>
-    ) => {
+      async (
+          e: React.ChangeEvent<HTMLInputElement>
+      ) => {
 
-      const file =
-        e.target.files?.[0];
-
-
-      if (!file) {
-        return;
-      }
+        const file =
+            e.target.files?.[0];
 
 
-      try {
-
-        setUploadingBanner(
-          true
-        );
-
-        setErrorMessage("");
-
-
-        const formData =
-          new FormData();
-
-
-        formData.append(
-          "image",
-          file
-        );
-
-
-        const response =
-          await fetch(
-            `${API_URL}/api/users/me/banner`,
-            {
-              method: "POST",
-
-              credentials:
-                "include",
-
-              body: formData,
-            }
-          );
-
-
-        const data =
-          await response.json();
-
-
-        if (!response.ok) {
-
-          throw new Error(
-            data.message ||
-            "Failed to upload banner."
-          );
-
+        if (!file) {
+          return;
         }
 
 
-        const bannerPath =
-          data.banner;
+        try {
+
+          setUploadingBanner(true);
+
+          setErrorMessage("");
 
 
-        const bannerUrl =
-          `${API_URL}${bannerPath}`;
+          const formData =
+              new FormData();
 
 
-        setBanner(
-          bannerUrl
-        );
+          formData.append(
+              "image",
+              file
+          );
 
 
-        const updatedUser = {
+          const response =
+              await fetch(
+                  `${API_URL}/api/users/me/banner`,
+                  {
+                    method: "POST",
 
-          ...user,
+                    credentials:
+                        "include",
 
-          banner:
+                    body: formData,
+                  }
+              );
+
+
+          const data =
+              await response.json();
+
+
+          if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Failed to upload banner."
+            );
+
+          }
+
+
+          const bannerPath =
+              data.banner;
+
+
+          const bannerUrl =
+              `${API_URL}${bannerPath}`;
+
+
+          setBanner(
+              bannerUrl
+          );
+
+
+          const updatedUser = {
+
+            ...user,
+
+            banner:
             bannerPath,
 
-        };
+          };
 
 
-        setUser(
-          updatedUser
-        );
+          setUser(
+              updatedUser
+          );
 
 
-        localStorage.setItem(
-          "user",
-          JSON.stringify(
-            updatedUser
-          )
-        );
+          localStorage.setItem(
+              "user",
+              JSON.stringify(
+                  updatedUser
+              )
+          );
 
 
-        window.dispatchEvent(
-          new Event(
-            "profileUpdated"
-          )
-        );
+          window.dispatchEvent(
+              new Event(
+                  "profileUpdated"
+              )
+          );
+
+        } catch (error) {
+
+          console.error(
+              "Banner upload error:",
+              error
+          );
 
 
-      } catch (error) {
+          setErrorMessage(
+              error instanceof Error
+                  ? error.message
+                  : "Failed to upload banner."
+          );
 
-        console.error(
-          "Banner upload error:",
-          error
-        );
+        } finally {
 
+          setUploadingBanner(false);
 
-        setErrorMessage(
-          error instanceof Error
-            ? error.message
-            : "Failed to upload banner."
-        );
+          e.target.value = "";
 
-      } finally {
+        }
 
-        setUploadingBanner(
-          false
-        );
-
-
-        e.target.value =
-          "";
-
-      }
-
-    };
+      };
 
 
   // =====================================================
@@ -1055,133 +1024,124 @@ function ProfilePage({
   // =====================================================
 
   const saveProfile =
-    async () => {
+      async () => {
 
-      try {
+        try {
 
-        setErrorMessage("");
+          setErrorMessage("");
 
-        setSavedMessage(
-          false
-        );
+          setSavedMessage(false);
 
 
-        const response =
-          await fetch(
-            `${API_URL}/api/users/me`,
-            {
-              method: "PUT",
+          const response =
+              await fetch(
+                  `${API_URL}/api/users/me`,
+                  {
+                    method: "PUT",
 
-              credentials:
-                "include",
+                    credentials:
+                        "include",
 
-              headers: {
-                "Content-Type":
-                  "application/json",
-              },
+                    headers: {
+                      "Content-Type":
+                          "application/json",
+                    },
 
-              body: JSON.stringify({
+                    body: JSON.stringify({
 
-                aboutMe,
+                      aboutMe,
 
-                favoriteGame,
+                      favoriteGame,
 
-                favoriteGenre,
+                      favoriteGenre,
 
-                favoritePlatform,
+                      favoritePlatform,
 
-                discord,
+                      discord,
 
-                steam,
+                      steam,
 
-                github,
+                      github,
 
-                reddit,
+                      reddit,
 
-              }),
+                    }),
 
-            }
+                  }
+              );
+
+
+          const data =
+              await response.json();
+
+
+          if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Failed to update profile."
+            );
+
+          }
+
+
+          const updatedUser = {
+
+            ...user,
+
+            ...data.user,
+
+          };
+
+
+          setUser(
+              updatedUser
           );
 
 
-        const data =
-          await response.json();
+          localStorage.setItem(
+              "user",
+              JSON.stringify(
+                  updatedUser
+              )
+          );
 
 
-        if (!response.ok) {
+          window.dispatchEvent(
+              new Event(
+                  "profileUpdated"
+              )
+          );
 
-          throw new Error(
-            data.message ||
-            "Failed to update profile."
+
+          setSavedMessage(true);
+
+          setIsEditing(false);
+
+
+          setTimeout(() => {
+
+            setSavedMessage(false);
+
+          }, 3000);
+
+        } catch (error) {
+
+          console.error(
+              "Save profile error:",
+              error
+          );
+
+
+          setErrorMessage(
+              error instanceof Error
+                  ? error.message
+                  : "Failed to save profile."
           );
 
         }
 
-
-        const updatedUser = {
-
-          ...user,
-
-          ...data.user,
-
-        };
-
-
-        setUser(
-          updatedUser
-        );
-
-
-        localStorage.setItem(
-          "user",
-          JSON.stringify(
-            updatedUser
-          )
-        );
-
-
-        window.dispatchEvent(
-          new Event(
-            "profileUpdated"
-          )
-        );
-
-
-        setSavedMessage(
-          true
-        );
-
-
-        setIsEditing(
-          false
-        );
-
-
-        setTimeout(() => {
-
-          setSavedMessage(
-            false
-          );
-
-        }, 3000);
-
-      } catch (error) {
-
-        console.error(
-          "Save profile error:",
-          error
-        );
-
-
-        setErrorMessage(
-          error instanceof Error
-            ? error.message
-            : "Failed to save profile."
-        );
-
-      }
-
-    };
+      };
 
 
   // =====================================================
@@ -1189,74 +1149,61 @@ function ProfilePage({
   // =====================================================
 
   const cancelEditing =
-    () => {
+      () => {
 
-      setUsername(
-        user.username || ""
-      );
+        setUsername(
+            user.username || ""
+        );
 
+        setAboutMe(
+            user.aboutMe || ""
+        );
 
-      setAboutMe(
-        user.aboutMe || ""
-      );
+        setFavoriteGame(
+            user.favoriteGame || ""
+        );
 
+        setFavoriteGenre(
+            user.favoriteGenre || ""
+        );
 
-      setFavoriteGame(
-        user.favoriteGame || ""
-      );
+        setFavoritePlatform(
+            user.favoritePlatform || ""
+        );
 
+        setDiscord(
+            user.discord || ""
+        );
 
-      setFavoriteGenre(
-        user.favoriteGenre || ""
-      );
+        setSteam(
+            user.steam || ""
+        );
 
+        setGithub(
+            user.github || ""
+        );
 
-      setFavoritePlatform(
-        user.favoritePlatform || ""
-      );
+        setReddit(
+            user.reddit || ""
+        );
 
+        setImage(
+            user.profileImage
+                ? `${API_URL}${user.profileImage}`
+                : "/images/dummy-profile-blue.png"
+        );
 
-      setDiscord(
-        user.discord || ""
-      );
+        setBanner(
+            user.banner
+                ? `${API_URL}${user.banner}`
+                : ""
+        );
 
+        setErrorMessage("");
 
-      setSteam(
-        user.steam || ""
-      );
+        setIsEditing(false);
 
-
-      setGithub(
-        user.github || ""
-      );
-
-
-      setReddit(
-        user.reddit || ""
-      );
-
-
-      setImage(
-        user.profileImage
-          ? `${API_URL}${user.profileImage}`
-          : "/images/dummy-profile-blue.png"
-      );
-
-
-      setBanner(
-        user.banner
-          ? `${API_URL}${user.banner}`
-          : ""
-      );
-
-
-      setErrorMessage("");
-
-      setIsEditing(
-        false
-      );
-
-    };
+      };
 
 
   // =====================================================
@@ -1264,11 +1211,11 @@ function ProfilePage({
   // =====================================================
 
   const logoutUser =
-    () => {
+      () => {
 
-      onLogout();
+        onLogout();
 
-    };
+      };
 
 
   // =====================================================
@@ -1277,725 +1224,431 @@ function ProfilePage({
 
   return (
 
-    <div className="profile-page">
+      <div className="profile-page">
 
-      <div className="profile-card">
-
-
-        {/* BANNER */}
-
-        <div
-          className="profile-banner"
-
-          style={{
-            backgroundImage:
-              banner
-
-                ? `url("${banner}")`
-
-                : "linear-gradient(135deg,#66c0f4,#9bdcff)",
-          }}
-        >
-
-          {isEditing && (
-
-            <label className="banner-upload-btn">
-
-              {uploadingBanner
-                ? "Uploading..."
-                : "Change Banner"}
-
-              <input
-                type="file"
-                accept="image/*"
-                onChange={
-                  handleBannerUpload
-                }
-                disabled={
-                  uploadingBanner
-                }
-              />
-
-            </label>
-
-          )}
-
-        </div>
+        <div className="profile-card">
 
 
-        {/* PROFILE HEADER */}
+          {/* =================================================
+            BANNER
+        ================================================= */}
 
-        <div className="profile-header">
+          <div
+              className="profile-banner"
 
-          <div className="profile-avatar-wrapper">
-
-            <img
-              src={image}
-              alt="Profile"
-              className="profile-avatar"
-            />
-
+              style={{
+                backgroundImage:
+                    banner
+                        ? `url("${banner}")`
+                        : "linear-gradient(135deg,#315c78,#152b3c)",
+              }}
+          >
 
             {isEditing && (
 
-              <label className="avatar-upload-btn">
+                <label className="banner-upload-btn">
 
-                {uploadingImage
-                  ? "..."
-                  : "📷"}
+                  {uploadingBanner
+                      ? "Uploading..."
+                      : "Change Banner"}
 
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={
-                    handleImageUpload
-                  }
-                  disabled={
-                    uploadingImage
-                  }
-                />
+                  <input
+                      type="file"
+                      accept="image/*"
+                      onChange={
+                        handleBannerUpload
+                      }
+                      disabled={
+                        uploadingBanner
+                      }
+                  />
 
-              </label>
+                </label>
 
             )}
 
           </div>
 
 
-          <div className="profile-main-info">
+          {/* =================================================
+            PROFILE HEADER
+        ================================================= */}
 
-            {isEditing ? (
+          <div className="profile-header">
 
-              <input
-                className="profile-name-input"
-                value={username}
-                disabled
+            <div className="profile-avatar-wrapper">
+
+              <img
+                  src={image}
+                  alt="Profile"
+                  className="profile-avatar"
               />
 
-            ) : (
 
-              <h1>
-                {username}
-              </h1>
-
-            )}
+              <span className="profile-online-dot" />
 
 
-            {!isEditing && (
+              {isEditing && (
 
-              <p className="profile-about-preview">
+                  <label className="avatar-upload-btn">
 
-                {aboutMe ||
-                  "No description added yet."}
+                    {uploadingImage
+                        ? "..."
+                        : "📷"}
 
-              </p>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={
+                          handleImageUpload
+                        }
+                        disabled={
+                          uploadingImage
+                        }
+                    />
 
-            )}
-
-          </div>
-
-        </div>
-
-
-        {/* PROFILE CONTENT */}
-
-        <div className="profile-grid">
-
-
-          {/* LEFT SIDE */}
-
-          <div className="profile-column">
-
-
-            {/* ABOUT ME */}
-
-            <div className="profile-box">
-
-              <h3>
-                👤 About Me
-              </h3>
-
-
-              {isEditing ? (
-
-                <textarea
-                  value={aboutMe}
-                  onChange={(e) =>
-                    setAboutMe(
-                      e.target.value
-                    )
-                  }
-
-                  placeholder="Tell something about yourself..."
-                />
-
-              ) : (
-
-                <p>
-                  {aboutMe ||
-                    "No description yet."}
-                </p>
+                  </label>
 
               )}
 
             </div>
 
 
-            {/* FAVORITE GAME */}
+            <div className="profile-main-info">
 
-            <div className="profile-box">
+              <div className="profile-title-row">
 
-              <h3>
-                🎮 Favorite Game
-              </h3>
+                {isEditing ? (
 
+                    <input
+                        className="profile-name-input"
+                        value={username}
+                        disabled
+                    />
 
-              {isEditing ? (
+                ) : (
 
-                <input
-                  value={favoriteGame}
-                  onChange={(e) =>
-                    setFavoriteGame(
-                      e.target.value
-                    )
-                  }
+                    <h1>
+                      {username}
+                    </h1>
 
-                  placeholder="Your favorite game"
-                />
+                )}
 
-              ) : (
 
-                <p>
-                  {favoriteGame || "-"}
-                </p>
+                {!isEditing && (
 
-              )}
+                    <div className="profile-status">
 
-            </div>
+                      <span className="profile-status-dot" />
 
+                      Online
 
-            {/* FAVORITE GENRE */}
+                    </div>
 
-            <div className="profile-box">
-
-              <h3>
-                🎲 Favorite Genre
-              </h3>
-
-
-              {isEditing ? (
-
-                <select
-                  value={favoriteGenre}
-                  onChange={(e) =>
-                    setFavoriteGenre(
-                      e.target.value
-                    )
-                  }
-                >
-
-                  <option value="">
-                    Select Genre
-                  </option>
-
-                  <option value="Action">
-                    Action
-                  </option>
-
-                  <option value="RPG">
-                    RPG
-                  </option>
-
-                  <option value="Shooter">
-                    Shooter
-                  </option>
-
-                  <option value="Adventure">
-                    Adventure
-                  </option>
-
-                  <option value="Puzzle">
-                    Puzzle
-                  </option>
-
-                  <option value="Strategy">
-                    Strategy
-                  </option>
-
-                  <option value="Horror">
-                    Horror
-                  </option>
-
-                </select>
-
-              ) : (
-
-                <p>
-                  {favoriteGenre || "-"}
-                </p>
-
-              )}
-
-            </div>
-
-
-            {/* FAVORITE PLATFORM */}
-
-            <div className="profile-box">
-
-              <h3>
-                🖥 Favorite Platform
-              </h3>
-
-
-              {isEditing ? (
-
-                <select
-                  value={
-                    favoritePlatform
-                  }
-
-                  onChange={(e) =>
-                    setFavoritePlatform(
-                      e.target.value
-                    )
-                  }
-                >
-
-                  <option value="">
-                    Select Platform
-                  </option>
-
-                  <option value="PC">
-                    PC
-                  </option>
-
-                  <option value="PlayStation">
-                    PlayStation
-                  </option>
-
-                  <option value="Xbox">
-                    Xbox
-                  </option>
-
-                  <option value="Nintendo Switch">
-                    Nintendo Switch
-                  </option>
-
-                </select>
-
-              ) : (
-
-                <p>
-                  {
-                    favoritePlatform ||
-                    "-"
-                  }
-                </p>
-
-              )}
-
-            </div>
-
-          </div>
-
-
-          {/* RIGHT SIDE */}
-
-          <div className="profile-column">
-
-
-            {/* GAME LIBRARY */}
-
-            <div className="profile-box stats-box">
-
-              <h3>
-                🎮 Game Library
-              </h3>
-
-
-              {libraryLoading ? (
-
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    padding: "25px",
-                    color: "#8fa3b7",
-                  }}
-                >
-                  Loading library...
-                </div>
-
-              ) : (
-
-                <div className="stats">
-
-
-                  <div
-                    className="stat-clickable"
-
-                    onClick={() =>
-                      setOpenList(
-                        "wishlist"
-                      )
-                    }
-                  >
-
-                    <strong>
-                      {
-                        gameLibrary
-                          .wishlist
-                          .length
-                      }
-                    </strong>
-
-                    <span>
-                      ❤️ Wishlist
-                    </span>
-
-                  </div>
-
-
-                  <div
-                    className="stat-clickable"
-
-                    onClick={() =>
-                      setOpenList(
-                        "want_to_play"
-                      )
-                    }
-                  >
-
-                    <strong>
-                      {
-                        gameLibrary
-                          .want_to_play
-                          .length
-                      }
-                    </strong>
-
-                    <span>
-                      💭 Want To Play
-                    </span>
-
-                  </div>
-
-
-                  <div
-                    className="stat-clickable"
-
-                    onClick={() =>
-                      setOpenList(
-                        "playing"
-                      )
-                    }
-                  >
-
-                    <strong>
-                      {
-                        gameLibrary
-                          .playing
-                          .length
-                      }
-                    </strong>
-
-                    <span>
-                      🔥 Playing
-                    </span>
-
-                  </div>
-
-
-                  <div
-                    className="stat-clickable"
-
-                    onClick={() =>
-                      setOpenList(
-                        "completed"
-                      )
-                    }
-                  >
-
-                    <strong>
-                      {
-                        gameLibrary
-                          .completed
-                          .length
-                      }
-                    </strong>
-
-                    <span>
-                      ✅ Completed
-                    </span>
-
-                  </div>
-
-
-                  <div
-                    className="stat-clickable"
-
-                    onClick={() =>
-                      setOpenList(
-                        "dropped"
-                      )
-                    }
-                  >
-
-                    <strong>
-                      {
-                        gameLibrary
-                          .dropped
-                          .length
-                      }
-                    </strong>
-
-                    <span>
-                      ❌ Dropped
-                    </span>
-
-                  </div>
-
-
-                </div>
-
-              )}
-
-            </div>
-
-
-            {/* FRIENDS */}
-
-            <div className="profile-box">
-
-              <h3>
-                👥 Friends
-              </h3>
-
-
-              <div className="friend-search">
-
-                <input
-                  type="text"
-                  placeholder="Search username..."
-                  value={friendSearch}
-
-                  onChange={(e) =>
-                    setFriendSearch(
-                      e.target.value
-                    )
-                  }
-
-                />
-
-
-                <button
-                  onClick={
-                    handleFriendSearch
-                  }
-                >
-                  Search
-                </button>
+                )}
 
               </div>
 
 
-              {searchResults.length > 0 && (
+              {!isEditing && (
 
-                <div className="friend-search-results">
+                  <>
 
-                  {searchResults.map(
-                    (searchedUser) => (
+                    <p className="profile-about-preview">
 
-                      <div
-                        className="friend-search-result"
-                        key={
-                          searchedUser.id
-                        }
-                      >
+                      {aboutMe ||
+                          "No description added yet."}
 
-                        <img
-                          src={
-                            searchedUser.profileImage
-                              ? `${API_URL}${searchedUser.profileImage}`
-                              : "/images/dummy-profile-blue.png"
-                          }
-
-                          alt={
-                            searchedUser.username
-                          }
-                        />
+                    </p>
 
 
-                        <span>
-                          {
-                            searchedUser.username
-                          }
-                        </span>
+                    <div className="profile-meta">
+
+                  <span>
+                    🎮 {totalGames} games
+                  </span>
+
+                      <span className="profile-meta-divider">
+                    •
+                  </span>
+
+                      <span>
+                    👥 {friends.length} friends
+                  </span>
+
+                      {favoritePlatform && (
+
+                          <>
+
+                      <span className="profile-meta-divider">
+                        •
+                      </span>
+
+                            <span>
+                        🖥 {favoritePlatform}
+                      </span>
+
+                          </>
+
+                      )}
+
+                    </div>
+
+                  </>
+
+              )}
+
+            </div>
+
+          </div>
 
 
-                        <button
-                          onClick={() =>
-                            handleSendFriendRequest(
-                              searchedUser.id
-                            )
-                          }
-                        >
-                          Add Friend
-                        </button>
+          {/* =================================================
+            PROFILE CONTENT
+        ================================================= */}
 
-                      </div>
+          <div className="profile-grid">
 
-                    )
-                  )}
+
+            {/* =================================================
+              LEFT
+          ================================================= */}
+
+            <div className="profile-column">
+
+
+              {/* ABOUT */}
+
+              <div className="profile-box">
+
+                <div className="profile-box-heading">
+
+                  <h3>
+                    👤 About Me
+                  </h3>
+
+                  <span>
+                  Profile
+                </span>
 
                 </div>
 
-              )}
 
+                {isEditing ? (
 
-              {friendMessage && (
+                    <textarea
+                        value={aboutMe}
 
-                <p className="friend-message">
-                  {friendMessage}
-                </p>
-
-              )}
-
-
-              {friendRequests.length > 0 && (
-
-                <div className="friend-requests">
-
-                  <h4>
-                    📩 Friend Requests
-                  </h4>
-
-
-                  {friendRequests.map(
-                    (request) => (
-
-                      <div
-                        className="friend-request"
-                        key={
-                          request.id
+                        onChange={(e) =>
+                            setAboutMe(
+                                e.target.value
+                            )
                         }
-                      >
 
-                        <img
-                          src={
-                            request
-                              .sender
-                              ?.profileImage
-                              ? `${API_URL}${request.sender.profileImage}`
-                              : "/images/dummy-profile-blue.png"
-                          }
-
-                          alt={
-                            request
-                              .sender
-                              ?.username
-                          }
-                        />
-
-
-                        <span>
-                          {
-                            request
-                              .sender
-                              ?.username
-                          }
-                        </span>
-
-
-                        <button
-                          onClick={() =>
-                            handleAcceptRequest(
-                              request.id
-                            )
-                          }
-                        >
-                          Accept
-                        </button>
-
-
-                        <button
-                          onClick={() =>
-                            handleDeclineRequest(
-                              request.id
-                            )
-                          }
-                        >
-                          Decline
-                        </button>
-
-                      </div>
-
-                    )
-                  )}
-
-                </div>
-
-              )}
-
-
-              <div className="friends-list">
-
-                {friends.length === 0 ? (
-
-                  <p>
-                    No friends yet.
-                  </p>
+                        placeholder="Tell something about yourself..."
+                    />
 
                 ) : (
 
-                  friends.map(
-                    (friend) => (
+                    <p>
+                      {aboutMe ||
+                          "No description yet."}
+                    </p>
 
-                      <div
-                        className="friend-item"
-                        key={
-                          friend.id
-                        }
-                      >
+                )}
 
-                        <img
-                          src={
-                            friend.profileImage
-                              ? `${API_URL}${friend.profileImage}`
-                              : "/images/dummy-profile-blue.png"
-                          }
-
-                          alt={
-                            friend.username
-                          }
-                        />
+              </div>
 
 
-                        <span className="friend-username">
+              {/* FAVORITE GAME */}
 
-                          {
-                            friend.username
-                          }
+              <div className="profile-box">
 
-                        </span>
+                <div className="profile-box-heading">
+
+                  <h3>
+                    🎮 Favorite Game
+                  </h3>
+
+                </div>
 
 
-                        <button
-                          className="remove-friend-btn"
-                          onClick={() =>
-                            handleRemoveFriend(
-                              friend.id
+                {isEditing ? (
+
+                    <input
+                        value={favoriteGame}
+
+                        onChange={(e) =>
+                            setFavoriteGame(
+                                e.target.value
                             )
-                          }
-                        >
-                          Remove
-                        </button>
+                        }
 
-                      </div>
-                    )
+                        placeholder="Your favorite game"
+                    />
 
-                  )
+                ) : (
+
+                    <div className="profile-value">
+
+                  <span className="profile-value-icon">
+                    🎮
+                  </span>
+
+                      <span>
+                    {favoriteGame || "Not selected"}
+                  </span>
+
+                    </div>
+
+                )}
+
+              </div>
+
+
+              {/* FAVORITE GENRE */}
+
+              <div className="profile-box">
+
+                <div className="profile-box-heading">
+
+                  <h3>
+                    🎲 Favorite Genre
+                  </h3>
+
+                </div>
+
+
+                {isEditing ? (
+
+                    <select
+                        value={favoriteGenre}
+
+                        onChange={(e) =>
+                            setFavoriteGenre(
+                                e.target.value
+                            )
+                        }
+                    >
+
+                      <option value="">
+                        Select Genre
+                      </option>
+
+                      <option value="Action">
+                        Action
+                      </option>
+
+                      <option value="RPG">
+                        RPG
+                      </option>
+
+                      <option value="Shooter">
+                        Shooter
+                      </option>
+
+                      <option value="Adventure">
+                        Adventure
+                      </option>
+
+                      <option value="Puzzle">
+                        Puzzle
+                      </option>
+
+                      <option value="Strategy">
+                        Strategy
+                      </option>
+
+                      <option value="Horror">
+                        Horror
+                      </option>
+
+                    </select>
+
+                ) : (
+
+                    <div className="profile-value">
+
+                  <span className="profile-value-icon">
+                    🎲
+                  </span>
+
+                      <span>
+                    {favoriteGenre || "Not selected"}
+                  </span>
+
+                    </div>
+
+                )}
+
+              </div>
+
+
+              {/* FAVORITE PLATFORM */}
+
+              <div className="profile-box">
+
+                <div className="profile-box-heading">
+
+                  <h3>
+                    🖥 Favorite Platform
+                  </h3>
+
+                </div>
+
+
+                {isEditing ? (
+
+                    <select
+                        value={
+                          favoritePlatform
+                        }
+
+                        onChange={(e) =>
+                            setFavoritePlatform(
+                                e.target.value
+                            )
+                        }
+                    >
+
+                      <option value="">
+                        Select Platform
+                      </option>
+
+                      <option value="PC">
+                        PC
+                      </option>
+
+                      <option value="PlayStation">
+                        PlayStation
+                      </option>
+
+                      <option value="Xbox">
+                        Xbox
+                      </option>
+
+                      <option value="Nintendo Switch">
+                        Nintendo Switch
+                      </option>
+
+                    </select>
+
+                ) : (
+
+                    <div className="profile-value">
+
+                  <span className="profile-value-icon">
+                    🖥
+                  </span>
+
+                      <span>
+                    {
+                        favoritePlatform ||
+                        "Not selected"
+                    }
+                  </span>
+
+                    </div>
 
                 )}
 
@@ -2004,251 +1657,783 @@ function ProfilePage({
             </div>
 
 
-            {/* SOCIAL LINKS */}
+            {/* =================================================
+              RIGHT
+          ================================================= */}
 
-            <div className="profile-box">
-
-              <h3>
-                🌐 Social Links
-              </h3>
+            <div className="profile-column">
 
 
-              {isEditing ? (
+              {/* GAME LIBRARY */}
 
-                <>
+              <div className="profile-box stats-box">
+
+                <div className="profile-box-heading">
+
+                  <h3>
+                    🎮 Game Library
+                  </h3>
+
+                  <span>
+                  {totalGames} total
+                </span>
+
+                </div>
+
+
+                {libraryLoading ? (
+
+                    <div className="profile-loading">
+
+                      Loading library...
+
+                    </div>
+
+                ) : (
+
+                    <div className="stats">
+
+
+                      <div
+                          className="stat-clickable"
+
+                          onClick={() =>
+                              setOpenList(
+                                  "wishlist"
+                              )
+                          }
+                      >
+
+                        <strong>
+                          {
+                            gameLibrary
+                                .wishlist
+                                .length
+                          }
+                        </strong>
+
+                        <span>
+                      ❤️ Wishlist
+                    </span>
+
+                      </div>
+
+
+                      <div
+                          className="stat-clickable"
+
+                          onClick={() =>
+                              setOpenList(
+                                  "want_to_play"
+                              )
+                          }
+                      >
+
+                        <strong>
+                          {
+                            gameLibrary
+                                .want_to_play
+                                .length
+                          }
+                        </strong>
+
+                        <span>
+                      💭 Want To Play
+                    </span>
+
+                      </div>
+
+
+                      <div
+                          className="stat-clickable"
+
+                          onClick={() =>
+                              setOpenList(
+                                  "playing"
+                              )
+                          }
+                      >
+
+                        <strong>
+                          {
+                            gameLibrary
+                                .playing
+                                .length
+                          }
+                        </strong>
+
+                        <span>
+                      🔥 Playing
+                    </span>
+
+                      </div>
+
+
+                      <div
+                          className="stat-clickable"
+
+                          onClick={() =>
+                              setOpenList(
+                                  "completed"
+                              )
+                          }
+                      >
+
+                        <strong>
+                          {
+                            gameLibrary
+                                .completed
+                                .length
+                          }
+                        </strong>
+
+                        <span>
+                      ✅ Completed
+                    </span>
+
+                      </div>
+
+
+                      <div
+                          className="stat-clickable"
+
+                          onClick={() =>
+                              setOpenList(
+                                  "dropped"
+                              )
+                          }
+                      >
+
+                        <strong>
+                          {
+                            gameLibrary
+                                .dropped
+                                .length
+                          }
+                        </strong>
+
+                        <span>
+                      ❌ Dropped
+                    </span>
+
+                      </div>
+
+                    </div>
+
+                )}
+
+              </div>
+
+
+              {/* FRIENDS */}
+
+              <div className="profile-box">
+
+                <div className="profile-box-heading">
+
+                  <h3>
+                    👥 Friends
+                  </h3>
+
+                  <span>
+                  {friends.length}
+                </span>
+
+                </div>
+
+
+                <div className="friend-search">
 
                   <input
-                    placeholder="Discord"
-                    value={
-                      discord
-                    }
+                      type="text"
 
-                    onChange={(e) =>
-                      setDiscord(
-                        e.target.value
-                      )
-                    }
+                      placeholder="Search username..."
+
+                      value={friendSearch}
+
+                      onChange={(e) =>
+                          setFriendSearch(
+                              e.target.value
+                          )
+                      }
+
+                      onKeyDown={(e) => {
+
+                        if (
+                            e.key === "Enter"
+                        ) {
+
+                          handleFriendSearch();
+
+                        }
+
+                      }}
                   />
 
 
-                  <input
-                    placeholder="Steam"
-                    value={
-                      steam
-                    }
+                  <button
+                      onClick={
+                        handleFriendSearch
+                      }
+                  >
+                    Search
+                  </button>
 
-                    onChange={(e) =>
-                      setSteam(
-                        e.target.value
+                </div>
+
+
+                {searchResults.length > 0 && (
+
+                    <div className="friend-search-results">
+
+                      {searchResults.map(
+                          (searchedUser) => (
+
+                              <div
+                                  className="friend-search-result"
+
+                                  key={
+                                    searchedUser.id
+                                  }
+                              >
+
+                                <img
+                                    src={
+                                      searchedUser.profileImage
+                                          ? `${API_URL}${searchedUser.profileImage}`
+                                          : "/images/dummy-profile-blue.png"
+                                    }
+
+                                    alt={
+                                      searchedUser.username
+                                    }
+                                />
+
+
+                                <span>
+                          {
+                            searchedUser.username
+                          }
+                        </span>
+
+
+                                <button
+                                    onClick={() =>
+                                        handleSendFriendRequest(
+                                            searchedUser.id
+                                        )
+                                    }
+                                >
+                                  Add Friend
+                                </button>
+
+                              </div>
+
+                          )
+                      )}
+
+                    </div>
+
+                )}
+
+
+                {friendMessage && (
+
+                    <p className="friend-message">
+
+                      {friendMessage}
+
+                    </p>
+
+                )}
+
+
+                {friendRequests.length > 0 && (
+
+                    <div className="friend-requests">
+
+                      <div className="friend-requests-title">
+
+                        <h4>
+                          📩 Friend Requests
+                        </h4>
+
+                        <span>
+                      {friendRequests.length}
+                    </span>
+
+                      </div>
+
+
+                      {friendRequests.map(
+                          (request) => (
+
+                              <div
+                                  className="friend-request"
+
+                                  key={
+                                    request.id
+                                  }
+                              >
+
+                                <img
+                                    src={
+                                      request
+                                          .sender
+                                          ?.profileImage
+                                          ? `${API_URL}${request.sender.profileImage}`
+                                          : "/images/dummy-profile-blue.png"
+                                    }
+
+                                    alt={
+                                      request
+                                          .sender
+                                          ?.username
+                                    }
+                                />
+
+
+                                <span>
+                          {
+                            request
+                                .sender
+                                ?.username
+                          }
+                        </span>
+
+
+                                <button
+                                    onClick={() =>
+                                        handleAcceptRequest(
+                                            request.id
+                                        )
+                                    }
+                                >
+                                  Accept
+                                </button>
+
+
+                                <button
+                                    onClick={() =>
+                                        handleDeclineRequest(
+                                            request.id
+                                        )
+                                    }
+                                >
+                                  Decline
+                                </button>
+
+                              </div>
+
+                          )
+                      )}
+
+                    </div>
+
+                )}
+
+
+                <div className="friends-list">
+
+                  {friends.length === 0 ? (
+
+                      <div className="friends-empty">
+
+                    <span>
+                      👥
+                    </span>
+
+                        <p>
+                          No friends yet.
+                        </p>
+
+                        <small>
+                          Search for other players above.
+                        </small>
+
+                      </div>
+
+                  ) : (
+
+                      friends.map(
+                          (friend) => (
+
+                              <div
+                                  className="friend-item"
+
+                                  key={
+                                    friend.id
+                                  }
+                              >
+
+                                <div className="friend-avatar-wrapper">
+
+                                  <img
+                                      src={
+                                        friend.profileImage
+                                            ? `${API_URL}${friend.profileImage}`
+                                            : "/images/dummy-profile-blue.png"
+                                      }
+
+                                      alt={
+                                        friend.username
+                                      }
+                                  />
+
+                                  <span className="friend-online-dot" />
+
+                                </div>
+
+
+                                <span className="friend-username">
+
+                          {
+                            friend.username
+                          }
+
+                        </span>
+
+
+                                <button
+                                    className="remove-friend-btn"
+
+                                    onClick={() =>
+                                        handleRemoveFriend(
+                                            friend.id
+                                        )
+                                    }
+                                >
+                                  Remove
+                                </button>
+
+                              </div>
+
+                          )
+
                       )
-                    }
-                  />
+
+                  )}
+
+                </div>
+
+              </div>
 
 
-                  <input
-                    placeholder="GitHub"
-                    value={
-                      github
-                    }
+              {/* SOCIAL LINKS */}
 
-                    onChange={(e) =>
-                      setGithub(
-                        e.target.value
-                      )
-                    }
-                  />
+              <div className="profile-box">
 
+                <div className="profile-box-heading">
 
-                  <input
-                    placeholder="Reddit"
-                    value={
-                      reddit
-                    }
+                  <h3>
+                    🌐 Social Links
+                  </h3>
 
-                    onChange={(e) =>
-                      setReddit(
-                        e.target.value
-                      )
-                    }
-                  />
-
-                </>
-
-              ) : (
-
-                <>
-
-                  <p>
-                    Discord:
-                    {" "}
-                    {
-                      discord || "-"
-                    }
-                  </p>
+                </div>
 
 
-                  <p>
-                    Steam:
-                    {" "}
-                    {
-                      steam || "-"
-                    }
-                  </p>
+                {isEditing ? (
+
+                    <>
+
+                      <input
+                          placeholder="Discord"
+
+                          value={
+                            discord
+                          }
+
+                          onChange={(e) =>
+                              setDiscord(
+                                  e.target.value
+                              )
+                          }
+                      />
 
 
-                  <p>
-                    GitHub:
-                    {" "}
-                    {
-                      github || "-"
-                    }
-                  </p>
+                      <input
+                          placeholder="Steam"
+
+                          value={
+                            steam
+                          }
+
+                          onChange={(e) =>
+                              setSteam(
+                                  e.target.value
+                              )
+                          }
+                      />
 
 
-                  <p>
-                    Reddit:
-                    {" "}
-                    {
-                      reddit || "-"
-                    }
-                  </p>
+                      <input
+                          placeholder="GitHub"
 
-                </>
+                          value={
+                            github
+                          }
 
-              )}
+                          onChange={(e) =>
+                              setGithub(
+                                  e.target.value
+                              )
+                          }
+                      />
+
+
+                      <input
+                          placeholder="Reddit"
+
+                          value={
+                            reddit
+                          }
+
+                          onChange={(e) =>
+                              setReddit(
+                                  e.target.value
+                              )
+                          }
+                      />
+
+                    </>
+
+                ) : (
+
+                    <div className="social-list">
+
+                      <div className="social-item">
+
+                    <span className="social-icon">
+                      💬
+                    </span>
+
+                        <div>
+
+                          <small>
+                            Discord
+                          </small>
+
+                          <span>
+                        {discord || "Not connected"}
+                      </span>
+
+                        </div>
+
+                      </div>
+
+
+                      <div className="social-item">
+
+                    <span className="social-icon">
+                      🎮
+                    </span>
+
+                        <div>
+
+                          <small>
+                            Steam
+                          </small>
+
+                          <span>
+                        {steam || "Not connected"}
+                      </span>
+
+                        </div>
+
+                      </div>
+
+
+                      <div className="social-item">
+
+                    <span className="social-icon">
+                      💻
+                    </span>
+
+                        <div>
+
+                          <small>
+                            GitHub
+                          </small>
+
+                          <span>
+                        {github || "Not connected"}
+                      </span>
+
+                        </div>
+
+                      </div>
+
+
+                      <div className="social-item">
+
+                    <span className="social-icon">
+                      👽
+                    </span>
+
+                        <div>
+
+                          <small>
+                            Reddit
+                          </small>
+
+                          <span>
+                        {reddit || "Not connected"}
+                      </span>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                )}
+
+              </div>
 
             </div>
 
           </div>
 
-        </div>
 
+          {/* =================================================
+            GAME LIST MODAL
+        ================================================= */}
 
-        {/* GAME LIST MODAL */}
+          {openList && (
 
-        {openList && (
+              <GameListModal
+                  type={
+                    openList
+                  }
 
-          <GameListModal
+                  games={
+                    gameLibrary[
+                        openList as keyof typeof gameLibrary
+                        ]
+                  }
 
-            type={
-              openList
-            }
+                  onClose={() =>
+                      setOpenList("")
+                  }
 
-            games={
-              gameLibrary[
-                openList as keyof typeof gameLibrary
-              ]
-            }
+                  onRemove={
+                    handleRemoveLibraryGame
+                  }
 
-            onClose={() =>
-              setOpenList("")
-            }
-
-            onRemove={
-              handleRemoveLibraryGame
-            }
-
-            onMove={
-              handleMoveLibraryGame
-            }
-
-          />
-
-        )}
-
-
-        {/* BUTTONS */}
-
-        <div className="profile-actions">
-
-
-          {savedMessage && (
-
-            <div className="save-message">
-              ✔ Profile saved
-            </div>
+                  onMove={
+                    handleMoveLibraryGame
+                  }
+              />
 
           )}
 
 
-          {errorMessage && (
+          {/* =================================================
+            PROFILE ACTIONS
+        ================================================= */}
 
-            <div className="save-message">
-              ❌ {errorMessage}
+          <div className="profile-actions">
+
+
+            <div className="profile-action-messages">
+
+              {savedMessage && (
+
+                  <div className="save-message">
+
+                    ✔ Profile saved
+
+                  </div>
+
+              )}
+
+
+              {errorMessage && (
+
+                  <div className="save-message profile-error-message">
+
+                    ❌ {errorMessage}
+
+                  </div>
+
+              )}
+
             </div>
 
-          )}
+
+            {isEditing ? (
+
+                <>
+
+                  <button
+                      className="save-btn"
+
+                      onClick={
+                        saveProfile
+                      }
+
+                      disabled={
+                          uploadingImage ||
+                          uploadingBanner
+                      }
+                  >
+                    Save Profile
+                  </button>
 
 
-          {isEditing ? (
+                  <button
+                      className="cancel-btn"
 
-            <>
+                      onClick={
+                        cancelEditing
+                      }
 
-              <button
-                className="save-btn"
+                      disabled={
+                          uploadingImage ||
+                          uploadingBanner
+                      }
+                  >
+                    Cancel
+                  </button>
 
-                onClick={
-                  saveProfile
-                }
+                </>
 
-                disabled={
-                  uploadingImage ||
-                  uploadingBanner
-                }
-              >
-                Save Profile
-              </button>
+            ) : (
 
+                <button
+                    className="save-btn"
 
-              <button
-                className="cancel-btn"
+                    onClick={() =>
+                        setIsEditing(
+                            true
+                        )
+                    }
+                >
+                  ✏ Edit Profile
+                </button>
 
-                onClick={
-                  cancelEditing
-                }
+            )}
 
-                disabled={
-                  uploadingImage ||
-                  uploadingBanner
-                }
-              >
-                Cancel
-              </button>
-
-            </>
-
-          ) : (
 
             <button
-              className="save-btn"
+                className="logout-btn"
 
-              onClick={() =>
-                setIsEditing(
-                  true
-                )
-              }
+                onClick={
+                  logoutUser
+                }
             >
-              ✏ Edit Profile
+              Logout
             </button>
 
-          )}
-
-
-          <button
-            className="logout-btn"
-            onClick={
-              logoutUser
-            }
-          >
-            Logout
-          </button>
+          </div>
 
         </div>
 
       </div>
 
-    </div>
   );
+
 }
+
 
 export default ProfilePage;

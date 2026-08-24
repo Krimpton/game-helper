@@ -17,15 +17,12 @@ import "./Chat.css";
 // ==========================
 
 function getUserColor(name: string) {
-
   let hash = 0;
 
   for (let i = 0; i < name.length; i++) {
-
     hash =
-      name.charCodeAt(i) +
-      ((hash << 5) - hash);
-
+        name.charCodeAt(i) +
+        ((hash << 5) - hash);
   }
 
   const colors = [
@@ -42,25 +39,27 @@ function getUserColor(name: string) {
   ];
 
   return colors[
-    Math.abs(hash) % colors.length
-  ];
+  Math.abs(hash) % colors.length
+      ];
 }
 
 
+// ==========================
+// CHAT
+// ==========================
+
 function Chat() {
-
-
   const [messages, setMessages] =
-    useState<any[]>([]);
+      useState<any[]>([]);
 
   const [showEmojiPicker, setShowEmojiPicker] =
-    useState(false);
+      useState(false);
 
   const [message, setMessage] =
-    useState("");
+      useState("");
 
   const [username, setUsername] =
-    useState("Guest");
+      useState("Guest");
 
 
   // ==========================
@@ -68,44 +67,34 @@ function Chat() {
   // ==========================
 
   const loadCurrentUser = async () => {
-
     try {
-
       const response = await fetch(
-        "http://localhost:3000/api/auth/me",
-        {
-          credentials: "include",
-        }
+          "http://localhost:3000/api/auth/me",
+          {
+            credentials: "include",
+          }
       );
 
-
       if (!response.ok) {
-
         setUsername("Guest");
 
         return;
-
       }
 
-
       const data =
-        await response.json();
-
+          await response.json();
 
       setUsername(
-        data.user.username
+          data.user.username
       );
-
-
     } catch (error) {
-
       console.error(
-        "Loading user failed:",
-        error
+          "Loading user failed:",
+          error
       );
 
+      setUsername("Guest");
     }
-
   };
 
 
@@ -114,51 +103,38 @@ function Chat() {
   // ==========================
 
   const loadMessages = async () => {
-
     try {
-
       const data =
-        await getChatMessages();
+          await getChatMessages();
 
       setMessages(data);
-
-
     } catch (error) {
-
       console.error(
-        "Loading messages failed:",
-        error
+          "Loading messages failed:",
+          error
       );
-
     }
-
   };
 
 
   // ==========================
-  // LOAD + AUTO REFRESH
+  // INITIAL LOAD + REFRESH
   // ==========================
 
   useEffect(() => {
-
     loadCurrentUser();
 
     loadMessages();
 
-
     const interval =
-      setInterval(
-        loadMessages,
-        2000
-      );
-
+        setInterval(
+            loadMessages,
+            2000
+        );
 
     return () => {
-
       clearInterval(interval);
-
     };
-
   }, []);
 
 
@@ -167,37 +143,30 @@ function Chat() {
   // ==========================
 
   const handleSend = async () => {
+    const trimmedMessage =
+        message.trim();
 
-    if (!message.trim()) {
-
+    if (!trimmedMessage) {
       return;
-
     }
 
-
     try {
-
       await sendChatMessage(
-        username,
-        message.trim()
+          username,
+          trimmedMessage
       );
-
 
       setMessage("");
 
+      setShowEmojiPicker(false);
 
-      loadMessages();
-
-
+      await loadMessages();
     } catch (error) {
-
       console.error(
-        "Sending message failed:",
-        error
+          "Sending message failed:",
+          error
       );
-
     }
-
   };
 
 
@@ -206,238 +175,256 @@ function Chat() {
   // ==========================
 
   const handleEmojiClick = (
-    emojiData: any
+      emojiData: any
   ) => {
-
     setMessage(
-      (prev) =>
-        prev + emojiData.emoji
+        (currentMessage) =>
+            currentMessage +
+            emojiData.emoji
     );
-
   };
 
 
+  // ==========================
+  // RETURN
+  // ==========================
+
   return (
+      <div className="chat-box">
 
-    <div className="chat-box">
-
-
-      {/* ==========================
-          HEADER
+        {/* ==========================
+          CHAT HEADER
       ========================== */}
 
-      <div className="chat-header">
+        <div className="chat-header">
 
-        🌎 Global Chat
+          <div className="chat-header-main">
 
-      </div>
-
-
-      {/* ==========================
-          MESSAGES
-      ========================== */}
-
-      <div className="messages">
-
-        {messages.map((msg: any) => {
-
-          const isOwnMessage =
-            msg.username === username;
-
-
-          const userColor =
-            getUserColor(
-              msg.username
-            );
-
-
-          return (
-
-            <div
-
-              key={msg.id}
-
-              className={`message ${
-                isOwnMessage
-                  ? "message-own"
-                  : "message-other"
-              }`}
-
-              style={
-                {
-                  "--user-color":
-                    userColor,
-                } as React.CSSProperties
-              }
-
-            >
-
-              <strong>
-
-                {isOwnMessage
-                  ? "You"
-                  : msg.username}
-
-              </strong>
-
-
-              <p>
-
-                {msg.message}
-
-              </p>
-
+            <div className="chat-header-icon">
+              🌎
             </div>
 
-          );
+            <div>
+              <h2>
+                Global Chat
+              </h2>
 
-        })}
-
-      </div>
-
-
-      {/* ==========================
-          INPUT
-      ========================== */}
-
-      <div className="chat-input">
-
-
-        {/* EMOJI */}
-
-        <div className="emoji-container">
-
-          <button
-
-            className="emoji-button"
-
-            onClick={() =>
-              setShowEmojiPicker(
-                !showEmojiPicker
-              )
-            }
-
-          >
-
-            😊
-
-          </button>
-
-
-          {showEmojiPicker && (
-
-            <div className="emoji-picker">
-
-              <EmojiPicker
-
-                onEmojiClick={
-                  handleEmojiClick
-                }
-
-                theme={Theme.DARK}
-
-                width={430}
-
-                height={450}
-
-                searchDisabled={false}
-
-                skinTonesDisabled
-
-                previewConfig={{
-                  showPreview: false,
-                }}
-
-                lazyLoadEmojis
-
-                categoryIcons={{
-
-                  [Categories.SUGGESTED]:
-                    <span>🕘</span>,
-
-                  [Categories.SMILEYS_PEOPLE]:
-                    <span>😀</span>,
-
-                  [Categories.ANIMALS_NATURE]:
-                    <span>🐻</span>,
-
-                  [Categories.FOOD_DRINK]:
-                    <span>🍔</span>,
-
-                  [Categories.TRAVEL_PLACES]:
-                    <span>✈️</span>,
-
-                  [Categories.ACTIVITIES]:
-                    <span>⚽</span>,
-
-                  [Categories.OBJECTS]:
-                    <span>💡</span>,
-
-                  [Categories.SYMBOLS]:
-                    <span>🔣</span>,
-
-                  [Categories.FLAGS]:
-                    <span>🚩</span>,
-
-                }}
-
-              />
-
+              <span>
+              Chat with the GameHelper community
+            </span>
             </div>
 
-          )}
+          </div>
+
+
+          <div className="chat-online">
+
+            <span className="chat-online-dot" />
+
+            Online
+
+          </div>
 
         </div>
 
 
-        {/* INPUT */}
+        {/* ==========================
+          MESSAGES
+      ========================== */}
 
-        <input
+        <div className="messages">
 
-          value={message}
+          {messages.map((msg: any) => {
+            const isOwnMessage =
+                msg.username === username;
 
-          onChange={(e) =>
-            setMessage(
-              e.target.value
-            )
-          }
+            const userColor =
+                getUserColor(
+                    msg.username
+                );
 
-          placeholder="Write a message..."
+            return (
+                <div
+                    key={msg.id}
 
-          onKeyDown={(e) => {
+                    className={`message ${
+                        isOwnMessage
+                            ? "message-own"
+                            : "message-other"
+                    }`}
 
-            if (
-              e.key === "Enter"
-            ) {
+                    style={
+                      {
+                        "--user-color":
+                        userColor,
+                      } as React.CSSProperties
+                    }
+                >
 
-              handleSend();
+                  <strong>
+                    {isOwnMessage
+                        ? "You"
+                        : msg.username}
+                  </strong>
 
-            }
+                  <p>
+                    {msg.message}
+                  </p>
 
-          }}
+                </div>
+            );
+          })}
 
-        />
+        </div>
 
 
-        {/* SEND */}
+        {/* ==========================
+          INPUT BAR
+      ========================== */}
 
-        <button
+        <div className="chat-input">
 
-          onClick={handleSend}
 
-        >
+          {/* ==========================
+            EMOJI
+        ========================== */}
 
-          Send
+          <div className="emoji-container">
 
-        </button>
+            <button
+                type="button"
 
+                className="emoji-button"
+
+                aria-label="Open emoji picker"
+
+                onClick={() =>
+                    setShowEmojiPicker(
+                        (current) =>
+                            !current
+                    )
+                }
+            >
+              😊
+            </button>
+
+
+            {showEmojiPicker && (
+                <div className="emoji-picker">
+
+                  <EmojiPicker
+                      onEmojiClick={
+                        handleEmojiClick
+                      }
+
+                      theme={
+                        Theme.DARK
+                      }
+
+                      width={430}
+
+                      height={450}
+
+                      searchDisabled={false}
+
+                      skinTonesDisabled
+
+                      previewConfig={{
+                        showPreview: false,
+                      }}
+
+                      lazyLoadEmojis
+
+                      categoryIcons={{
+                        [Categories.SUGGESTED]:
+                            <span>🕘</span>,
+
+                        [Categories.SMILEYS_PEOPLE]:
+                            <span>😀</span>,
+
+                        [Categories.ANIMALS_NATURE]:
+                            <span>🐻</span>,
+
+                        [Categories.FOOD_DRINK]:
+                            <span>🍔</span>,
+
+                        [Categories.TRAVEL_PLACES]:
+                            <span>✈️</span>,
+
+                        [Categories.ACTIVITIES]:
+                            <span>⚽</span>,
+
+                        [Categories.OBJECTS]:
+                            <span>💡</span>,
+
+                        [Categories.SYMBOLS]:
+                            <span>🔣</span>,
+
+                        [Categories.FLAGS]:
+                            <span>🚩</span>,
+                      }}
+                  />
+
+                </div>
+            )}
+
+          </div>
+
+
+          {/* ==========================
+            MESSAGE INPUT
+        ========================== */}
+
+          <input
+              type="text"
+
+              value={message}
+
+              onChange={(e) =>
+                  setMessage(
+                      e.target.value
+                  )
+              }
+
+              placeholder="Write a message..."
+
+              autoComplete="off"
+
+              onKeyDown={(e) => {
+                if (
+                    e.key === "Enter" &&
+                    !e.shiftKey
+                ) {
+                  e.preventDefault();
+
+                  handleSend();
+                }
+              }}
+          />
+
+
+          {/* ==========================
+            SEND BUTTON
+        ========================== */}
+
+          <button
+              type="button"
+
+              onClick={
+                handleSend
+              }
+
+              disabled={
+                !message.trim()
+              }
+          >
+            Send
+          </button>
+
+        </div>
 
       </div>
-
-    </div>
-
   );
-
 }
 
 

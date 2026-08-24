@@ -3,7 +3,10 @@ import { useEffect, useState } from "react";
 import Chat from "../components/Chat";
 import PrivateChat from "../components/PrivateChat";
 
-import { getFriends, removeFriend } from "../services/friendService";
+import {
+  getFriends,
+  removeFriend,
+} from "../services/friendService";
 
 import "./ChatPage.css";
 
@@ -14,10 +17,11 @@ function ChatPage() {
   // FRIENDS
   // ==========================
 
-  const [friends, setFriends] = useState<any[]>([]);
+  const [friends, setFriends] =
+      useState<any[]>([]);
 
   const [selectedFriend, setSelectedFriend] =
-    useState<any>(null);
+      useState<any>(null);
 
 
   // ==========================
@@ -30,15 +34,16 @@ function ChatPage() {
 
       try {
 
-        const data = await getFriends();
+        const data =
+            await getFriends();
 
         setFriends(data);
 
       } catch (error) {
 
         console.error(
-          "Loading friends failed:",
-          error
+            "Loading friends failed:",
+            error
         );
 
       }
@@ -55,11 +60,15 @@ function ChatPage() {
   // REMOVE FRIEND
   // ==========================
 
-  const handleRemoveFriend = async (friend: any) => {
+  const handleRemoveFriend = async (
+      friend: any
+  ) => {
 
-    const confirmed = window.confirm(
-      `Are you sure you want to remove ${friend.username} from your friends?`
-    );
+    const confirmed =
+        window.confirm(
+            `Are you sure you want to remove ${friend.username} from your friends?`
+        );
+
 
     if (!confirmed) {
       return;
@@ -68,21 +77,25 @@ function ChatPage() {
 
     try {
 
-      await removeFriend(friend.id);
-
-
-      // Freund aus der Liste entfernen
-      setFriends((currentFriends) =>
-        currentFriends.filter(
-          (currentFriend) =>
-            currentFriend.id !== friend.id
-        )
+      await removeFriend(
+          friend.id
       );
 
 
-      // Falls gerade der entfernte Freund geöffnet ist,
-      // zurück zum Global Chat
-      if (selectedFriend?.id === friend.id) {
+      setFriends(
+          (currentFriends) =>
+              currentFriends.filter(
+                  (currentFriend) =>
+                      currentFriend.id !==
+                      friend.id
+              )
+      );
+
+
+      if (
+          selectedFriend?.id ===
+          friend.id
+      ) {
 
         setSelectedFriend(null);
 
@@ -92,12 +105,13 @@ function ChatPage() {
     } catch (error) {
 
       console.error(
-        "Removing friend failed:",
-        error
+          "Removing friend failed:",
+          error
       );
 
+
       alert(
-        "Could not remove this friend."
+          "Could not remove this friend."
       );
 
     }
@@ -106,7 +120,7 @@ function ChatPage() {
 
 
   // ==========================
-  // SELECT GLOBAL CHAT
+  // GLOBAL CHAT
   // ==========================
 
   const openGlobalChat = () => {
@@ -116,158 +130,393 @@ function ChatPage() {
   };
 
 
+  // ==========================
+  // RETURN
+  // ==========================
+
   return (
 
-    <div className="chat-page">
-
-      <div className="chat-container">
+      <div className="chat-page">
 
 
         {/* ==========================
-            SIDEBAR
-        ========================== */}
+          BACKGROUND LIGHTS
+      ========================== */}
 
-        <aside className="chat-sidebar">
+        <div className="chat-page-glow chat-page-glow-left" />
 
-          <h2>
-            💬 Chat
-          </h2>
+        <div className="chat-page-glow chat-page-glow-right" />
+
+
+        <div className="chat-page-content">
 
 
           {/* ==========================
-              GLOBAL CHAT
+            CHAT CONTAINER
+        ========================== */}
+
+          <div className="chat-container">
+
+
+            {/* ==========================
+              SIDEBAR
           ========================== */}
 
-          <div
-            className={`chat-user-box ${
-              selectedFriend === null
-                ? "active-chat"
-                : ""
-            }`}
-            onClick={openGlobalChat}
-          >
+            <aside className="chat-sidebar">
 
-            <div className="online-dot"></div>
+              <div className="chat-sidebar-header">
 
-            <span>
-              Global Chat
-            </span>
+                <div className="chat-sidebar-title-icon">
+
+                  💬
+
+                </div>
+
+
+                <div>
+
+                  <h2>
+                    Chat
+                  </h2>
+
+                  <span>
+                  Stay connected
+                </span>
+
+                </div>
+
+              </div>
+
+
+              {/* ==========================
+                GLOBAL CHAT
+            ========================== */}
+
+              <div
+                  className={`chat-user-box ${
+                      selectedFriend === null
+                          ? "active-chat"
+                          : ""
+                  }`}
+                  onClick={
+                    openGlobalChat
+                  }
+              >
+
+                <div className="online-dot" />
+
+                <span>
+                Global Chat
+              </span>
+
+              </div>
+
+
+              {/* ==========================
+                FRIENDS TITLE
+            ========================== */}
+
+              <div className="friends-title-row">
+
+                <h3 className="friends-title">
+
+                  👥 Friends
+
+                </h3>
+
+
+                <span className="friends-count">
+
+                {friends.length}
+
+              </span>
+
+              </div>
+
+
+              {/* ==========================
+                FRIENDS
+            ========================== */}
+
+              {friends.length === 0 ? (
+
+                  <div className="chat-empty-friends">
+
+                    <div className="chat-empty-icon">
+                      👤
+                    </div>
+
+                    <p>
+                      No friends yet
+                    </p>
+
+                    <span>
+                  Add players to start
+                  private conversations.
+                </span>
+
+                  </div>
+
+              ) : (
+
+                  <div className="chat-friends-list">
+
+                    {friends.map(
+                        (friend) => (
+
+                            <div
+                                key={friend.id}
+
+                                className={`chat-friend ${
+                                    selectedFriend?.id ===
+                                    friend.id
+                                        ? "active-chat"
+                                        : ""
+                                }`}
+                            >
+
+
+                              {/* ==========================
+                          FRIEND MAIN
+                      ========================== */}
+
+                              <div
+                                  className="chat-friend-main"
+
+                                  onClick={() =>
+                                      setSelectedFriend(
+                                          friend
+                                      )
+                                  }
+                              >
+
+                                <div className="chat-avatar-wrapper">
+
+                                  <img
+                                      src={
+                                        friend.profileImage
+                                            ? friend.profileImage.startsWith(
+                                                "http"
+                                            )
+                                                ? friend.profileImage
+                                                : `http://localhost:3000${friend.profileImage}`
+                                            : "/images/dummy-profile-blue.png"
+                                      }
+
+                                      alt={
+                                        friend.username
+                                      }
+
+                                      className="chat-friend-avatar"
+                                  />
+
+
+                                  <span className="friend-online-dot" />
+
+                                </div>
+
+
+                                <div className="chat-friend-info">
+
+                          <span className="chat-friend-name">
+
+                            {friend.username}
+
+                          </span>
+
+
+                                  <small>
+
+                                    Available
+
+                                  </small>
+
+                                </div>
+
+                              </div>
+
+
+                              {/* ==========================
+                          REMOVE FRIEND
+                      ========================== */}
+
+                              <button
+                                  type="button"
+
+                                  className="remove-friend-button"
+
+                                  onClick={(event) => {
+
+                                    event.stopPropagation();
+
+
+                                    handleRemoveFriend(
+                                        friend
+                                    );
+
+                                  }}
+
+                                  title={`Remove ${friend.username}`}
+                              >
+
+                                ✕
+
+                              </button>
+
+                            </div>
+
+                        )
+                    )}
+
+                  </div>
+
+              )}
+
+            </aside>
+
+
+            {/* ==========================
+              CHAT AREA
+          ========================== */}
+
+            <main className="chat-main">
+
+              {selectedFriend ? (
+
+                  <PrivateChat
+                      friend={
+                        selectedFriend
+                      }
+                  />
+
+              ) : (
+
+                  <Chat />
+
+              )}
+
+            </main>
+
 
           </div>
 
 
           {/* ==========================
-              FRIENDS
-          ========================== */}
+            COMMUNITY FEATURES
+        ========================== */}
 
-          <h3 className="friends-title">
-            👥 Friends
-          </h3>
+          <section className="chat-features">
 
 
-          {friends.length === 0 ? (
+            <div className="chat-feature">
 
-            <p className="chat-info">
-              You don't have any friends yet.
-            </p>
+              <div className="chat-feature-icon">
 
-          ) : (
+                🎮
 
-            <div className="chat-friends-list">
-
-              {friends.map((friend) => (
-
-                <div
-                  key={friend.id}
-                  className={`chat-friend ${
-                    selectedFriend?.id === friend.id
-                      ? "active-chat"
-                      : ""
-                  }`}
-                >
-
-                  {/* FRIEND */}
-
-                  <div
-                    className="chat-friend-main"
-                    onClick={() =>
-                      setSelectedFriend(friend)
-                    }
-                  >
-
-                    <img
-                      src={
-                        friend.profileImage
-                          ? friend.profileImage.startsWith("http")
-                            ? friend.profileImage
-                            : `http://localhost:3000${friend.profileImage}`
-                          : "/images/dummy-profile-blue.png"
-                      }
-                      alt={friend.username}
-                      className="chat-friend-avatar"
-                    />
+              </div>
 
 
-                    <span>
-                      {friend.username}
-                    </span>
+              <div className="chat-feature-text">
 
-                  </div>
+                <h3>
+                  Share & Connect
+                </h3>
 
+                <p>
+                  Share gaming experiences,
+                  tips and recommendations
+                  with other players.
+                </p>
 
-                  {/* REMOVE FRIEND BUTTON */}
-
-                  <button
-                    className="remove-friend-button"
-                    onClick={(event) => {
-
-                      event.stopPropagation();
-
-                      handleRemoveFriend(friend);
-
-                    }}
-                    title={`Remove ${friend.username}`}
-                  >
-
-                    ✕
-
-                  </button>
-
-                </div>
-
-              ))}
+              </div>
 
             </div>
 
-          )}
 
-        </aside>
+            <div className="chat-feature">
+
+              <div className="chat-feature-icon">
+
+                👥
+
+              </div>
 
 
-        {/* ==========================
-            CHAT AREA
-        ========================== */}
+              <div className="chat-feature-text">
 
-        <main className="chat-main">
+                <h3>
+                  GameHelper Community
+                </h3>
 
-          {selectedFriend ? (
+                <p>
+                  Meet players and build
+                  your own gaming network.
+                </p>
 
-            <PrivateChat
-              friend={selectedFriend}
-            />
+              </div>
 
-          ) : (
+            </div>
 
-            <Chat />
 
-          )}
+            <div className="chat-feature">
 
-        </main>
+              <div className="chat-feature-icon chat-feature-icon-green">
 
+                🛡️
+
+              </div>
+
+
+              <div className="chat-feature-text">
+
+                <h3>
+                  Friendly Space
+                </h3>
+
+                <p>
+                  A clean environment
+                  designed for gaming
+                  conversations.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div className="chat-feature">
+
+              <div className="chat-feature-icon chat-feature-icon-yellow">
+
+                ⚡
+
+              </div>
+
+
+              <div className="chat-feature-text">
+
+                <h3>
+                  Live Conversations
+                </h3>
+
+                <p>
+                  Global and private chats
+                  keep your conversations
+                  in one place.
+                </p>
+
+              </div>
+
+            </div>
+
+
+          </section>
+
+
+        </div>
 
       </div>
-
-    </div>
 
   );
 
