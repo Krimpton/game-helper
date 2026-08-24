@@ -1,7 +1,12 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import Chat from "../components/Chat";
 import PrivateChat from "../components/PrivateChat";
+import VoiceRoom from "../components/VoiceRoom";
+import AIHelper from "../components/AIHelper";
 
 import {
   getFriends,
@@ -11,7 +16,9 @@ import {
 import "./ChatPage.css";
 
 
-function ChatPage() {
+function ChatPage({
+                    onGameClick,
+                  }: any) {
 
   // ==========================
   // FRIENDS
@@ -23,6 +30,14 @@ function ChatPage() {
   const [selectedFriend, setSelectedFriend] =
       useState<any>(null);
 
+  const [activeChatMode, setActiveChatMode] =
+      useState<
+          "global" |
+          "private" |
+          "voice" |
+          "ai"
+      >("global");
+
 
   // ==========================
   // LOAD FRIENDS
@@ -30,25 +45,26 @@ function ChatPage() {
 
   useEffect(() => {
 
-    const loadFriends = async () => {
+    const loadFriends =
+        async () => {
 
-      try {
+          try {
 
-        const data =
-            await getFriends();
+            const data =
+                await getFriends();
 
-        setFriends(data);
+            setFriends(data);
 
-      } catch (error) {
+          } catch (error) {
 
-        console.error(
-            "Loading friends failed:",
-            error
-        );
+            console.error(
+                "Loading friends failed:",
+                error
+            );
 
-      }
+          }
 
-    };
+        };
 
 
     loadFriends();
@@ -60,74 +76,135 @@ function ChatPage() {
   // REMOVE FRIEND
   // ==========================
 
-  const handleRemoveFriend = async (
-      friend: any
-  ) => {
+  const handleRemoveFriend =
+      async (
+          friend: any
+      ) => {
 
-    const confirmed =
-        window.confirm(
-            `Are you sure you want to remove ${friend.username} from your friends?`
-        );
-
-
-    if (!confirmed) {
-      return;
-    }
+        const confirmed =
+            window.confirm(
+                `Are you sure you want to remove ${friend.username} from your friends?`
+            );
 
 
-    try {
-
-      await removeFriend(
-          friend.id
-      );
+        if (!confirmed) {
+          return;
+        }
 
 
-      setFriends(
-          (currentFriends) =>
-              currentFriends.filter(
-                  (currentFriend) =>
-                      currentFriend.id !==
-                      friend.id
-              )
-      );
+        try {
+
+          await removeFriend(
+              friend.id
+          );
 
 
-      if (
-          selectedFriend?.id ===
-          friend.id
-      ) {
-
-        setSelectedFriend(null);
-
-      }
-
-
-    } catch (error) {
-
-      console.error(
-          "Removing friend failed:",
-          error
-      );
+          setFriends(
+              (currentFriends) =>
+                  currentFriends.filter(
+                      (currentFriend) =>
+                          currentFriend.id !==
+                          friend.id
+                  )
+          );
 
 
-      alert(
-          "Could not remove this friend."
-      );
+          if (
+              selectedFriend?.id ===
+              friend.id
+          ) {
 
-    }
+            setSelectedFriend(null);
 
-  };
+            setActiveChatMode(
+                "global"
+            );
+
+          }
+
+        } catch (error) {
+
+          console.error(
+              "Removing friend failed:",
+              error
+          );
+
+
+          alert(
+              "Could not remove this friend."
+          );
+
+        }
+
+      };
 
 
   // ==========================
   // GLOBAL CHAT
   // ==========================
 
-  const openGlobalChat = () => {
+  const openGlobalChat =
+      () => {
 
-    setSelectedFriend(null);
+        setSelectedFriend(null);
 
-  };
+        setActiveChatMode(
+            "global"
+        );
+
+      };
+
+
+  // ==========================
+  // PRIVATE CHAT
+  // ==========================
+
+  const openPrivateChat =
+      (
+          friend: any
+      ) => {
+
+        setSelectedFriend(
+            friend
+        );
+
+        setActiveChatMode(
+            "private"
+        );
+
+      };
+
+
+  // ==========================
+  // VOICE CHAT
+  // ==========================
+
+  const openVoiceChat =
+      () => {
+
+        setSelectedFriend(null);
+
+        setActiveChatMode(
+            "voice"
+        );
+
+      };
+
+
+  // ==========================
+  // AI HELPER
+  // ==========================
+
+  const openAIHelper =
+      () => {
+
+        setSelectedFriend(null);
+
+        setActiveChatMode(
+            "ai"
+        );
+
+      };
 
 
   // ==========================
@@ -143,9 +220,19 @@ function ChatPage() {
           BACKGROUND LIGHTS
       ========================== */}
 
-        <div className="chat-page-glow chat-page-glow-left" />
+        <div
+            className="
+          chat-page-glow
+          chat-page-glow-left
+        "
+        />
 
-        <div className="chat-page-glow chat-page-glow-right" />
+        <div
+            className="
+          chat-page-glow
+          chat-page-glow-right
+        "
+        />
 
 
         <div className="chat-page-content">
@@ -163,6 +250,11 @@ function ChatPage() {
           ========================== */}
 
             <aside className="chat-sidebar">
+
+
+              {/* ==========================
+                SIDEBAR HEADER
+            ========================== */}
 
               <div className="chat-sidebar-header">
 
@@ -194,7 +286,8 @@ function ChatPage() {
 
               <div
                   className={`chat-user-box ${
-                      selectedFriend === null
+                      activeChatMode ===
+                      "global"
                           ? "active-chat"
                           : ""
                   }`}
@@ -246,9 +339,11 @@ function ChatPage() {
                       👤
                     </div>
 
+
                     <p>
                       No friends yet
                     </p>
+
 
                     <span>
                   Add players to start
@@ -265,26 +360,29 @@ function ChatPage() {
                         (friend) => (
 
                             <div
-                                key={friend.id}
+                                key={
+                                  friend.id
+                                }
 
                                 className={`chat-friend ${
+                                    activeChatMode ===
+                                    "private" &&
                                     selectedFriend?.id ===
                                     friend.id
+
                                         ? "active-chat"
                                         : ""
                                 }`}
                             >
 
 
-                              {/* ==========================
-                          FRIEND MAIN
-                      ========================== */}
+                              {/* FRIEND MAIN */}
 
                               <div
                                   className="chat-friend-main"
 
                                   onClick={() =>
-                                      setSelectedFriend(
+                                      openPrivateChat(
                                           friend
                                       )
                                   }
@@ -295,11 +393,15 @@ function ChatPage() {
                                   <img
                                       src={
                                         friend.profileImage
+
                                             ? friend.profileImage.startsWith(
                                                 "http"
                                             )
+
                                                 ? friend.profileImage
+
                                                 : `http://localhost:3000${friend.profileImage}`
+
                                             : "/images/dummy-profile-blue.png"
                                       }
 
@@ -320,15 +422,15 @@ function ChatPage() {
 
                           <span className="chat-friend-name">
 
-                            {friend.username}
+                            {
+                              friend.username
+                            }
 
                           </span>
 
 
                                   <small>
-
                                     Available
-
                                   </small>
 
                                 </div>
@@ -336,9 +438,7 @@ function ChatPage() {
                               </div>
 
 
-                              {/* ==========================
-                          REMOVE FRIEND
-                      ========================== */}
+                              {/* REMOVE FRIEND */}
 
                               <button
                                   type="button"
@@ -372,6 +472,148 @@ function ChatPage() {
 
               )}
 
+
+              {/* ==========================
+                FEATURES
+            ========================== */}
+
+              <div className="chat-sidebar-features">
+
+
+                <div className="chat-sidebar-section-header">
+
+                  FEATURES
+
+                </div>
+
+
+                {/* ==========================
+                  VOICE CHAT
+              ========================== */}
+
+                <button
+                    type="button"
+
+                    className={`chat-sidebar-feature ${
+                        activeChatMode ===
+                        "voice"
+                            ? "chat-sidebar-feature-active"
+                            : ""
+                    }`}
+
+                    onClick={
+                      openVoiceChat
+                    }
+                >
+
+                  <div className="chat-sidebar-feature-icon">
+
+                    🎙️
+
+                  </div>
+
+
+                  <div className="chat-sidebar-feature-content">
+
+                    <div className="chat-sidebar-feature-title">
+
+                    <span>
+                      Voice Chat
+                    </span>
+
+
+                      <span className="chat-sidebar-beta">
+
+                      BETA
+
+                    </span>
+
+                    </div>
+
+
+                    <span className="chat-sidebar-feature-description">
+
+                    Global Voice Room
+
+                  </span>
+
+                  </div>
+
+
+                  <span className="chat-sidebar-feature-arrow">
+
+                  ›
+
+                </span>
+
+                </button>
+
+
+                {/* ==========================
+                  AI GAME HELPER
+              ========================== */}
+
+                <button
+                    type="button"
+
+                    className={`chat-sidebar-feature ${
+                        activeChatMode ===
+                        "ai"
+                            ? "chat-sidebar-feature-active"
+                            : ""
+                    }`}
+
+                    onClick={
+                      openAIHelper
+                    }
+                >
+
+                  <div className="chat-sidebar-feature-icon">
+
+                    ✨
+
+                  </div>
+
+
+                  <div className="chat-sidebar-feature-content">
+
+                    <div className="chat-sidebar-feature-title">
+
+                    <span>
+                      AI Game Helper
+                    </span>
+
+
+                      <span className="chat-sidebar-beta">
+
+                      BETA
+
+                    </span>
+
+                    </div>
+
+
+                    <span className="chat-sidebar-feature-description">
+
+                    Game recommendations
+
+                  </span>
+
+                  </div>
+
+
+                  <span className="chat-sidebar-feature-arrow">
+
+                  ›
+
+                </span>
+
+                </button>
+
+
+              </div>
+
+
             </aside>
 
 
@@ -381,7 +623,24 @@ function ChatPage() {
 
             <main className="chat-main">
 
-              {selectedFriend ? (
+
+              {activeChatMode ===
+              "voice" ? (
+
+                  <VoiceRoom />
+
+              ) : activeChatMode ===
+              "ai" ? (
+
+                  <AIHelper
+                      onGameClick={
+                        onGameClick
+                      }
+                  />
+
+              ) : activeChatMode ===
+              "private" &&
+              selectedFriend ? (
 
                   <PrivateChat
                       friend={
@@ -395,6 +654,7 @@ function ChatPage() {
 
               )}
 
+
             </main>
 
 
@@ -407,6 +667,8 @@ function ChatPage() {
 
           <section className="chat-features">
 
+
+            {/* SHARE */}
 
             <div className="chat-feature">
 
@@ -434,6 +696,8 @@ function ChatPage() {
             </div>
 
 
+            {/* COMMUNITY */}
+
             <div className="chat-feature">
 
               <div className="chat-feature-icon">
@@ -459,9 +723,16 @@ function ChatPage() {
             </div>
 
 
+            {/* FRIENDLY SPACE */}
+
             <div className="chat-feature">
 
-              <div className="chat-feature-icon chat-feature-icon-green">
+              <div
+                  className="
+                chat-feature-icon
+                chat-feature-icon-green
+              "
+              >
 
                 🛡️
 
@@ -485,9 +756,16 @@ function ChatPage() {
             </div>
 
 
+            {/* LIVE CONVERSATIONS */}
+
             <div className="chat-feature">
 
-              <div className="chat-feature-icon chat-feature-icon-yellow">
+              <div
+                  className="
+                chat-feature-icon
+                chat-feature-icon-yellow
+              "
+              >
 
                 ⚡
 
@@ -501,9 +779,9 @@ function ChatPage() {
                 </h3>
 
                 <p>
-                  Global and private chats
-                  keep your conversations
-                  in one place.
+                  Global, private, voice
+                  and AI features keep your
+                  gaming experience in one place.
                 </p>
 
               </div>

@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import EmojiPicker, {
   Theme,
   Categories,
@@ -18,6 +22,52 @@ interface PrivateChatProps {
     username: string;
     profileImage?: string;
   };
+}
+
+
+// ==========================
+// FORMAT MESSAGE TIME
+// ==========================
+
+function formatMessageTime(
+    msg: any
+) {
+
+  const rawDate =
+      msg.createdAt ||
+      msg.created_at ||
+      msg.timestamp ||
+      msg.date;
+
+
+  if (!rawDate) {
+    return "";
+  }
+
+
+  const date =
+      new Date(rawDate);
+
+
+  if (
+      Number.isNaN(
+          date.getTime()
+      )
+  ) {
+
+    return "";
+
+  }
+
+
+  return date.toLocaleTimeString(
+      [],
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+  );
+
 }
 
 
@@ -42,30 +92,31 @@ function PrivateChat({
   // LOAD MESSAGES
   // ==========================
 
-  const loadMessages = async () => {
+  const loadMessages =
+      async () => {
 
-    try {
+        try {
 
-      const data =
-          await getPrivateMessages(
-              friend.id
+          const data =
+              await getPrivateMessages(
+                  friend.id
+              );
+
+
+          setMessages(
+              data.messages || []
           );
 
+        } catch (error) {
 
-      setMessages(
-          data.messages || []
-      );
+          console.error(
+              "Loading private messages failed:",
+              error
+          );
 
-    } catch (error) {
+        }
 
-      console.error(
-          "Loading private messages failed:",
-          error
-      );
-
-    }
-
-  };
+      };
 
 
   // ==========================
@@ -86,7 +137,9 @@ function PrivateChat({
 
     return () => {
 
-      clearInterval(interval);
+      clearInterval(
+          interval
+      );
 
     };
 
@@ -97,70 +150,79 @@ function PrivateChat({
   // SEND MESSAGE
   // ==========================
 
-  const handleSend = async () => {
+  const handleSend =
+      async () => {
 
-    const trimmedMessage =
-        message.trim();
-
-
-    if (
-        !trimmedMessage ||
-        sending
-    ) {
-
-      return;
-
-    }
+        const trimmedMessage =
+            message.trim();
 
 
-    try {
+        if (
+            !trimmedMessage ||
+            sending
+        ) {
 
-      setSending(true);
+          return;
 
-
-      await sendPrivateMessage(
-          friend.id,
-          trimmedMessage
-      );
-
-
-      setMessage("");
-
-      setShowEmojiPicker(false);
+        }
 
 
-      await loadMessages();
+        try {
 
-    } catch (error) {
+          setSending(
+              true
+          );
 
-      console.error(
-          "Sending private message failed:",
-          error
-      );
 
-    } finally {
+          await sendPrivateMessage(
+              friend.id,
+              trimmedMessage
+          );
 
-      setSending(false);
 
-    }
+          setMessage("");
 
-  };
+          setShowEmojiPicker(
+              false
+          );
+
+
+          await loadMessages();
+
+        } catch (error) {
+
+          console.error(
+              "Sending private message failed:",
+              error
+          );
+
+        } finally {
+
+          setSending(
+              false
+          );
+
+        }
+
+      };
 
 
   // ==========================
   // EMOJI
   // ==========================
 
-  const handleEmojiClick = (
-      emojiData: any
-  ) => {
+  const handleEmojiClick =
+      (
+          emojiData: any
+      ) => {
 
-    setMessage(
-        (prev) =>
-            prev + emojiData.emoji
-    );
+        setMessage(
+            (prev) =>
+                prev +
+                emojiData.emoji
+        );
 
-  };
+      };
 
 
   // ==========================
@@ -198,8 +260,14 @@ function PrivateChat({
             <div className="private-avatar-wrapper">
 
               <img
-                  src={friendAvatar}
-                  alt={friend.username}
+                  src={
+                    friendAvatar
+                  }
+
+                  alt={
+                    friend.username
+                  }
+
                   className="private-chat-avatar"
               />
 
@@ -212,7 +280,9 @@ function PrivateChat({
             <div className="private-chat-user-info">
 
               <h3>
-                {friend.username}
+                {
+                  friend.username
+                }
               </h3>
 
 
@@ -248,7 +318,9 @@ function PrivateChat({
               <div className="private-chat-empty">
 
                 <div className="private-chat-empty-icon">
+
                   💬
+
                 </div>
 
 
@@ -278,10 +350,18 @@ function PrivateChat({
                         );
 
 
+                    const messageTime =
+                        formatMessageTime(
+                            msg
+                        );
+
+
                     return (
 
                         <div
-                            key={msg.id}
+                            key={
+                              msg.id
+                            }
 
                             className={`private-message ${
                                 isReceived
@@ -290,18 +370,40 @@ function PrivateChat({
                             }`}
                         >
 
-                          <strong>
 
-                            {isReceived
-                                ? friend.username
-                                : "You"}
+                          {/* MESSAGE HEADER */}
 
-                          </strong>
+                          <div className="private-message-header">
 
+                            <strong>
+
+                              {isReceived
+                                  ? friend.username
+                                  : "You"
+                              }
+
+                            </strong>
+
+
+                            {messageTime && (
+
+                                <span className="private-message-time">
+
+                        {messageTime}
+
+                      </span>
+
+                            )}
+
+                          </div>
+
+
+                          {/* MESSAGE TEXT */}
 
                           <p>
                             {msg.message}
                           </p>
+
 
                         </div>
 
@@ -351,7 +453,6 @@ function PrivateChat({
                 <div className="private-emoji-picker">
 
                   <EmojiPicker
-
                       onEmojiClick={
                         handleEmojiClick
                       }
@@ -360,9 +461,13 @@ function PrivateChat({
                         Theme.DARK
                       }
 
-                      width={430}
+                      width={
+                        430
+                      }
 
-                      height={450}
+                      height={
+                        450
+                      }
 
                       searchDisabled={
                         false
@@ -371,7 +476,8 @@ function PrivateChat({
                       skinTonesDisabled
 
                       previewConfig={{
-                        showPreview: false,
+                        showPreview:
+                            false,
                       }}
 
                       lazyLoadEmojis
@@ -406,7 +512,6 @@ function PrivateChat({
                             <span>🚩</span>,
 
                       }}
-
                   />
 
                 </div>
@@ -419,8 +524,9 @@ function PrivateChat({
           {/* MESSAGE INPUT */}
 
           <input
-
-              value={message}
+              value={
+                message
+              }
 
               onChange={(e) =>
                   setMessage(
@@ -432,12 +538,15 @@ function PrivateChat({
 
               autoComplete="off"
 
-              disabled={sending}
+              disabled={
+                sending
+              }
 
               onKeyDown={(e) => {
 
                 if (
-                    e.key === "Enter" &&
+                    e.key ===
+                    "Enter" &&
                     !e.shiftKey
                 ) {
 
@@ -448,7 +557,6 @@ function PrivateChat({
                 }
 
               }}
-
           />
 
 
@@ -469,7 +577,8 @@ function PrivateChat({
 
             {sending
                 ? "Sending..."
-                : "Send"}
+                : "Send"
+            }
 
           </button>
 

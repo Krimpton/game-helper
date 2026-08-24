@@ -1227,3 +1227,48 @@
   }
 
 }
+
+/* ==========================
+   MESSAGE HEADER + TIME
+========================== */
+
+.private-message-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 14px;
+
+  margin-bottom: 5px;
+}
+
+
+.private-message-header strong {
+  margin-bottom: 0;
+}
+
+
+.private-message-time {
+  flex-shrink: 0;
+
+  color: rgba(190, 205, 216, 0.52);
+
+  font-size: 9px;
+  font-weight: 500;
+
+  line-height: 1;
+
+  letter-spacing: 0.02em;
+}
+
+
+.private-message.sent
+.private-message-time {
+  color: rgba(225, 244, 255, 0.58);
+}
+
+
+.private-message.received
+.private-message-time {
+  color: rgba(175, 195, 210, 0.48);
+}
