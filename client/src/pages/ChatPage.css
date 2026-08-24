@@ -1053,3 +1053,262 @@
   }
 
 }
+
+/* =========================================================
+   SIDEBAR FEATURES
+========================================================= */
+
+.chat-sidebar-features {
+  margin-top: 18px;
+
+  padding-top: 16px;
+
+  border-top:
+          1px solid rgba(255, 255, 255, 0.045);
+}
+
+
+/* =========================================================
+   FEATURES LABEL
+========================================================= */
+
+.chat-sidebar-section-header {
+  margin:
+          0 8px
+          9px;
+
+  color: #647687;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.11em;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   SIDEBAR FEATURE
+========================================================= */
+
+.chat-sidebar-feature {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    34px
+    minmax(0, 1fr)
+    14px;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 9px 10px;
+
+  box-sizing: border-box;
+
+  border:
+          1px solid transparent;
+
+  border-radius: 9px;
+
+  background: transparent;
+
+  color: inherit;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+          background 0.18s ease,
+          border-color 0.18s ease,
+          transform 0.18s ease,
+          box-shadow 0.18s ease;
+}
+
+
+.chat-sidebar-feature:hover {
+  background:
+          rgba(102, 192, 244, 0.055);
+
+  border-color:
+          rgba(102, 192, 244, 0.11);
+}
+
+
+/* =========================================================
+   ACTIVE
+========================================================= */
+
+.chat-sidebar-feature-active {
+  background:
+          linear-gradient(
+                  90deg,
+                  rgba(102, 192, 244, 0.13),
+                  rgba(102, 192, 244, 0.035)
+          );
+
+  border-color:
+          rgba(102, 192, 244, 0.2);
+
+  box-shadow:
+          inset 2px 0 0 #66c0f4;
+}
+
+
+/* =========================================================
+   ICON
+========================================================= */
+
+.chat-sidebar-feature-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border:
+          1px solid rgba(102, 192, 244, 0.1);
+
+  border-radius: 8px;
+
+  background:
+          rgba(102, 192, 244, 0.06);
+
+  font-size: 15px;
+
+  line-height: 1;
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.chat-sidebar-feature-content {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.chat-sidebar-feature-title {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  color: #d8e3eb;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  line-height: 1.2;
+}
+
+
+.chat-sidebar-feature-title > span:first-child {
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   BETA
+========================================================= */
+
+.chat-sidebar-beta {
+  flex-shrink: 0;
+
+  padding:
+          2px 5px;
+
+  border:
+          1px solid rgba(102, 192, 244, 0.15);
+
+  border-radius: 999px;
+
+  background:
+          rgba(102, 192, 244, 0.09);
+
+  color: #71c9f8;
+
+  font-size: 6px;
+  font-weight: 800;
+
+  line-height: 1;
+
+  letter-spacing: 0.08em;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.chat-sidebar-feature-description {
+  overflow: hidden;
+
+  color: #647685;
+
+  font-size: 9px;
+
+  line-height: 1.25;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   ARROW
+========================================================= */
+
+.chat-sidebar-feature-arrow {
+  color: #536878;
+
+  font-size: 17px;
+
+  line-height: 1;
+
+  transition:
+          color 0.18s ease,
+          transform 0.18s ease;
+}
+
+
+.chat-sidebar-feature:hover
+.chat-sidebar-feature-arrow {
+  color: #66c0f4;
+
+  transform:
+          translateX(2px);
+}
+
+
+.chat-sidebar-feature-active
+.chat-sidebar-feature-arrow {
+  color: #66c0f4;
+}

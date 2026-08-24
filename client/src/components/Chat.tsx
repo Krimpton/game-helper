@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import EmojiPicker, {
   Theme,
   Categories,
@@ -16,14 +20,25 @@ import "./Chat.css";
 // USER COLOR
 // ==========================
 
-function getUserColor(name: string) {
+function getUserColor(
+    name: string
+) {
+
   let hash = 0;
 
-  for (let i = 0; i < name.length; i++) {
+
+  for (
+      let i = 0;
+      i < name.length;
+      i++
+  ) {
+
     hash =
         name.charCodeAt(i) +
         ((hash << 5) - hash);
+
   }
+
 
   const colors = [
     "#66c0f4",
@@ -38,9 +53,58 @@ function getUserColor(name: string) {
     "#f97316",
   ];
 
+
   return colors[
-  Math.abs(hash) % colors.length
+  Math.abs(hash) %
+  colors.length
       ];
+
+}
+
+
+// ==========================
+// FORMAT MESSAGE TIME
+// ==========================
+
+function formatMessageTime(
+    msg: any
+) {
+
+  const rawDate =
+      msg.createdAt ||
+      msg.created_at ||
+      msg.timestamp ||
+      msg.date;
+
+
+  if (!rawDate) {
+    return "";
+  }
+
+
+  const date =
+      new Date(rawDate);
+
+
+  if (
+      Number.isNaN(
+          date.getTime()
+      )
+  ) {
+
+    return "";
+
+  }
+
+
+  return date.toLocaleTimeString(
+      [],
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+  );
+
 }
 
 
@@ -49,6 +113,7 @@ function getUserColor(name: string) {
 // ==========================
 
 function Chat() {
+
   const [messages, setMessages] =
       useState<any[]>([]);
 
@@ -66,55 +131,84 @@ function Chat() {
   // LOAD CURRENT USER
   // ==========================
 
-  const loadCurrentUser = async () => {
-    try {
-      const response = await fetch(
-          "http://localhost:3000/api/auth/me",
-          {
-            credentials: "include",
+  const loadCurrentUser =
+      async () => {
+
+        try {
+
+          const response =
+              await fetch(
+                  "http://localhost:3000/api/auth/me",
+                  {
+                    credentials:
+                        "include",
+                  }
+              );
+
+
+          if (!response.ok) {
+
+            setUsername(
+                "Guest"
+            );
+
+            return;
+
           }
-      );
 
-      if (!response.ok) {
-        setUsername("Guest");
 
-        return;
-      }
+          const data =
+              await response.json();
 
-      const data =
-          await response.json();
 
-      setUsername(
-          data.user.username
-      );
-    } catch (error) {
-      console.error(
-          "Loading user failed:",
-          error
-      );
+          setUsername(
+              data.user.username
+          );
 
-      setUsername("Guest");
-    }
-  };
+        } catch (error) {
+
+          console.error(
+              "Loading user failed:",
+              error
+          );
+
+
+          setUsername(
+              "Guest"
+          );
+
+        }
+
+      };
 
 
   // ==========================
   // LOAD MESSAGES
   // ==========================
 
-  const loadMessages = async () => {
-    try {
-      const data =
-          await getChatMessages();
+  const loadMessages =
+      async () => {
 
-      setMessages(data);
-    } catch (error) {
-      console.error(
-          "Loading messages failed:",
-          error
-      );
-    }
-  };
+        try {
+
+          const data =
+              await getChatMessages();
+
+
+          setMessages(
+              data
+          );
+
+        } catch (error) {
+
+          console.error(
+              "Loading messages failed:",
+              error
+          );
+
+        }
+
+      };
 
 
   // ==========================
@@ -122,9 +216,11 @@ function Chat() {
   // ==========================
 
   useEffect(() => {
+
     loadCurrentUser();
 
     loadMessages();
+
 
     const interval =
         setInterval(
@@ -132,9 +228,15 @@ function Chat() {
             2000
         );
 
+
     return () => {
-      clearInterval(interval);
+
+      clearInterval(
+          interval
+      );
+
     };
+
   }, []);
 
 
@@ -142,47 +244,63 @@ function Chat() {
   // SEND MESSAGE
   // ==========================
 
-  const handleSend = async () => {
-    const trimmedMessage =
-        message.trim();
+  const handleSend =
+      async () => {
 
-    if (!trimmedMessage) {
-      return;
-    }
+        const trimmedMessage =
+            message.trim();
 
-    try {
-      await sendChatMessage(
-          username,
-          trimmedMessage
-      );
 
-      setMessage("");
+        if (!trimmedMessage) {
+          return;
+        }
 
-      setShowEmojiPicker(false);
 
-      await loadMessages();
-    } catch (error) {
-      console.error(
-          "Sending message failed:",
-          error
-      );
-    }
-  };
+        try {
+
+          await sendChatMessage(
+              username,
+              trimmedMessage
+          );
+
+
+          setMessage("");
+
+          setShowEmojiPicker(
+              false
+          );
+
+
+          await loadMessages();
+
+        } catch (error) {
+
+          console.error(
+              "Sending message failed:",
+              error
+          );
+
+        }
+
+      };
 
 
   // ==========================
   // EMOJI
   // ==========================
 
-  const handleEmojiClick = (
-      emojiData: any
-  ) => {
-    setMessage(
-        (currentMessage) =>
-            currentMessage +
-            emojiData.emoji
-    );
-  };
+  const handleEmojiClick =
+      (
+          emojiData: any
+      ) => {
+
+        setMessage(
+            (currentMessage) =>
+                currentMessage +
+                emojiData.emoji
+        );
+
+      };
 
 
   // ==========================
@@ -190,7 +308,9 @@ function Chat() {
   // ==========================
 
   return (
+
       <div className="chat-box">
+
 
         {/* ==========================
           CHAT HEADER
@@ -201,17 +321,23 @@ function Chat() {
           <div className="chat-header-main">
 
             <div className="chat-header-icon">
+
               🌎
+
             </div>
 
+
             <div>
+
               <h2>
                 Global Chat
               </h2>
 
+
               <span>
               Chat with the GameHelper community
             </span>
+
             </div>
 
           </div>
@@ -234,46 +360,111 @@ function Chat() {
 
         <div className="messages">
 
-          {messages.map((msg: any) => {
-            const isOwnMessage =
-                msg.username === username;
+          {messages.length === 0 ? (
 
-            const userColor =
-                getUserColor(
-                    msg.username
-                );
+              <div className="chat-empty-state">
 
-            return (
-                <div
-                    key={msg.id}
+            <span>
+              💬
+            </span>
 
-                    className={`message ${
-                        isOwnMessage
-                            ? "message-own"
-                            : "message-other"
-                    }`}
+                <p>
+                  No messages yet.
+                </p>
 
-                    style={
-                      {
-                        "--user-color":
-                        userColor,
-                      } as React.CSSProperties
-                    }
-                >
+                <small>
+                  Start the conversation!
+                </small>
 
-                  <strong>
-                    {isOwnMessage
-                        ? "You"
-                        : msg.username}
-                  </strong>
+              </div>
 
-                  <p>
-                    {msg.message}
-                  </p>
+          ) : (
 
-                </div>
-            );
-          })}
+              messages.map(
+                  (msg: any) => {
+
+                    const isOwnMessage =
+                        msg.username ===
+                        username;
+
+
+                    const userColor =
+                        getUserColor(
+                            msg.username ||
+                            "Guest"
+                        );
+
+
+                    const messageTime =
+                        formatMessageTime(
+                            msg
+                        );
+
+
+                    return (
+
+                        <div
+                            key={
+                              msg.id
+                            }
+
+                            className={`message ${
+                                isOwnMessage
+                                    ? "message-own"
+                                    : "message-other"
+                            }`}
+
+                            style={
+                              {
+                                "--user-color":
+                                userColor,
+                              } as React.CSSProperties
+                            }
+                        >
+
+
+                          {/* MESSAGE HEADER */}
+
+                          <div className="message-header">
+
+                            <strong>
+
+                              {isOwnMessage
+                                  ? "You"
+                                  : msg.username
+                              }
+
+                            </strong>
+
+
+                            {messageTime && (
+
+                                <span className="message-time">
+
+                        {messageTime}
+
+                      </span>
+
+                            )}
+
+                          </div>
+
+
+                          {/* MESSAGE TEXT */}
+
+                          <p>
+                            {msg.message}
+                          </p>
+
+
+                        </div>
+
+                    );
+
+                  }
+              )
+
+          )}
 
         </div>
 
@@ -305,11 +496,14 @@ function Chat() {
                     )
                 }
             >
+
               😊
+
             </button>
 
 
             {showEmojiPicker && (
+
                 <div className="emoji-picker">
 
                   <EmojiPicker
@@ -321,16 +515,23 @@ function Chat() {
                         Theme.DARK
                       }
 
-                      width={430}
+                      width={
+                        430
+                      }
 
-                      height={450}
+                      height={
+                        450
+                      }
 
-                      searchDisabled={false}
+                      searchDisabled={
+                        false
+                      }
 
                       skinTonesDisabled
 
                       previewConfig={{
-                        showPreview: false,
+                        showPreview:
+                            false,
                       }}
 
                       lazyLoadEmojis
@@ -366,6 +567,7 @@ function Chat() {
                   />
 
                 </div>
+
             )}
 
           </div>
@@ -378,7 +580,9 @@ function Chat() {
           <input
               type="text"
 
-              value={message}
+              value={
+                message
+              }
 
               onChange={(e) =>
                   setMessage(
@@ -391,14 +595,19 @@ function Chat() {
               autoComplete="off"
 
               onKeyDown={(e) => {
+
                 if (
-                    e.key === "Enter" &&
+                    e.key ===
+                    "Enter" &&
                     !e.shiftKey
                 ) {
+
                   e.preventDefault();
 
                   handleSend();
+
                 }
+
               }}
           />
 
@@ -418,13 +627,17 @@ function Chat() {
                 !message.trim()
               }
           >
+
             Send
+
           </button>
 
         </div>
 
       </div>
+
   );
+
 }
 
 

@@ -1,6 +1,14 @@
-import { useState } from "react";
+import {
+    useEffect,
+    useState,
+} from "react";
 
 import "./GameModal.css";
+
+import {
+    getLibrary,
+    updateLibraryGame,
+} from "../services/libraryService";
 
 
 function GameModal({
@@ -10,9 +18,12 @@ function GameModal({
                    }: any) {
 
     const [selectedStatus, setSelectedStatus] =
-        useState("");
+        useState<string | null>(null);
 
     const [loading, setLoading] =
+        useState(false);
+
+    const [checkingLibrary, setCheckingLibrary] =
         useState(false);
 
     const [message, setMessage] =
@@ -21,11 +32,13 @@ function GameModal({
     const [error, setError] =
         useState("");
 
+    const [libraryGame, setLibraryGame] =
+        useState<any>(null);
 
-    if (!game) {
-        return null;
-    }
 
+    // =====================================================
+    // STATUSES
+    // =====================================================
 
     const statuses = [
         {
@@ -56,6 +69,108 @@ function GameModal({
     ];
 
 
+    // =====================================================
+    // CHECK IF GAME IS ALREADY IN LIBRARY
+    // =====================================================
+
+    const checkLibrary = async () => {
+
+        if (!game) {
+            return;
+        }
+
+
+        try {
+
+            setCheckingLibrary(true);
+
+            setError("");
+
+            const library =
+                await getLibrary();
+
+
+            const existingGame =
+                library.find(
+                    (item: any) =>
+                        Number(item.gameId) ===
+                        Number(game.id)
+                );
+
+
+            if (existingGame) {
+
+                setLibraryGame(existingGame);
+
+                setSelectedStatus(
+                    existingGame.status
+                );
+
+            } else {
+
+                setLibraryGame(null);
+
+                setSelectedStatus(null);
+
+            }
+
+
+        } catch (error) {
+
+            console.error(
+                "Failed to check library:",
+                error
+            );
+
+
+            setLibraryGame(null);
+
+            setSelectedStatus(null);
+
+        } finally {
+
+            setCheckingLibrary(false);
+
+        }
+
+    };
+
+
+    // =====================================================
+    // RESET + CHECK WHEN GAME CHANGES
+    // =====================================================
+
+    useEffect(() => {
+
+        setSelectedStatus(null);
+
+        setMessage("");
+
+        setError("");
+
+        setLoading(false);
+
+        setLibraryGame(null);
+
+
+        if (game) {
+
+            checkLibrary();
+
+        }
+
+    }, [game?.id]);
+
+
+    if (!game) {
+        return null;
+    }
+
+
+    // =====================================================
+    // ADD OR UPDATE GAME
+    // =====================================================
+
     const handleAddGame = async () => {
 
         if (!selectedStatus) {
@@ -80,6 +195,48 @@ function GameModal({
             setMessage("");
 
 
+            // =====================================================
+            // GAME ALREADY EXISTS -> UPDATE STATUS
+            // =====================================================
+
+            if (libraryGame) {
+
+                const updatedGame =
+                    await updateLibraryGame(
+                        libraryGame.id,
+                        {
+                            status:
+                                selectedStatus as any,
+                        }
+                    );
+
+
+                setLibraryGame(
+                    updatedGame
+                );
+
+
+                setMessage(
+                    "Game status updated!"
+                );
+
+
+                window.dispatchEvent(
+                    new Event(
+                        "libraryUpdated"
+                    )
+                );
+
+
+                return;
+
+            }
+
+
+            // =====================================================
+            // NEW GAME -> ADD TO LIBRARY
+            // =====================================================
+
             await onAddGameStatus(
                 game,
                 selectedStatus
@@ -91,11 +248,18 @@ function GameModal({
             );
 
 
+            // =====================================================
+            // RELOAD LIBRARY
+            // =====================================================
+
+            await checkLibrary();
+
+
         } catch (error: any) {
 
             setError(
                 error.message ||
-                "Failed to add game to library."
+                "Failed to update game library."
             );
 
 
@@ -106,6 +270,18 @@ function GameModal({
         }
 
     };
+
+
+    // =====================================================
+    // CURRENT STATUS LABEL
+    // =====================================================
+
+    const currentStatus =
+        statuses.find(
+            (status) =>
+                status.id ===
+                libraryGame?.status
+        );
 
 
     return (
@@ -123,7 +299,9 @@ function GameModal({
             >
 
 
-                {/* CLOSE */}
+                {/* =====================================================
+            CLOSE
+        ===================================================== */}
 
                 <button
                     type="button"
@@ -136,7 +314,9 @@ function GameModal({
                 </button>
 
 
-                {/* IMAGE */}
+                {/* =====================================================
+            IMAGE
+        ===================================================== */}
 
                 <div className="modal-image-wrapper">
 
@@ -153,12 +333,16 @@ function GameModal({
                 </div>
 
 
-                {/* CONTENT */}
+                {/* =====================================================
+            CONTENT
+        ===================================================== */}
 
                 <div className="modal-info">
 
 
-                    {/* TITLE */}
+                    {/* =====================================================
+              TITLE
+          ===================================================== */}
 
                     <div className="modal-title-row">
 
@@ -188,7 +372,9 @@ function GameModal({
                     </div>
 
 
-                    {/* META */}
+                    {/* =====================================================
+              META
+          ===================================================== */}
 
                     <div className="modal-meta">
 
@@ -255,7 +441,9 @@ function GameModal({
                     </div>
 
 
-                    {/* LIBRARY */}
+                    {/* =====================================================
+              LIBRARY STATUS
+          ===================================================== */}
 
                     <div className="modal-library-section">
 
@@ -267,18 +455,40 @@ function GameModal({
                   Library
                 </span>
 
+
                                 <h3>
-                                    Add to your library
+                                    {checkingLibrary
+                                        ? "Checking library..."
+                                        : libraryGame
+                                            ? "Already in your library"
+                                            : "Add to your library"
+                                    }
                                 </h3>
 
                             </div>
 
-                            <span className="modal-section-hint">
-                Choose status
-              </span>
+
+                            {!checkingLibrary && (
+
+                                <span className="modal-section-hint">
+
+                  {libraryGame
+                      ? currentStatus
+                          ? `Current: ${currentStatus.label}`
+                          : "In library"
+                      : "Choose status"
+                  }
+
+                </span>
+
+                            )}
 
                         </div>
 
+
+                        {/* =====================================================
+                STATUS BUTTONS
+            ===================================================== */}
 
                         <div className="status-buttons">
 
@@ -305,7 +515,10 @@ function GameModal({
 
                                             onClick={() => {
 
-                                                if (loading) {
+                                                if (
+                                                    loading ||
+                                                    checkingLibrary
+                                                ) {
                                                     return;
                                                 }
 
@@ -320,12 +533,16 @@ function GameModal({
 
                                             }}
 
-                                            disabled={loading}
+                                            disabled={
+                                                loading ||
+                                                checkingLibrary
+                                            }
                                         >
 
                       <span className="status-icon">
                         {status.icon}
                       </span>
+
 
                                             <span className="status-label">
                         {status.label}
@@ -352,7 +569,9 @@ function GameModal({
                     </div>
 
 
-                    {/* MESSAGE */}
+                    {/* =====================================================
+              SUCCESS
+          ===================================================== */}
 
                     {message && (
 
@@ -369,6 +588,10 @@ function GameModal({
                     )}
 
 
+                    {/* =====================================================
+              ERROR
+          ===================================================== */}
+
                     {error && (
 
                         <div className="modal-message modal-message-error">
@@ -384,7 +607,9 @@ function GameModal({
                     )}
 
 
-                    {/* ACTIONS */}
+                    {/* =====================================================
+              ACTIONS
+          ===================================================== */}
 
                     <div className="modal-actions">
 
@@ -399,13 +624,18 @@ function GameModal({
 
                             disabled={
                                 loading ||
+                                checkingLibrary ||
                                 !selectedStatus
                             }
                         >
 
                             {loading
-                                ? "Adding..."
-                                : "Add Game"
+                                ? libraryGame
+                                    ? "Updating..."
+                                    : "Adding..."
+                                : libraryGame
+                                    ? "Update Status"
+                                    : "Add Game"
                             }
 
                         </button>

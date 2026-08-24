@@ -761,7 +761,11 @@ function AppContent() {
                 <Route
                     path="/chat"
                     element={
-                        <ChatPage />
+                        <ChatPage
+                            onGameClick={
+                                handleGameClick
+                            }
+                        />
                     }
                 />
 

@@ -5,43 +5,68 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
-  faComments,
+    faComments,
 } from "@fortawesome/free-solid-svg-icons";
 
 
 function ChatButton() {
 
-  const navigate = useNavigate();
+    const navigate = useNavigate();
+
+    const unreadCount = 3;
 
 
-  const openChat = () => {
+    const openChat = () => {
 
-    navigate("/chat");
+        navigate("/chat");
 
-  };
+    };
 
 
-  return (
+    return (
 
-      <button
-          type="button"
-          className="chat-button"
-          onClick={openChat}
-          title="Open Chat"
-          aria-label="Open Chat"
-      >
+        <button
+            type="button"
 
-        <FontAwesomeIcon
-            icon={faComments}
-        />
+            className="chat-button"
 
-        <span className="chat-button-label">
+            onClick={
+                openChat
+            }
+
+            title="Open Chat"
+
+            aria-label="Open Chat"
+        >
+
+            <FontAwesomeIcon
+                icon={
+                    faComments
+                }
+            />
+
+
+            {unreadCount > 0 && (
+
+                <span className="chat-unread-badge">
+
+          {unreadCount > 9
+              ? "9+"
+              : unreadCount
+          }
+
+        </span>
+
+            )}
+
+
+            <span className="chat-button-label">
 
       </span>
 
-      </button>
+        </button>
 
-  );
+    );
 
 }
 

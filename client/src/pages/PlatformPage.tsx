@@ -105,48 +105,27 @@ function PlatformPage({
   // FILTER
   // =====================================================
 
-  const filteredGames =
-      games.filter((game) => {
-
+    const filteredGames = games.filter((game) => {
         if (platform === "playstation") {
-
-          return game.platforms?.some(
-              (currentPlatform: string) =>
-                  currentPlatform
-                      .toLowerCase()
-                      .includes("playstation")
-          );
-
+            return game.platforms?.some((p: string) =>
+                p.includes("PlayStation")
+            );
         }
-
 
         if (platform === "xbox") {
-
-          return game.platforms?.some(
-              (currentPlatform: string) =>
-                  currentPlatform
-                      .toLowerCase()
-                      .includes("xbox")
-          );
-
+            return game.platforms?.some((p: string) =>
+                p.includes("Xbox")
+            );
         }
-
 
         if (platform === "pc") {
-
-          return game.platforms?.some(
-              (currentPlatform: string) =>
-                  currentPlatform
-                      .trim()
-                      .toLowerCase() === "pc"
-          );
-
+            return game.platforms?.some((p: string) =>
+                p.includes("PC")
+            );
         }
 
-
         return false;
-
-      });
+    });
 
 
   // =====================================================
