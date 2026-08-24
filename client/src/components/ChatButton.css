@@ -1,59 +1,127 @@
+/* ==========================
+   FLOATING CHAT BUTTON
+========================== */
+
 .chat-button {
   position: fixed;
 
-  right: 25px;
+  right: 28px;
+  bottom: 28px;
 
-  bottom: 25px;
+  z-index: 999;
 
-  width: 48px;
+  width: 54px;
+  height: 54px;
 
-  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  border: none;
+  padding: 0;
+
+  border:
+          1px solid rgba(102, 192, 244, 0.35);
 
   border-radius: 50%;
 
-  background: #66c0f4;
+  background:
+          linear-gradient(
+                  145deg,
+                  rgba(27, 40, 54, 0.96),
+                  rgba(12, 21, 31, 0.98)
+          );
 
-  color: white;
+  color: #66c0f4;
 
-  font-size: 18px;
+  font-size: 21px;
 
   cursor: pointer;
 
-  display: flex;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 
-  align-items: center;
+  box-shadow:
+          0 8px 28px rgba(0, 0, 0, 0.45),
+          0 0 20px rgba(102, 192, 244, 0.08);
 
-  justify-content: center;
-
-  box-shadow: 0 6px 16px rgba(0, 0, 0, .3);
-
-  transition: .2s ease;
-
-  z-index: 999;
+  transition:
+          transform 0.2s ease,
+          background 0.2s ease,
+          border-color 0.2s ease,
+          color 0.2s ease,
+          box-shadow 0.2s ease;
 }
+
+
+/* ==========================
+   HOVER
+========================== */
 
 .chat-button:hover {
-  transform: scale(1.08);
+  transform:
+          translateY(-3px)
+          scale(1.05);
 
-  background: #8fd8ff;
+  color: #ffffff;
+
+  border-color:
+          rgba(102, 192, 244, 0.7);
+
+  background:
+          linear-gradient(
+                  145deg,
+                  #24577a,
+                  #17384f
+          );
+
+  box-shadow:
+          0 12px 32px rgba(0, 0, 0, 0.5),
+          0 0 25px rgba(102, 192, 244, 0.2);
 }
+
+
+/* ==========================
+   CLICK
+========================== */
 
 .chat-button:active {
-  transform: scale(0.95);
+  transform:
+          translateY(-1px)
+          scale(0.96);
 }
 
-@media (max-width: 700px) {
+
+/* ==========================
+   ICON
+========================== */
+
+.chat-button svg {
+  display: block;
+
+  transition:
+          transform 0.2s ease;
+}
+
+
+.chat-button:hover svg {
+  transform: scale(1.08);
+}
+
+
+/* ==========================
+   MOBILE
+========================== */
+
+@media (max-width: 650px) {
+
   .chat-button {
-    width: 42px;
+    right: 18px;
+    bottom: 18px;
 
-    height: 42px;
+    width: 48px;
+    height: 48px;
 
-    right: 15px;
-
-    bottom: 15px;
-
-    font-size: 16px;
+    font-size: 19px;
   }
+
 }

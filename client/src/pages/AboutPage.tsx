@@ -2,111 +2,253 @@ import "./Legal.css";
 
 function AboutPage() {
   return (
-    <div className="legal-page">
+      <div className="legal-page">
 
-      <section className="legal-hero">
-        <h1>About GameHelper</h1>
+        {/* =====================================================
+          HERO
+      ===================================================== */}
 
-        <p>
-          Discover games. Build your collection. Connect with gamers.
-        </p>
-      </section>
+        <section className="legal-hero">
 
-      <section className="legal-section">
+        <span className="legal-eyebrow">
+          About the Project
+        </span>
 
-        <h2>Our Story</h2>
-
-        <p>
-          GameHelper was created as a modern platform for gamers who want to
-          discover new titles, organize their personal gaming library and
-          customize their gaming profile.
-        </p>
-
-        <p>
-          Whether you're searching for your next favorite game or keeping track
-          of your wishlist, GameHelper makes everything simple, fast and
-          enjoyable.
-        </p>
-
-      </section>
-
-      <section className="feature-grid">
-
-        <div className="feature-card">
-          <h3>🎮 Discover Games</h3>
+          <h1>
+            About GameHelper
+          </h1>
 
           <p>
-            Explore thousands of games across multiple genres and platforms.
+            Discover games, organize your personal library
+            and connect with other players — all in one place.
           </p>
-        </div>
 
-        <div className="feature-card">
-          <h3>❤️ Wishlist</h3>
+        </section>
+
+
+        {/* =====================================================
+          OUR STORY
+      ===================================================== */}
+
+        <section className="legal-section">
+
+        <span className="legal-section-label">
+          The Project
+        </span>
+
+          <h2>
+            Our Story
+          </h2>
 
           <p>
-            Save games you want to play and build your personal collection.
+            GameHelper was created as a modern platform for gamers
+            who want an easier way to discover new titles, organize
+            their personal gaming library and build their own gaming
+            profile.
           </p>
-        </div>
-
-        <div className="feature-card">
-          <h3>⭐ Gaming Profile</h3>
 
           <p>
-            Personalize your profile with favorite genres, platforms and more.
+            Instead of switching between different websites and
+            keeping track of games manually, GameHelper brings the
+            most useful features together in one simple interface.
           </p>
-        </div>
 
-        <div className="feature-card">
-          <h3>👥 Community</h3>
+        </section>
+
+
+        {/* =====================================================
+          FEATURES
+      ===================================================== */}
+
+        <section className="feature-grid">
+
+          <div className="feature-card">
+
+            <h3>
+              🎮 Discover Games
+            </h3>
+
+            <p>
+              Explore games across different genres and platforms
+              and quickly find something new to play.
+            </p>
+
+          </div>
+
+
+          <div className="feature-card">
+
+            <h3>
+              ❤️ Personal Library
+            </h3>
+
+            <p>
+              Organize games into your wishlist, playing,
+              completed, dropped and want-to-play collections.
+            </p>
+
+          </div>
+
+
+          <div className="feature-card">
+
+            <h3>
+              ⭐ Gaming Profile
+            </h3>
+
+            <p>
+              Personalize your profile with a banner, avatar,
+              favorite games, genres, platforms and social links.
+            </p>
+
+          </div>
+
+
+          <div className="feature-card">
+
+            <h3>
+              👥 Community
+            </h3>
+
+            <p>
+              Find other users, add friends and communicate through
+              global and private chats.
+            </p>
+
+          </div>
+
+        </section>
+
+
+        {/* =====================================================
+          MISSION
+      ===================================================== */}
+
+        <section className="legal-section">
+
+        <span className="legal-section-label">
+          Why GameHelper?
+        </span>
+
+          <h2>
+            Our Mission
+          </h2>
 
           <p>
-            Connect with other gamers and share your gaming interests.
+            Gaming libraries can quickly become difficult to manage.
+            GameHelper aims to make discovering, organizing and
+            discussing games feel simple and enjoyable.
           </p>
-        </div>
 
-      </section>
+          <p>
+            The goal is to create one clean gaming hub where players
+            can manage their collection while also interacting with
+            a small gaming community.
+          </p>
 
-      <section className="legal-section">
+        </section>
 
-        <h2>Our Mission</h2>
 
-        <p>
-          We believe gaming should be fun, social and easy to organize.
-          GameHelper brings everything together in one modern platform for
-          players around the world.
-        </p>
+        {/* =====================================================
+          STATS / HIGHLIGHTS
+      ===================================================== */}
 
-      </section>
+        <section className="stats-grid">
 
-      <section className="stats-grid">
+          <div className="stat-card">
 
-        <div className="stat-card">
-          <h2>🎮</h2>
-          <h3>Thousands</h3>
-          <p>Games to discover</p>
-        </div>
+            <h2>
+              🎮
+            </h2>
 
-        <div className="stat-card">
-          <h2>🕹️</h2>
-          <h3>Multiple</h3>
-          <p>Gaming platforms</p>
-        </div>
+            <h3>
+              Thousands
+            </h3>
 
-        <div className="stat-card">
-          <h2>⭐</h2>
-          <h3>Personal</h3>
-          <p>Gaming profiles</p>
-        </div>
+            <p>
+              Games to discover
+            </p>
 
-        <div className="stat-card">
-          <h2>🚀</h2>
-          <h3>Modern</h3>
-          <p>Gaming experience</p>
-        </div>
+          </div>
 
-      </section>
 
-    </div>
+          <div className="stat-card">
+
+            <h2>
+              🕹️
+            </h2>
+
+            <h3>
+              Multiple
+            </h3>
+
+            <p>
+              Gaming platforms
+            </p>
+
+          </div>
+
+
+          <div className="stat-card">
+
+            <h2>
+              👤
+            </h2>
+
+            <h3>
+              Personal
+            </h3>
+
+            <p>
+              Profiles and libraries
+            </p>
+
+          </div>
+
+
+          <div className="stat-card">
+
+            <h2>
+              💬
+            </h2>
+
+            <h3>
+              Social
+            </h3>
+
+            <p>
+              Global and private chat
+            </p>
+
+          </div>
+
+        </section>
+
+
+        {/* =====================================================
+          PROJECT INFO
+      ===================================================== */}
+
+        <section className="legal-section">
+
+        <span className="legal-section-label">
+          Development
+        </span>
+
+          <h2>
+            Built as a Web Development Project
+          </h2>
+
+          <p>
+            GameHelper is a student web development project built
+            to demonstrate a complete modern application including
+            frontend development, backend APIs, authentication,
+            database integration and interactive user features.
+          </p>
+
+        </section>
+
+      </div>
   );
 }
 

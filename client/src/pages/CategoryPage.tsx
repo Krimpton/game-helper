@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+
 import { getGamesUpToPage } from "../services/gameService";
 
 import "./CategoryPage.css";
 
 
-function CategoryPage({ onGameClick }: any) {
+function CategoryPage({
+                        onGameClick,
+                      }: any) {
 
-  const { category } = useParams();
+  const { category } =
+      useParams();
+
 
   const [games, setGames] =
-    useState<any[]>([]);
+      useState<any[]>([]);
+
 
   const [loading, setLoading] =
-    useState(true);
+      useState(true);
 
 
   // =====================================================
@@ -24,39 +30,41 @@ function CategoryPage({ onGameClick }: any) {
 
     let isMounted = true;
 
+
     setLoading(true);
 
 
     getGamesUpToPage(10)
 
-      .then((data) => {
+        .then((data) => {
 
-        if (isMounted) {
+          if (!isMounted) {
+            return;
+          }
+
 
           setGames(data);
 
-        }
+        })
 
-      })
+        .catch((error) => {
 
-      .catch((error) => {
+          console.error(
+              "Failed to load category games:",
+              error
+          );
 
-        console.error(
-          "Failed to load category games:",
-          error
-        );
+        })
 
-      })
+        .finally(() => {
 
-      .finally(() => {
+          if (isMounted) {
 
-        if (isMounted) {
+            setLoading(false);
 
-          setLoading(false);
+          }
 
-        }
-
-      });
+        });
 
 
     return () => {
@@ -73,7 +81,7 @@ function CategoryPage({ onGameClick }: any) {
   // =====================================================
 
   const categoryMap:
-    Record<string, string[]> = {
+      Record<string, string[]> = {
 
     action: [
       "Shooter",
@@ -122,50 +130,64 @@ function CategoryPage({ onGameClick }: any) {
   // =====================================================
 
   const currentCategory =
-    category?.toLowerCase();
+      category?.toLowerCase() || "";
 
 
   const allowedGenres =
-    currentCategory
-      ? categoryMap[currentCategory]
-      : undefined;
+      categoryMap[currentCategory];
 
 
   // =====================================================
-  // FILTER
+  // FILTER GAMES
   // =====================================================
 
   const filteredGames =
-    games.filter((game) => {
+      games.filter((game) => {
 
-      if (!allowedGenres) {
+        if (!allowedGenres) {
 
-        return false;
-
-      }
-
-
-      return game.genres?.some(
-        (genre: string) => {
-
-          const normalizedGenre =
-            genre
-              .trim()
-              .toLowerCase();
-
-
-          return allowedGenres.some(
-            (allowedGenre) =>
-              allowedGenre
-                .trim()
-                .toLowerCase() ===
-              normalizedGenre
-          );
+          return false;
 
         }
-      );
 
-    });
+
+        return game.genres?.some(
+            (genre: string) => {
+
+              const normalizedGenre =
+                  genre
+                      .trim()
+                      .toLowerCase();
+
+
+              return allowedGenres.some(
+                  (allowedGenre) =>
+                      allowedGenre
+                          .trim()
+                          .toLowerCase() ===
+                      normalizedGenre
+              );
+
+            }
+        );
+
+      });
+
+
+  // =====================================================
+  // CATEGORY NAME
+  // =====================================================
+
+  const categoryTitle =
+      category
+          ? category
+              .replace(/-/g, " ")
+              .replace(
+                  /\b\w/g,
+                  (letter) =>
+                      letter.toUpperCase()
+              )
+          : "Games";
 
 
   // =====================================================
@@ -174,112 +196,306 @@ function CategoryPage({ onGameClick }: any) {
 
   return (
 
-    <div className="category-page">
+      <div className="category-page">
 
 
-      <h1>
-        {category?.toUpperCase()}
-      </h1>
+        {/* =================================================
+          PAGE HEADER
+      ================================================= */}
+
+        <div className="games-page-header">
+
+          <div>
+
+            <h1>
+              {categoryTitle}
+            </h1>
 
 
-      {loading ? (
+            {!loading && (
 
-        <div className="games-loading">
+                <p className="games-count">
 
-          <div className="loading-spinner"></div>
+                  {filteredGames.length}
+                  {" "}
+                  {filteredGames.length === 1
+                      ? "game"
+                      : "games"
+                  }
+                  {" "}
+                  found
 
-          <p>
-            Loading games...
-          </p>
+                </p>
 
-        </div>
-
-      ) : (
-
-        <div className="game-grid">
-
-          {filteredGames.map(
-            (game) => (
-
-              <div
-                className="game-card"
-
-                key={game.id}
-
-                onClick={() =>
-                  onGameClick(game)
-                }
-              >
-
-                <img
-                  src={game.image}
-                  alt={game.title}
-                />
-
-
-                <div className="game-info">
-
-                  <h2>
-                    {game.title}
-                  </h2>
-
-
-                  <div className="genre">
-
-                    {game.genres?.join(
-                      ", "
-                    )}
-
-                  </div>
-
-
-                  <div className="platforms">
-
-                    {game.platforms?.map(
-                      (p: string) => (
-
-                        <span key={p}>
-                          {p}
-                        </span>
-
-                      )
-                    )}
-
-                  </div>
-
-
-                  <div className="rating">
-
-                    ⭐ {game.rating}
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            )
-          )}
-
-        </div>
-
-      )}
-
-
-      {!loading &&
-        filteredGames.length === 0 && (
-
-          <div className="no-games">
-
-            <p>
-              No games found in this category.
-            </p>
+            )}
 
           </div>
 
+
+          <div className="games-toolbar">
+
+          <span>
+            Category
+          </span>
+
+
+            <span
+                style={{
+                  color: "#66c0f4",
+                  fontWeight: 700,
+                }}
+            >
+            {categoryTitle}
+          </span>
+
+          </div>
+
+        </div>
+
+
+        {/* =================================================
+          LOADING
+      ================================================= */}
+
+        {loading ? (
+
+            <div className="games-loading">
+
+              <div className="loading-spinner" />
+
+
+              <p>
+                Loading {categoryTitle.toLowerCase()} games...
+              </p>
+
+            </div>
+
+        ) : filteredGames.length > 0 ? (
+
+
+            /* ===============================================
+               GAME GRID
+            =============================================== */
+
+            <div className="game-grid">
+
+
+              {filteredGames.map(
+                  (game) => {
+
+
+                    const genres =
+                        game.genres || [];
+
+
+                    const platforms =
+                        game.platforms || [];
+
+
+                    return (
+
+                        <article
+
+                            className="game-card"
+
+                            key={game.id}
+
+                            onClick={() =>
+                                onGameClick(game)
+                            }
+
+                        >
+
+
+                          {/* =====================================
+                      IMAGE
+                  ===================================== */}
+
+                          <div className="game-card-image">
+
+
+                            <img
+                                src={game.image}
+                                alt={game.title}
+                                loading="lazy"
+                            />
+
+
+                            <div className="game-card-overlay">
+
+                      <span>
+                        View Game
+                      </span>
+
+                            </div>
+
+
+                          </div>
+
+
+                          {/* =====================================
+                      INFO
+                  ===================================== */}
+
+                          <div className="game-info">
+
+
+                            <h2>
+                              {game.title}
+                            </h2>
+
+
+                            {/* GENRES */}
+
+                            <div className="genre">
+
+
+                              {genres
+                                  .slice(0, 2)
+                                  .map(
+                                      (genre: string) => (
+
+                                          <span key={genre}>
+                              {genre}
+                            </span>
+
+                                      )
+                                  )}
+
+
+                              {genres.length > 2 && (
+
+                                  <span className="more-tag">
+
+                          +{genres.length - 2}
+
+                        </span>
+
+                              )}
+
+
+                            </div>
+
+
+                            {/* PLATFORMS */}
+
+                            <div className="platforms">
+
+
+                              {platforms
+                                  .slice(0, 3)
+                                  .map(
+                                      (platform: string) => (
+
+                                          <span key={platform}>
+
+                              {platform}
+
+                            </span>
+
+                                      )
+                                  )}
+
+
+                              {platforms.length > 3 && (
+
+                                  <span className="more-platforms">
+
+                          +{platforms.length - 3}
+
+                        </span>
+
+                              )}
+
+
+                            </div>
+
+
+                            {/* ===================================
+                        CARD FOOTER
+                    =================================== */}
+
+                            <div className="game-card-footer">
+
+
+                      <span className="game-card-details">
+
+                        {categoryTitle}
+
+                      </span>
+
+
+                              <div className="rating">
+
+                        <span className="rating-star">
+                          ★
+                        </span>
+
+
+                                <span>
+
+                          {game.rating !== null &&
+                          game.rating !== undefined
+                              ? game.rating
+                              : "-"
+                          }
+
+                        </span>
+
+                              </div>
+
+
+                            </div>
+
+
+                          </div>
+
+
+                        </article>
+
+                    );
+
+                  }
+              )}
+
+
+            </div>
+
+        ) : (
+
+
+            /* =================================================
+               EMPTY STATE
+            ================================================= */
+
+            <div className="no-games">
+
+
+              <div className="no-games-icon">
+                🎮
+              </div>
+
+
+              <h2>
+                No games found
+              </h2>
+
+
+              <p>
+                We couldn't find any games in the{" "}
+                <strong>
+                  {categoryTitle}
+                </strong>{" "}
+                category.
+              </p>
+
+
+            </div>
+
         )}
 
-    </div>
+
+      </div>
 
   );
 

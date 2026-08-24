@@ -1,13 +1,29 @@
-import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import {
-  getCurrentUser,
-  logout,
+    useEffect,
+    useState,
+} from "react";
+
+import {
+    BrowserRouter,
+    Routes,
+    Route,
+    useLocation,
+    useNavigate,
+} from "react-router-dom";
+
+import {
+    getCurrentUser,
+    logout,
 } from "./services/authService";
-import { searchGames } from "./services/gameService";
+
 import {
-  addGameToLibrary,
+    searchGames,
+} from "./services/gameService";
+
+import {
+    addGameToLibrary,
 } from "./services/libraryService";
+
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -16,6 +32,7 @@ import GameModal from "./components/GameModal";
 import AuthModal from "./components/AuthModal";
 import Footer from "./components/Footer";
 import ChatButton from "./components/ChatButton";
+
 
 import CategoryPage from "./pages/CategoryPage";
 import PlatformPage from "./pages/PlatformPage";
@@ -29,629 +46,831 @@ import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
 import ChatPage from "./pages/ChatPage";
 
+
 import "./App.css";
 
 
-function Home() {
+/* =========================================================
+   HOME
+========================================================= */
 
-  return (
+function Home({
+                  onGameClick,
+              }: {
+    onGameClick: (game: any) => void;
+}) {
 
-    <>
-      <Hero />
+    return (
 
-      <GameCarousel />
-    </>
+        <main className="home-showcase">
 
-  );
+            <Hero />
+
+            <div className="home-carousel-layer">
+
+                <GameCarousel
+                    onGameClick={onGameClick}
+                />
+
+            </div>
+
+        </main>
+
+    );
 
 }
 
 
-function App() {
+/* =========================================================
+   SEARCH RESULTS PAGE
+========================================================= */
 
-  const [searchResults, setSearchResults] =
-    useState<any[]>([]);
+function SearchResultsPage({
+                               searchResults,
+                               loadingMore,
+                               searchQuery,
+                               onGameClick,
+                               onLoadMore,
+                           }: any) {
 
-  const [selectedGame, setSelectedGame] =
-    useState<any>(null);
+    return (
 
-  const [user, setUser] =
-    useState<any>(null);
+        <main className="category-page search-results-page">
 
 
-  // ==========================
-  // SEARCH
-  // ==========================
+            <div className="games-page-header">
 
-  const [searchQuery, setSearchQuery] =
-    useState("");
+                <div>
 
-  const [searchPage, setSearchPage] =
-    useState(1);
+                    <h1>
+                        Search Results
+                    </h1>
 
-  const [loadingMore, setLoadingMore] =
-    useState(false);
+                    <p className="games-count">
 
+                        {searchResults.length} results for{" "}
 
-  // ==========================
-  // LOAD USER
-  // ==========================
+                        <strong>
+                            "{searchQuery}"
+                        </strong>
 
-  useEffect(() => {
+                    </p>
 
-    const loadUser = async () => {
+                </div>
 
-      try {
+            </div>
 
-        const currentUser =
-          await getCurrentUser();
 
-        setUser(currentUser);
+            {searchResults.length > 0 ? (
 
-      } catch (error) {
+                <>
 
-        console.error(
-          "Failed to load current user:",
-          error
-        );
+                    <div className="game-grid">
 
-      }
+                        {searchResults.map(
+                            (game: any) => (
 
-    };
+                                <div
+                                    key={game.id}
+                                    className="game-card"
+                                    onClick={() =>
+                                        onGameClick(game)
+                                    }
+                                >
 
+                                    <div className="game-card-image">
 
-    loadUser();
+                                        <img
+                                            src={game.image}
+                                            alt={game.title}
+                                        />
 
+                                        <div className="game-card-overlay">
 
-    const handleProfileUpdated = () => {
+                      <span>
+                        View Game
+                      </span>
 
-      loadUser();
+                                        </div>
 
-    };
+                                    </div>
 
 
-    window.addEventListener(
-      "profileUpdated",
-      handleProfileUpdated
-    );
+                                    <div className="game-info">
 
+                                        <h2>
+                                            {game.title}
+                                        </h2>
 
-    return () => {
 
-      window.removeEventListener(
-        "profileUpdated",
-        handleProfileUpdated
-      );
+                                        {game.genres?.length > 0 && (
 
-    };
+                                            <div className="genre">
 
-  }, []);
+                                                {game.genres
+                                                    .slice(0, 3)
+                                                    .map(
+                                                        (genre: string) => (
 
+                                                            <span key={genre}>
+                                {genre}
+                              </span>
 
-  // ==========================
-  // HANDLE SEARCH
-  // ==========================
+                                                        )
+                                                    )}
 
-  const handleSearch = async (
-    query: string
-  ) => {
+                                            </div>
 
-    if (!query.trim()) {
+                                        )}
 
-      return;
 
-    }
+                                        <div className="game-card-footer">
 
+                      <span className="game-card-details">
 
-    try {
+                        Game
 
-      const results =
-        await searchGames(
-          query.trim(),
-          1
-        );
+                      </span>
 
 
-      setSearchQuery(
-        query.trim()
-      );
+                                            <div className="rating">
 
+                        <span className="rating-star">
+                          ★
+                        </span>
 
-      setSearchPage(1);
+                                                {game.rating ?? "-"}
 
+                                            </div>
 
-      setSearchResults(
-        results
-      );
+                                        </div>
 
-    } catch (error) {
+                                    </div>
 
-      console.error(
-        "Searching games failed:",
-        error
-      );
+                                </div>
 
-    }
-
-  };
-
-
-  // ==========================
-  // LOAD MORE SEARCH RESULTS
-  // ==========================
-
-  const handleLoadMore = async () => {
-
-    if (
-      !searchQuery ||
-      loadingMore
-    ) {
-
-      return;
-
-    }
-
-
-    try {
-
-      setLoadingMore(true);
-
-
-      const nextPage =
-        searchPage + 1;
-
-
-      const results =
-        await searchGames(
-          searchQuery,
-          nextPage
-        );
-
-
-      setSearchResults(
-        (currentResults) => [
-          ...currentResults,
-          ...results,
-        ]
-      );
-
-
-      setSearchPage(
-        nextPage
-      );
-
-    } catch (error) {
-
-      console.error(
-        "Loading more games failed:",
-        error
-      );
-
-    } finally {
-
-      setLoadingMore(false);
-
-    }
-
-  };
-
-
-  // ==========================
-  // GAME CLICK
-  // ==========================
-
-  const handleGameClick = (
-    game: any
-  ) => {
-
-    setSelectedGame(game);
-
-  };
-
-
-  // ==========================
-  // LOGOUT
-  // ==========================
-
-  const handleLogout = async () => {
-
-    console.log(
-      "Logout clicked"
-    );
-
-
-    await logout();
-
-
-    localStorage.removeItem(
-      "user"
-    );
-
-
-    setUser(null);
-
-  };
-
-
-  // ==========================
-  // ADD GAME TO LIBRARY
-  // ==========================
-
-  const handleAddGameStatus = async (
-    game: any,
-    status: string
-  ) => {
-
-    try {
-
-      await addGameToLibrary(
-        {
-          id: game.id,
-
-          title: game.title,
-
-          image:
-            game.image || null,
-
-          rating:
-            game.rating ?? null,
-
-          released:
-            game.released || null,
-        },
-
-        status as
-          | "wishlist"
-          | "want_to_play"
-          | "playing"
-          | "completed"
-          | "dropped"
-      );
-
-
-      /*
-       * ProfilePage benachrichtigen,
-       * damit die Bibliothek neu geladen wird.
-       */
-
-      window.dispatchEvent(
-        new Event("libraryUpdated")
-      );
-
-
-    } catch (error) {
-
-      console.error(
-        "Failed to add game to library:",
-        error
-      );
-
-      throw error;
-
-    }
-
-  };
-
-
-  // ==========================
-  // RETURN
-  // ==========================
-
-  return (
-
-    <BrowserRouter>
-
-      <div className="app">
-
-
-        {/* ==========================
-            HEADER
-        ========================== */}
-
-        <Header
-
-          onSearchResults={
-            handleSearch
-          }
-
-          user={user}
-
-          onLogout={
-            handleLogout
-          }
-
-        />
-
-
-        {/* ==========================
-            ROUTES
-        ========================== */}
-
-        <Routes>
-
-
-          <Route
-            path="/"
-            element={
-              <Home />
-            }
-          />
-
-
-          <Route
-            path="/categories/:category"
-            element={
-              <CategoryPage
-                onGameClick={
-                  handleGameClick
-                }
-              />
-            }
-          />
-
-
-          <Route
-            path="/platforms/:platform"
-            element={
-              <PlatformPage
-                onGameClick={
-                  handleGameClick
-                }
-              />
-            }
-          />
-
-
-          <Route
-            path="/games"
-            element={
-              <AllGamesPage
-                onGameClick={
-                  handleGameClick
-                }
-              />
-            }
-          />
-
-
-          <Route
-            path="/games/best"
-            element={
-              <BestGamesPage
-                onGameClick={
-                  handleGameClick
-                }
-              />
-            }
-          />
-
-
-          <Route
-            path="/profile"
-            element={
-              <ProfilePage
-                onLogout={
-                  handleLogout
-                }
-              />
-            }
-          />
-
-
-          <Route
-            path="/imprint"
-            element={
-              <ImprintPage />
-            }
-          />
-
-
-          <Route
-            path="/about"
-            element={
-              <AboutPage />
-            }
-          />
-
-
-          <Route
-            path="/contact"
-            element={
-              <ContactPage />
-            }
-          />
-
-
-          <Route
-            path="/privacy"
-            element={
-              <PrivacyPage />
-            }
-          />
-
-
-          <Route
-            path="/terms"
-            element={
-              <TermsPage />
-            }
-          />
-
-
-          <Route
-            path="/chat"
-            element={
-              <ChatPage />
-            }
-          />
-
-        </Routes>
-
-
-        {/* ==========================
-            SEARCH RESULTS
-        ========================== */}
-
-        {searchResults.length > 0 && (
-
-          <div className="search-results-section">
-
-
-            <div className="game-grid">
-
-
-              {searchResults.map(
-                (game) => (
-
-                  <div
-
-                    key={game.id}
-
-                    className="game-card"
-
-                    onClick={() =>
-                      setSelectedGame(
-                        game
-                      )
-                    }
-
-                  >
-
-
-                    <img
-
-                      src={game.image}
-
-                      alt={game.title}
-
-                    />
-
-
-                    <div className="game-info">
-
-
-                      <h2>
-                        {game.title}
-                      </h2>
-
-
-                      <div className="genre">
-
-                        {game.genres?.join(
-                          ", "
+                            )
                         )}
-
-                      </div>
-
-
-                      <div className="rating">
-
-                        ⭐ {game.rating}
-
-                      </div>
-
 
                     </div>
 
 
-                  </div>
+                    <div className="load-more-container">
 
-                )
-              )}
+                        <button
+                            className="load-more-button"
+                            onClick={onLoadMore}
+                            disabled={loadingMore}
+                        >
+
+                            {loadingMore
+                                ? "Loading..."
+                                : "Load more games"
+                            }
+
+                        </button>
+
+                    </div>
+
+                </>
+
+            ) : (
+
+                <div className="no-games">
+
+                    <div className="no-games-icon">
+                        🔍
+                    </div>
+
+                    <h2>
+                        No games found
+                    </h2>
+
+                    <p>
+                        Try searching for another title.
+                    </p>
+
+                </div>
+
+            )}
+
+        </main>
+
+    );
+
+}
 
 
-            </div>
+/* =========================================================
+   APP CONTENT
+========================================================= */
+
+function AppContent() {
+
+    const navigate =
+        useNavigate();
+
+    const location =
+        useLocation();
 
 
-            {/* ==========================
-                LOAD MORE BUTTON
-            ========================== */}
+    /* =====================================================
+       USER
+    ===================================================== */
 
-            <div className="load-more-container">
+    const [user, setUser] =
+        useState<any>(null);
 
-              <button
 
-                className="load-more-button"
+    /* =====================================================
+       GAME MODAL
+    ===================================================== */
 
-                onClick={
-                  handleLoadMore
+    const [
+        selectedGame,
+        setSelectedGame,
+    ] =
+        useState<any>(null);
+
+
+    /* =====================================================
+       SEARCH
+    ===================================================== */
+
+    const [
+        searchResults,
+        setSearchResults,
+    ] =
+        useState<any[]>([]);
+
+
+    const [
+        searchQuery,
+        setSearchQuery,
+    ] =
+        useState("");
+
+
+    const [
+        searchPage,
+        setSearchPage,
+    ] =
+        useState(1);
+
+
+    const [
+        loadingMore,
+        setLoadingMore,
+    ] =
+        useState(false);
+
+
+    /* =====================================================
+       LOAD USER
+    ===================================================== */
+
+    useEffect(() => {
+
+        const loadUser =
+            async () => {
+
+                try {
+
+                    const currentUser =
+                        await getCurrentUser();
+
+
+                    setUser(
+                        currentUser
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Failed to load current user:",
+                        error
+                    );
+
                 }
 
-                disabled={
-                  loadingMore
-                }
-
-              >
-
-                {loadingMore
-                  ? "Loading..."
-                  : "Load more games"
-                }
-
-              </button>
-
-            </div>
+            };
 
 
-          </div>
-
-        )}
+        loadUser();
 
 
-        {/* ==========================
-            GAME MODAL
-        ========================== */}
+        const handleProfileUpdated =
+            () => {
 
-        <GameModal
+                loadUser();
 
-          game={
-            selectedGame
-          }
-
-          onClose={() =>
-            setSelectedGame(
-              null
-            )
-          }
-
-          onAddGameStatus={
-            handleAddGameStatus
-          }
-
-        />
+            };
 
 
-        {/* ==========================
-            AUTH
-        ========================== */}
+        window.addEventListener(
+            "profileUpdated",
+            handleProfileUpdated
+        );
 
-        {!user && (
 
-          <AuthModal
+        return () => {
 
-            onLogin={
-              setUser
+            window.removeEventListener(
+                "profileUpdated",
+                handleProfileUpdated
+            );
+
+        };
+
+    }, []);
+
+
+    /* =====================================================
+       SEARCH
+    ===================================================== */
+
+    const handleSearch =
+        async (
+            query: string
+        ) => {
+
+            const trimmedQuery =
+                query.trim();
+
+
+            if (!trimmedQuery) {
+
+                return;
+
             }
 
-          />
 
-        )}
+            try {
 
-
-        {/* ==========================
-            CHAT + FOOTER
-        ========================== */}
-
-        <ChatButton />
-
-        <Footer />
+                const results =
+                    await searchGames(
+                        trimmedQuery,
+                        1
+                    );
 
 
-      </div>
+                setSearchQuery(
+                    trimmedQuery
+                );
 
-    </BrowserRouter>
 
-  );
+                setSearchPage(
+                    1
+                );
+
+
+                setSearchResults(
+                    results
+                );
+
+
+                navigate(
+                    "/search"
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Searching games failed:",
+                    error
+                );
+
+            }
+
+        };
+
+
+    /* =====================================================
+       LOAD MORE SEARCH RESULTS
+    ===================================================== */
+
+    const handleLoadMore =
+        async () => {
+
+            if (
+                !searchQuery ||
+                loadingMore
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                setLoadingMore(
+                    true
+                );
+
+
+                const nextPage =
+                    searchPage + 1;
+
+
+                const results =
+                    await searchGames(
+                        searchQuery,
+                        nextPage
+                    );
+
+
+                setSearchResults(
+                    (currentResults) => [
+                        ...currentResults,
+                        ...results,
+                    ]
+                );
+
+
+                setSearchPage(
+                    nextPage
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Loading more games failed:",
+                    error
+                );
+
+            } finally {
+
+                setLoadingMore(
+                    false
+                );
+
+            }
+
+        };
+
+
+    /* =====================================================
+       GAME CLICK
+    ===================================================== */
+
+    const handleGameClick =
+        (
+            game: any
+        ) => {
+
+            setSelectedGame(
+                game
+            );
+
+        };
+
+
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
+
+    const handleLogout =
+        async () => {
+
+            try {
+
+                await logout();
+
+
+                localStorage.removeItem(
+                    "user"
+                );
+
+
+                setUser(
+                    null
+                );
+
+
+                navigate(
+                    "/"
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Logout failed:",
+                    error
+                );
+
+            }
+
+        };
+
+
+    /* =====================================================
+       ADD GAME TO LIBRARY
+    ===================================================== */
+
+    const handleAddGameStatus =
+        async (
+            game: any,
+            status: string
+        ) => {
+
+            try {
+
+                await addGameToLibrary(
+                    {
+                        id:
+                        game.id,
+
+                        title:
+                        game.title,
+
+                        image:
+                            game.image ||
+                            null,
+
+                        rating:
+                            game.rating ??
+                            null,
+
+                        released:
+                            game.released ||
+                            null,
+                    },
+
+                    status as
+                        | "wishlist"
+                        | "want_to_play"
+                        | "playing"
+                        | "completed"
+                        | "dropped"
+                );
+
+
+                window.dispatchEvent(
+                    new Event(
+                        "libraryUpdated"
+                    )
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to add game to library:",
+                    error
+                );
+
+
+                throw error;
+
+            }
+
+        };
+
+
+    /* =====================================================
+       UI CONDITIONS
+    ===================================================== */
+
+    const showChatButton =
+        location.pathname !==
+        "/chat";
+
+
+    /* =====================================================
+       RETURN
+    ===================================================== */
+
+    return (
+
+        <div className="app">
+
+
+            {/* HEADER */}
+
+            <Header
+                onSearchResults={
+                    handleSearch
+                }
+                user={user}
+                onLogout={
+                    handleLogout
+                }
+            />
+
+
+            {/* ROUTES */}
+
+            <Routes>
+
+                <Route
+                    path="/"
+                    element={
+                        <Home
+                            onGameClick={
+                                handleGameClick
+                            }
+                        />
+                    }
+                />
+
+
+                <Route
+                    path="/categories/:category"
+                    element={
+                        <CategoryPage
+                            onGameClick={
+                                handleGameClick
+                            }
+                        />
+                    }
+                />
+
+
+                <Route
+                    path="/platforms/:platform"
+                    element={
+                        <PlatformPage
+                            onGameClick={
+                                handleGameClick
+                            }
+                        />
+                    }
+                />
+
+
+                <Route
+                    path="/games"
+                    element={
+                        <AllGamesPage
+                            onGameClick={
+                                handleGameClick
+                            }
+                        />
+                    }
+                />
+
+
+                <Route
+                    path="/games/best"
+                    element={
+                        <BestGamesPage
+                            onGameClick={
+                                handleGameClick
+                            }
+                        />
+                    }
+                />
+
+
+                <Route
+                    path="/search"
+                    element={
+                        <SearchResultsPage
+                            searchResults={
+                                searchResults
+                            }
+                            searchQuery={
+                                searchQuery
+                            }
+                            loadingMore={
+                                loadingMore
+                            }
+                            onGameClick={
+                                handleGameClick
+                            }
+                            onLoadMore={
+                                handleLoadMore
+                            }
+                        />
+                    }
+                />
+
+
+                <Route
+                    path="/profile"
+                    element={
+                        <ProfilePage
+                            onLogout={
+                                handleLogout
+                            }
+                        />
+                    }
+                />
+
+
+                <Route
+                    path="/chat"
+                    element={
+                        <ChatPage />
+                    }
+                />
+
+
+                <Route
+                    path="/about"
+                    element={
+                        <AboutPage />
+                    }
+                />
+
+
+                <Route
+                    path="/contact"
+                    element={
+                        <ContactPage />
+                    }
+                />
+
+
+                <Route
+                    path="/privacy"
+                    element={
+                        <PrivacyPage />
+                    }
+                />
+
+
+                <Route
+                    path="/terms"
+                    element={
+                        <TermsPage />
+                    }
+                />
+
+
+                <Route
+                    path="/imprint"
+                    element={
+                        <ImprintPage />
+                    }
+                />
+
+            </Routes>
+
+
+            {/* GAME MODAL */}
+
+            <GameModal
+                game={
+                    selectedGame
+                }
+                onClose={() =>
+                    setSelectedGame(
+                        null
+                    )
+                }
+                onAddGameStatus={
+                    handleAddGameStatus
+                }
+            />
+
+
+            {/* AUTH */}
+
+            {!user && (
+
+                <AuthModal
+                    onLogin={
+                        setUser
+                    }
+                />
+
+            )}
+
+
+            {/* FLOATING CHAT */}
+
+            {showChatButton && (
+                <ChatButton />
+            )}
+
+
+            {/* FOOTER */}
+
+            <Footer />
+
+        </div>
+
+    );
+
+}
+
+
+/* =========================================================
+   ROOT APP
+========================================================= */
+
+function App() {
+
+    return (
+
+        <BrowserRouter>
+
+            <AppContent />
+
+        </BrowserRouter>
+
+    );
 
 }
 

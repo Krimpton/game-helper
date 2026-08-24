@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import {
   FaDiscord,
   FaSteam,
@@ -6,112 +5,166 @@ import {
   FaReddit,
 } from "react-icons/fa";
 
+import { Link } from "react-router-dom";
+
 function Footer() {
   return (
-    <footer className="footer">
+      <footer className="footer">
 
-      <div className="footer-content">
+        <div className="footer-glow" />
 
-        {/* Brand */}
-        <div className="footer-column">
+        <div className="footer-content">
 
-          <h2 className="footer-title">
-            GameHelper
-          </h2>
+          {/* BRAND */}
 
-          <p>
-            Your personal gaming library for discovering,
-            tracking and organizing your favorite games.
-          </p>
+          <div className="footer-brand">
+
+            <h2>
+              GameHelper
+            </h2>
+
+            <p>
+              Discover games, build your library
+              and connect with other players.
+            </p>
+
+            <div className="footer-status">
+              <span className="footer-status-dot" />
+
+              <span>
+              GameHelper Online
+            </span>
+            </div>
+
+          </div>
+
+
+          {/* NAVIGATION */}
+
+          <div className="footer-column">
+
+            <h3>
+              Navigation
+            </h3>
+
+            <Link to="/">
+              Home
+            </Link>
+
+            <Link to="/games">
+              All Games
+            </Link>
+
+            <Link to="/games/best">
+              Best Ranking
+            </Link>
+
+            <Link to="/profile">
+              Profile
+            </Link>
+
+          </div>
+
+
+          {/* INFORMATION */}
+
+          <div className="footer-column">
+
+            <h3>
+              Information
+            </h3>
+
+            <Link to="/about">
+              About
+            </Link>
+
+            <Link to="/contact">
+              Contact
+            </Link>
+
+            <Link to="/privacy">
+              Privacy Policy
+            </Link>
+
+            <Link to="/terms">
+              Terms of Service
+            </Link>
+
+            <Link to="/imprint">
+              Imprint
+            </Link>
+
+          </div>
+
+
+          {/* COMMUNITY */}
+
+          <div className="footer-column">
+
+            <h3>
+              Community
+            </h3>
+
+            <a
+                href="https://discord.com"
+                target="_blank"
+                rel="noreferrer"
+            >
+              <FaDiscord />
+              Discord
+            </a>
+
+            <a
+                href="https://store.steampowered.com"
+                target="_blank"
+                rel="noreferrer"
+            >
+              <FaSteam />
+              Steam
+            </a>
+
+            <a
+                href="https://github.com/Krimpton/game-helper"
+                target="_blank"
+                rel="noreferrer"
+            >
+              <FaGithub />
+              GitHub
+            </a>
+
+            <a
+                href="https://reddit.com"
+                target="_blank"
+                rel="noreferrer"
+            >
+              <FaReddit />
+              Reddit
+            </a>
+
+          </div>
 
         </div>
 
 
-        {/* Navigation */}
-        <div className="footer-column">
+        {/* BOTTOM */}
 
-          <h3>Navigation</h3>
+        <div className="footer-bottom">
 
-          <Link to="/about">
-            About
-          </Link>
+        <span>
+          © 2026 GameHelper
+        </span>
 
-          <Link to="/contact">
-            Contact
-          </Link>
+          <span className="footer-bottom-divider">
+          •
+        </span>
 
-          <Link to="/privacy">
-            Privacy Policy
-          </Link>
-
-          <Link to="/terms">
-            Terms of Service
-          </Link>
-
-          <Link to="/imprint">
-            Imprint
-          </Link>
+          <span>
+          Built during the DCI Web Development course
+        </span>
 
         </div>
 
-
-        {/* Community */}
-        <div className="footer-column">
-
-          <h3>Community</h3>
-
-
-          <a
-            href="https://discord.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaDiscord />
-            Discord
-          </a>
-
-
-          <a
-            href="https://store.steampowered.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaSteam />
-            Steam
-          </a>
-
-
-          <a
-            href="https://github.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaGithub />
-            GitHub
-          </a>
-
-
-          <a
-            href="https://www.reddit.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaReddit />
-            Reddit
-          </a>
-
-
-        </div>
-
-      </div>
-
-
-      <div className="footer-bottom">
-        © 2026 GameHelper. All rights reserved.
-      </div>
-
-
-    </footer>
+      </footer>
   );
 }
 
